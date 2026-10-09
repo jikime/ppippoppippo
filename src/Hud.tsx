@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Activity, ArrowUpRight, Bell, Box, BrainCircuit, CalendarDays, Check, ChevronRight, CircleHelp, Clock3, DoorOpen, FlaskConical, Maximize2, Moon, Pause, Play, RotateCcw, ShieldCheck, Sun, Usb, Users, X } from 'lucide-react';
+import { Activity, ArrowUpRight, Bell, BarChart3, Box, BrainCircuit, CalendarDays, Check, ChevronRight, CircleHelp, Clock3, DoorOpen, FlaskConical, Maximize2, Moon, Pause, Play, RotateCcw, ShieldCheck, Sun, Usb, Users, X } from 'lucide-react';
 import { useUI } from './state';
 import { world } from './simulation/world';
 import type { Log } from './simulation/world';
@@ -10,8 +10,8 @@ import { openAgenda } from './AgendaPanel';
 const shortNames=['체크인','DevDay','AWS 세션','오전 개발','점심','오후 개발','제출 점검','1차 심사','결선 발표','결선 심사','시상·퇴장'];
 export function Header(){
   const ui=useUI(),d=ui.data,j=useJudgment();
-  const tabs=[{id:'lab' as const,label:'세계 실험실',icon:FlaskConical,value:'LAB'},{id:'overview' as const,label:'공간 관제',icon:Box,value:d.inside},{id:'people' as const,label:'인물 탐색',icon:Users,value:d.total},{id:'events' as const,label:'상황 기록',icon:Activity,value:d.logs.length},{id:'agenda' as const,label:'행사 일정',icon:CalendarDays,value:'12'},{id:'device' as const,label:'디바이스 알림',icon:Usb,value:'USB'}];
-  const panel=(id:typeof ui.panel)=>useUI.setState({panel:id,panelVisible:ui.panel===id?!ui.panelVisible:true,mobilePanel:true,cinema:false});
+  const tabs=[{id:'lab' as const,label:'세계 실험실',icon:FlaskConical,value:'LAB'},{id:'overview' as const,label:'공간 관제',icon:Box,value:d.inside},{id:'analytics' as const,label:'분석 대시보드',icon:BarChart3,value:'DATA'},{id:'people' as const,label:'인물 탐색',icon:Users,value:d.total},{id:'events' as const,label:'상황 기록',icon:Activity,value:d.logs.length},{id:'agenda' as const,label:'행사 일정',icon:CalendarDays,value:'12'},{id:'device' as const,label:'디바이스 알림',icon:Usb,value:'USB'}];
+  const panel=(id:typeof ui.panel)=>useUI.setState({panel:id,panelVisible:id==='analytics'||ui.panel!==id?true:!ui.panelVisible,mobilePanel:true,cinema:false});
   return <header className="topbar">
     <button className="brand" aria-label="JEONJO 전체 조감도" onClick={()=>ui.setCamera('overview')}><span className="brand-symbol"><ShieldCheck size={22}/></span><span>JEONJO<small>VENUE OPERATIONS</small></span></button>
     <span className="header-divider"/>

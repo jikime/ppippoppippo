@@ -1,6 +1,6 @@
 import { DevicePanel } from './device/DevicePanel';
 import { startDeviceSync } from './device/store';
-import { Component, useEffect, useRef, useState } from 'react';
+import { Component, Suspense, lazy, useEffect, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
 import { Activity, ArrowRight, ArrowUpRight, Box, Camera, Check, ChevronRight, DoorOpen, Expand, Eye, Focus, Grid2X2, Layers3, LocateFixed, Maximize2, MousePointer2, Navigation, Radio, ShieldCheck, Sparkles, Users, X } from 'lucide-react';
 import { useProgress } from '@react-three/drei';
@@ -16,6 +16,8 @@ import { PeoplePanel } from './people/PeoplePanel';
 import { LabPanel, LabStats } from './lab/LabPanel';
 import { LabHUD } from './lab/LabHUD';
 import { useLab } from './lab/store';
+
+const AnalyticsDashboard=lazy(()=>import('./analytics/AnalyticsDashboard'));
 
 const clock=(time:number)=>`${String(Math.floor(time/60)).padStart(2,'0')}:${String(Math.floor(time%60)).padStart(2,'0')}`;
 const storyNames=['일상을 관찰하다','이동을 이해하다','변화를 감지하다','사람을 안내하다','흐름을 회복하다','시연 완료'];
@@ -75,19 +77,19 @@ function About(){
 }
 export default function App(){
   useEffect(()=>startDeviceSync(),[]);
-  const panel=useUI(s=>s.panel),labMode=panel==='lab';
+  const panel=useUI(s=>s.panel),labMode=panel==='lab',analyticsMode=panel==='analytics';
   const previousRunning=useRef(true);
   useEffect(()=>{if(!labMode)return;previousRunning.current=world.running;world.setRunning(false);useUI.getState().setCamera('overview');return()=>{useLab.setState({playing:false});world.setRunning(previousRunning.current);};},[labMode]);
   const d=useUI(s=>s.data),help=useUI(s=>s.help),cinema=useUI(s=>s.cinema),night=useUI(s=>s.night),panelVisible=useUI(s=>s.panelVisible);const progress=useProgress();
-  useEffect(()=>{void useJudgment.getState().check();void world.initialize().then(()=>{if(!world.agenda)world.startAgenda(600);});const key=(e:KeyboardEvent)=>{if((e.target as HTMLElement)?.matches('input,select,textarea'))return;if(e.code==='Space'){e.preventDefault();if(useUI.getState().panel==='lab')useLab.setState(s=>({playing:!s.playing,time:s.time>=(s.replay?.horizon??Infinity)?0:s.time}));else world.setRunning(!world.running);}if(e.key==='1')useUI.getState().setCamera('overview');if(e.key==='2')useUI.getState().setCamera('top');if(e.key==='3')useUI.getState().setCamera('floor');if(e.key==='Escape'){useUI.setState({selected:null,help:false,cinema:false});useLab.setState({selected:null});}};window.addEventListener('keydown',key);return()=>window.removeEventListener('keydown',key);},[]);
+  useEffect(()=>{void useJudgment.getState().check();void world.initialize().then(()=>{if(!world.agenda)world.startAgenda(600);});const key=(e:KeyboardEvent)=>{if((e.target as HTMLElement)?.closest('input,select,textarea,button,[role="button"]'))return;if(e.code==='Space'){e.preventDefault();if(useUI.getState().panel==='lab')useLab.setState(s=>({playing:!s.playing,time:s.time>=(s.replay?.horizon??Infinity)?0:s.time}));else world.setRunning(!world.running);}if(e.key==='1')useUI.getState().setCamera('overview');if(e.key==='2')useUI.getState().setCamera('top');if(e.key==='3')useUI.getState().setCamera('floor');if(e.key==='Escape'){useUI.setState({selected:null,help:false,cinema:false});useLab.setState({selected:null});}};window.addEventListener('keydown',key);return()=>window.removeEventListener('keydown',key);},[]);
   useEffect(()=>{if(import.meta.env.DEV)(window as unknown as {crowdguard:typeof world}).crowdguard=world;},[]);
-  return <div className={`app ${labMode?'lab-mode':''} ${panel==='people'?'people-focus':''} ${cinema?'cinema':''} ${night?'night-mode':''} ${panelVisible?'':'panels-hidden'}`}>
-    <main className="workspace"><SceneBoundary><Scene/></SceneBoundary>
+  return <div className={`app ${labMode?'lab-mode':''} ${analyticsMode?'analytics-mode':''} ${panel==='people'?'people-focus':''} ${cinema?'cinema':''} ${night?'night-mode':''} ${panelVisible?'':'panels-hidden'}`}>
+    <main className="workspace"><div className="scene-host"><SceneBoundary><Scene/></SceneBoundary></div>{analyticsMode?<Suspense fallback={<div className="analytics-loading">분석 대시보드를 불러오는 중입니다.</div>}><AnalyticsDashboard/></Suspense>:<>
       {labMode?<><LabStats/><LabHUD/></>:<><SceneIdentity/><Stats/></>}<ViewControls/><Operations/>
       <aside className="floating-feed" aria-label="동기화된 가상 CCTV"><VirtualFeed/></aside>
       {d.story&&<div className="story-card"><Sparkles size={16}/><span>LIVE TOUR</span><strong>{storyNames[d.storyStep]}</strong><b>{Math.max(0,85-Math.floor(d.time))}s</b></div>}
       <div className="scene-footer"><div className="legend">{Object.entries(roleNames).map(([role,label])=><span key={role}><i className={`role-dot ${role}`}/>{label}</span>)}</div><div className="interaction-hint"><MousePointer2 size={12}/>드래그로 회전 · 스크롤로 확대</div></div>
-      {!labMode&&<><EventToast/><Journey/></>}
+      {!labMode&&<><EventToast/><Journey/></>}</>}
       {(!d.ready||progress.active)&&!d.error&&<div className="loading-screen"><Logo/><h2>공간에 생명을 불어넣는 중</h2><p>{!d.ready?'이동 공간을 계산합니다.':'캐릭터와 행사장 에셋을 불러옵니다.'}</p><div className="loading-track"><i style={{width:`${Math.max(8,progress.progress)}%`}}/></div></div>}
       {d.error&&<div className="loading-screen"><h2>공간을 준비하지 못했습니다.</h2><p>{d.error}</p><button onClick={()=>location.reload()}>다시 시도</button></div>}
     </main><Header/><DecisionAutomation/>{help&&<About/>}

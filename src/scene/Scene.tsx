@@ -23,7 +23,8 @@ function Simulation(){const state=useThree();useEffect(()=>{if(import.meta.env.D
 function CameraRig(){
   const controls=useRef<Controls>(null);const {camera,size}=useThree();
   const cinema=useUI(s=>s.cinema),panelVisible=useUI(s=>s.panelVisible);
-  const desktopHud=size.width>760&&!cinema;
+  const analytics=useUI(s=>s.panel==='analytics');
+  const desktopHud=size.width>760&&!cinema&&!analytics;
   const fit=Math.max(1,1.6/(size.width/size.height))*(desktopHud?1.27:1);
   const mode=useUI(s=>s.camera),revision=useUI(s=>s.cameraRevision),selected=useUI(s=>s.selected);
   const manualFollowExit=useRef(false);
