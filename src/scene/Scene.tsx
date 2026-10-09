@@ -1,6 +1,6 @@
 import { Suspense, useEffect, useMemo, useRef } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { OrbitControls, Line } from '@react-three/drei';
+import { OrbitControls, Line, Grid } from '@react-three/drei';
 import type { OrbitControls as Controls } from 'three-stdlib';
 import { Bloom, EffectComposer, ToneMapping } from '@react-three/postprocessing';
 import { ToneMappingMode } from 'postprocessing';
@@ -137,6 +137,7 @@ function Contents(){
     <ambientLight intensity={night?.18:.25}/><hemisphereLight args={['#e5f4ef','#8f9b82',night?.35:.65]}/>
     <directionalLight position={[-10,22,12]} intensity={night?1.1:2.1} color={night?'#b5cdd8':'#fff7df'} castShadow shadow-mapSize={quality==='high'?[2048,2048]:[1024,1024]} shadow-camera-left={-23} shadow-camera-right={23} shadow-camera-top={20} shadow-camera-bottom={-20} shadow-normalBias={.025} shadow-bias={-.0001} shadow-radius={3}/>
     {night&&<><pointLight position={[0,4,-2]} intensity={25} color="#fff0c6" distance={22}/><pointLight position={[-9,4,-2]} intensity={18} color="#d0ecd9" distance={18}/><pointLight position={[9,4,-2]} intensity={18} color="#d0ecd9" distance={18}/></>}
+    <Grid name="background-grid" position={[0,-.67,0]} args={[2,2]} infiniteGrid cellSize={1} sectionSize={5} cellColor="#333333" sectionColor="#555555" cellThickness={.55} sectionThickness={.9} fadeDistance={120} fadeStrength={1.7} fadeFrom={0} raycast={()=>null} material-depthWrite={false}/>
     <mesh rotation-x={-Math.PI/2} position-y={-.65} receiveShadow><planeGeometry args={[200,200]}/><shadowMaterial transparent opacity={.13}/></mesh>
     <Venue/><Suspense fallback={null}>{lab&&replay?<ReplayScene/>:<People/>}</Suspense>
     {!lab&&<><Routes/><Heatmap/><VirtualCamera/></>}
