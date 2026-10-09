@@ -1,0 +1,471 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: CloudFront frontend, private asset storage and authenticated job API for an original TRELLIS GPU worker. Does not launch EC2.
+
+Parameters:
+  ArtifactBucket:
+    Type: String
+    Description: Existing private S3 artifact bucket in this Region; use SSE-S3 encryption.
+    MinLength: 3
+  ApiCodeKey:
+    Type: String
+    Description: Immutable S3 key of api.zip; api.py must be at the ZIP root.
+    MinLength: 1
+  WorkerCodeKey:
+    Type: String
+    Description: Immutable S3 key of worker.zip, read by the EC2 instance profile.
+    MinLength: 1
+  OpenAISecretArn:
+    Type: String
+    Description: Existing same-account/Region Secrets Manager secret, raw API key or JSON apiKey; use the default Secrets Manager KMS key.
+    AllowedPattern: '^arn:[^:]+:secretsmanager:[^:]+:[0-9]{12}:secret:.+$'
+  AllowedOrigin:
+    Type: String
+    Default: 'http://localhost:5173'
+    Description: One exact browser origin allowed to call the API. Never put the bearer token in public frontend code.
+    AllowedPattern: '^https?://[^/]+$'
+
+Resources:
+  JobsTable:
+    Type: AWS::DynamoDB::Table
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Properties:
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      SSESpecification:
+        SSEEnabled: true
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: true
+
+  JobsDeadLetterQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      SqsManagedSseEnabled: true
+      MessageRetentionPeriod: 1209600
+
+  JobsQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      SqsManagedSseEnabled: true
+      ReceiveMessageWaitTimeSeconds: 20
+      VisibilityTimeout: 120
+      MessageRetentionPeriod: 345600
+      RedrivePolicy:
+        deadLetterTargetArn: !GetAtt JobsDeadLetterQueue.Arn
+        maxReceiveCount: 5
+
+  AssetsBucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Properties:
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      OwnershipControls:
+        Rules:
+          - ObjectOwnership: BucketOwnerEnforced
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        IgnorePublicAcls: true
+        BlockPublicPolicy: true
+        RestrictPublicBuckets: true
+      VersioningConfiguration:
+        Status: Enabled
+      CorsConfiguration:
+        CorsRules:
+          - AllowedOrigins: ['*']
+            AllowedMethods: [GET, HEAD]
+            AllowedHeaders: ['*']
+            ExposedHeaders: [ETag]
+            MaxAge: 300
+      LifecycleConfiguration:
+        Rules:
+          - Id: AbortIncompleteUploads
+            Status: Enabled
+            AbortIncompleteMultipartUpload:
+              DaysAfterInitiation: 1
+
+  AssetsBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref AssetsBucket
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Sid: RequireTLS
+            Effect: Deny
+            Principal: '*'
+            Action: 's3:*'
+            Resource:
+              - !GetAtt AssetsBucket.Arn
+              - !Sub '${AssetsBucket.Arn}/*'
+            Condition:
+              Bool:
+                'aws:SecureTransport': 'false'
+
+  ApiTokenSecret:
+    Type: AWS::SecretsManager::Secret
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Properties:
+      Description: Shared bearer credential for the asset job API; retrieve with a separate operator identity.
+      GenerateSecretString:
+        SecretStringTemplate: '{}'
+        GenerateStringKey: apiToken
+        PasswordLength: 48
+        ExcludePunctuation: true
+
+  ApiLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub '/asset-pipeline/${AWS::StackName}/api'
+      RetentionInDays: 30
+
+  ApiRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: ApiResources
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action: [logs:CreateLogStream, logs:PutLogEvents]
+                Resource: !GetAtt ApiLogGroup.Arn
+              - Effect: Allow
+                Action: [dynamodb:GetItem, dynamodb:PutItem, dynamodb:UpdateItem]
+                Resource: !GetAtt JobsTable.Arn
+              - Effect: Allow
+                Action: sqs:SendMessage
+                Resource: !GetAtt JobsQueue.Arn
+              - Effect: Allow
+                Action: s3:GetObject
+                Resource: !Sub '${AssetsBucket.Arn}/jobs/*'
+              - Effect: Allow
+                # HeadObject requires bucket-list permission to distinguish an
+                # absent image (404) from denied access (403) during retry.
+                Action: s3:ListBucket
+                Resource: !GetAtt AssetsBucket.Arn
+              - Effect: Allow
+                Action: secretsmanager:GetSecretValue
+                Resource: !Ref ApiTokenSecret
+
+  ApiFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      Runtime: python3.12
+      Handler: api.lambda_handler
+      Architectures: [x86_64]
+      Role: !GetAtt ApiRole.Arn
+      Timeout: 29
+      MemorySize: 256
+      ReservedConcurrentExecutions: 5
+      Code:
+        S3Bucket: !Ref ArtifactBucket
+        S3Key: !Ref ApiCodeKey
+      LoggingConfig:
+        LogGroup: !Ref ApiLogGroup
+        LogFormat: JSON
+      Environment:
+        Variables:
+          JOBS_TABLE: !Ref JobsTable
+          JOBS_QUEUE_URL: !Ref JobsQueue
+          ASSETS_BUCKET: !Ref AssetsBucket
+          API_TOKEN_SECRET_ARN: !Ref ApiTokenSecret
+
+  HttpApi:
+    Type: AWS::ApiGatewayV2::Api
+    Properties:
+      Name: !Sub '${AWS::StackName}-jobs'
+      ProtocolType: HTTP
+      CorsConfiguration:
+        AllowOrigins: [!Ref AllowedOrigin]
+        AllowMethods: [GET, POST, OPTIONS]
+        AllowHeaders: [Authorization, Content-Type, Idempotency-Key]
+        MaxAge: 300
+
+  ApiIntegration:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId: !Ref HttpApi
+      IntegrationType: AWS_PROXY
+      IntegrationUri: !GetAtt ApiFunction.Arn
+      PayloadFormatVersion: '2.0'
+      TimeoutInMillis: 29000
+
+  HealthRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref HttpApi
+      RouteKey: 'GET /health'
+      AuthorizationType: NONE
+      Target: !Sub 'integrations/${ApiIntegration}'
+  CreateJobRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref HttpApi
+      RouteKey: 'POST /jobs'
+      AuthorizationType: NONE
+      Target: !Sub 'integrations/${ApiIntegration}'
+  GetJobRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref HttpApi
+      RouteKey: 'GET /jobs/{id}'
+      AuthorizationType: NONE
+      Target: !Sub 'integrations/${ApiIntegration}'
+  RetryJobRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref HttpApi
+      RouteKey: 'POST /jobs/{id}/retry'
+      AuthorizationType: NONE
+      Target: !Sub 'integrations/${ApiIntegration}'
+  GetModelRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref HttpApi
+      RouteKey: 'GET /jobs/{id}/model'
+      AuthorizationType: NONE
+      Target: !Sub 'integrations/${ApiIntegration}'
+
+  ApiStage:
+    Type: AWS::ApiGatewayV2::Stage
+    Properties:
+      ApiId: !Ref HttpApi
+      StageName: '$default'
+      AutoDeploy: true
+      DefaultRouteSettings:
+        ThrottlingBurstLimit: 10
+        ThrottlingRateLimit: 5
+
+  ApiInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref ApiFunction
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub 'arn:${AWS::Partition}:execute-api:${AWS::Region}:${AWS::AccountId}:${HttpApi}/*/*'
+
+  WorkerRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: ec2.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - !Sub 'arn:${AWS::Partition}:iam::aws:policy/AmazonSSMManagedInstanceCore'
+      Policies:
+        - PolicyName: WorkerResources
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action: [dynamodb:GetItem, dynamodb:UpdateItem]
+                Resource: !GetAtt JobsTable.Arn
+              - Effect: Allow
+                Action: [sqs:ReceiveMessage, sqs:DeleteMessage, sqs:ChangeMessageVisibility, sqs:GetQueueAttributes]
+                Resource: !GetAtt JobsQueue.Arn
+              - Effect: Allow
+                Action: [s3:GetObject, s3:PutObject, s3:AbortMultipartUpload]
+                Resource: !Sub '${AssetsBucket.Arn}/jobs/*'
+              - Effect: Allow
+                Action: s3:ListBucket
+                Resource: !GetAtt AssetsBucket.Arn
+              - Effect: Allow
+                Action: s3:GetObject
+                Resource: !Sub 'arn:${AWS::Partition}:s3:::${ArtifactBucket}/${WorkerCodeKey}'
+              - Effect: Allow
+                Action: secretsmanager:GetSecretValue
+                Resource: !Ref OpenAISecretArn
+
+  WorkerInstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Roles: [!Ref WorkerRole]
+
+  FrontendBucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Properties:
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      OwnershipControls:
+        Rules:
+          - ObjectOwnership: BucketOwnerEnforced
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        IgnorePublicAcls: true
+        BlockPublicPolicy: true
+        RestrictPublicBuckets: true
+      VersioningConfiguration:
+        Status: Enabled
+
+  FrontendOriginAccessControl:
+    Type: AWS::CloudFront::OriginAccessControl
+    Properties:
+      OriginAccessControlConfig:
+        Name: !Sub '${HttpApi}-frontend-oac'
+        Description: Signed CloudFront access to the private frontend S3 origin.
+        OriginAccessControlOriginType: s3
+        SigningBehavior: always
+        SigningProtocol: sigv4
+
+  ApiPrefixFunction:
+    Type: AWS::CloudFront::Function
+    Properties:
+      Name: !Sub '${HttpApi}-api-prefix'
+      AutoPublish: true
+      FunctionConfig:
+        Comment: Remove the frontend API prefix before calling API Gateway.
+        Runtime: cloudfront-js-2.0
+      FunctionCode: |
+        function handler(event) {
+          var request = event.request;
+          request.uri = request.uri.replace(/^\/api(?=\/|$)/, '') || '/';
+          return request;
+        }
+
+  SpaRouteFunction:
+    Type: AWS::CloudFront::Function
+    Properties:
+      Name: !Sub '${HttpApi}-spa-route'
+      AutoPublish: true
+      FunctionConfig:
+        Comment: Serve the SPA shell for extensionless frontend routes only.
+        Runtime: cloudfront-js-2.0
+      FunctionCode: |
+        function handler(event) {
+          var request = event.request;
+          var lastSegment = request.uri.substring(request.uri.lastIndexOf('/') + 1);
+          if (lastSegment.indexOf('.') === -1) {
+            request.uri = '/index.html';
+          }
+          return request;
+        }
+
+  FrontendDistribution:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Comment: !Sub '${AWS::StackName} frontend and authenticated API'
+        Enabled: true
+        IPV6Enabled: true
+        HttpVersion: http2
+        DefaultRootObject: index.html
+        ViewerCertificate:
+          CloudFrontDefaultCertificate: true
+        Origins:
+          - Id: frontend-s3
+            DomainName: !GetAtt FrontendBucket.RegionalDomainName
+            OriginAccessControlId: !GetAtt FrontendOriginAccessControl.Id
+            S3OriginConfig:
+              OriginAccessIdentity: ''
+          - Id: jobs-api
+            DomainName: !Sub '${HttpApi}.execute-api.${AWS::Region}.${AWS::URLSuffix}'
+            CustomOriginConfig:
+              OriginProtocolPolicy: https-only
+              OriginSSLProtocols: [TLSv1.2]
+        DefaultCacheBehavior:
+          TargetOriginId: frontend-s3
+          ViewerProtocolPolicy: redirect-to-https
+          AllowedMethods: [GET, HEAD, OPTIONS]
+          CachedMethods: [GET, HEAD]
+          Compress: true
+          # AWS managed CachingOptimized; deployment invalidates the SPA shell.
+          CachePolicyId: 658327ea-f89d-4fab-a63d-7e88639e58f6
+          FunctionAssociations:
+            - EventType: viewer-request
+              FunctionARN: !GetAtt SpaRouteFunction.FunctionMetadata.FunctionARN
+        CacheBehaviors:
+          - PathPattern: '/api/*'
+            TargetOriginId: jobs-api
+            ViewerProtocolPolicy: https-only
+            AllowedMethods: [GET, HEAD, OPTIONS, PUT, PATCH, POST, DELETE]
+            CachedMethods: [GET, HEAD]
+            Compress: true
+            # AWS managed CachingDisabled and AllViewerExceptHostHeader.
+            # The latter forwards Authorization while preserving API Gateway's Host.
+            CachePolicyId: 4135ea2d-6df8-44a3-9df3-4b5a84be39ad
+            OriginRequestPolicyId: b689b0a8-53d0-40ab-baf2-68738e2966ac
+            FunctionAssociations:
+              - EventType: viewer-request
+                FunctionARN: !GetAtt ApiPrefixFunction.FunctionMetadata.FunctionARN
+
+  FrontendBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref FrontendBucket
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Sid: CloudFrontReadOnly
+            Effect: Allow
+            Principal:
+              Service: cloudfront.amazonaws.com
+            Action: s3:GetObject
+            Resource: !Sub '${FrontendBucket.Arn}/*'
+            Condition:
+              StringEquals:
+                AWS:SourceArn: !Sub 'arn:${AWS::Partition}:cloudfront::${AWS::AccountId}:distribution/${FrontendDistribution}'
+          - Sid: RequireTLS
+            Effect: Deny
+            Principal: '*'
+            Action: 's3:*'
+            Resource:
+              - !GetAtt FrontendBucket.Arn
+              - !Sub '${FrontendBucket.Arn}/*'
+            Condition:
+              Bool:
+                'aws:SecureTransport': 'false'
+
+Outputs:
+  FrontendBucketName:
+    Value: !Ref FrontendBucket
+  FrontendUrl:
+    Value: !Sub 'https://${FrontendDistribution.DomainName}'
+  CloudFrontDistributionId:
+    Value: !Ref FrontendDistribution
+  ApiUrl:
+    Value: !GetAtt HttpApi.ApiEndpoint
+  ApiTokenSecretArn:
+    Value: !Ref ApiTokenSecret
+  JobsTableName:
+    Value: !Ref JobsTable
+  JobsQueueUrl:
+    Value: !Ref JobsQueue
+  JobsDeadLetterQueueUrl:
+    Value: !Ref JobsDeadLetterQueue
+  AssetsBucketName:
+    Value: !Ref AssetsBucket
+  WorkerInstanceProfileName:
+    Value: !Ref WorkerInstanceProfile
+  WorkerRoleArn:
+    Value: !GetAtt WorkerRole.Arn
+  WorkerArtifactUri:
+    Value: !Sub 's3://${ArtifactBucket}/${WorkerCodeKey}'
+  OpenAISecretArn:
+    Value: !Ref OpenAISecretArn
+  ApiLogGroupName:
+    Value: !Ref ApiLogGroup

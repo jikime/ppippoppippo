@@ -1,0 +1,37 @@
+{
+  "name": "crowd-studio-generator",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "scripts": {
+    "dev": "vite --config vite.aws.config.ts --port 5173",
+    "build": "npm run build:aws",
+    "build:aws": "vite build --config vite.aws.config.ts",
+    "preview": "vite preview --config vite.aws.config.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "node tests/validate.mjs && node --test tests/pipeline.test.mjs tests/aws-browser.test.mjs && node services/aws-asset-pipeline/test-routing.cjs",
+    "test:worker": "python -m unittest discover -s services/aws-asset-pipeline -p test_pipeline.py -v"
+  },
+  "dependencies": {
+    "fflate": "0.8.3",
+    "lucide-react": "1.31.0",
+    "react": "19.2.6",
+    "react-dom": "19.2.6",
+    "three": "0.186.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "4.2.1",
+    "@types/node": "22.19.19",
+    "@types/react": "19.2.14",
+    "@types/react-dom": "19.2.3",
+    "@types/three": "0.186.0",
+    "@vitejs/plugin-react": "6.0.2",
+    "esbuild": "0.28.2",
+    "tailwindcss": "4.2.1",
+    "typescript": "5.9.3",
+    "vite": "8.3.4"
+  }
+}

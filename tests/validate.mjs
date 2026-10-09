@@ -1,0 +1,4 @@
+import assert from 'node:assert/strict';
+import {generateCharacters,PRESETS} from '../lib/character-specs.mjs';
+let total=0;for(const preset of PRESETS){const a=generateCharacters({preset:preset.id,count:1000,seed:'validation',variation:80});assert.equal(a.length,1000);assert.equal(new Set(a.map(x=>x.id)).size,1000);assert.deepEqual(a.slice(0,2),generateCharacters({preset:preset.id,count:2,seed:'validation',variation:80}));for(const c of a){assert.ok(c.prompt.length<=800);assert.equal(c.generationStatus,'brief-only');assert.ok(c.traits.role);if(c.traits.role.id==='pupil')assert.ok(c.traits.age.value>=10&&c.traits.age.value<=17);else assert.ok(c.traits.age.value>=18);}total+=a.length;}
+console.log(JSON.stringify({passed:true,characterRecords:total,presets:PRESETS.length,paidProviderRequests:0}));
