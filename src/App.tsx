@@ -1,21 +1,21 @@
 import { DevicePanel } from './device/DevicePanel';
 import { startDeviceSync } from './device/store';
-import { Component, Suspense, lazy, useEffect, useRef, useState } from 'react';
+import { Component, Suspense, lazy, useEffect, useRef } from 'react';
 import type { ReactNode } from 'react';
-import { Activity, ArrowRight, ArrowUpRight, Box, Camera, Check, ChevronRight, DoorOpen, Expand, Eye, Focus, Grid2X2, Layers3, LocateFixed, Maximize2, MousePointer2, Navigation, Radio, ShieldCheck, Sparkles, Users, X } from 'lucide-react';
+import { Activity, ArrowUpRight, Box, Check, ChevronRight, DoorOpen, Eye, Focus, Grid2X2, Layers3, LocateFixed, Maximize2, MousePointer2, Navigation, Radio, ShieldCheck, Sparkles, Users, X } from 'lucide-react';
 import { useProgress } from '@react-three/drei';
 import { Scene } from './scene/Scene';
 import { useUI } from './state';
 import { world } from './simulation/world';
 import { EXITS, roleNames, stateNames } from './simulation/layout';
 import { AgendaPanel, DecisionAutomation } from './AgendaPanel';
-import { eventTime } from './simulation/agenda';
 import { Header, SceneIdentity, SituationSummary, Journey, EventToast } from './Hud';
 import { useJudgment } from './decision/store';
 import { PeoplePanel } from './people/PeoplePanel';
 import { LabPanel, LabStats } from './lab/LabPanel';
 import { LabHUD } from './lab/LabHUD';
 import { useLab } from './lab/store';
+import { CctvMonitor } from './cctv/CctvMonitor';
 
 const AnalyticsDashboard=lazy(()=>import('./analytics/AnalyticsDashboard'));
 
@@ -39,12 +39,6 @@ function Stats(){
     <div className={`stat-card ${d.waiting>12||d.blocked>0?'attention':''}`}><div className="stat-top"><span>이동 대기</span><Activity size={15}/></div><div className="stat-value"><span className="metric-number" key={d.waiting+d.blocked}>{d.waiting+d.blocked}</span><small>명</small><span className={`stat-badge ${d.waiting>12||d.blocked>0?'amber':''}`}>{d.blocked?'경로 대기':d.waiting>12?'흐름 확인':d.waiting?'순차 이동':'대기 없음'}</span></div><div className="stat-foot">누적 퇴장 <b>{d.outside}명</b></div></div>
     <div className="stat-card"><div className="stat-top"><span>이용 가능한 출입구</span><DoorOpen size={15}/></div><div className="stat-value"><span className="metric-number" key={opened}>{opened}</span><small>/ 3</small><div className="exit-dots">{d.exits.map(e=><i key={e.id} className={e.open?'':'closed'}/>)}</div></div><div className="stat-foot">{opened===3?'모든 출입구 개방':opened===0?'출입구 개방이 필요합니다':`${3-opened}개 출입구 통제 중`}</div></div>
   </div>;
-}
-function VirtualFeed(){
-  const [camera,setCamera]=useState('1');const time=useUI(s=>s.data.time),agenda=useUI(s=>s.data.agenda);const enabled=useUI(s=>s.cctv),toggle=useUI(s=>s.toggle);
-  return <section className="camera-section"><div className="section-heading"><span><Camera size={14}/> 가상 CCTV</span><button className="text-button" onClick={()=>toggle('cctv')} aria-label={enabled?'가상 CCTV 숨기기':'가상 CCTV 보기'}>{enabled?<Eye size={14}/>:<Camera size={14}/>}</button></div>
-    {enabled?<><div className="camera-view"><canvas id="virtual-cctv" width={384} height={216} data-camera={camera}/><div className="camera-top"><span><i/>CAM 0{camera}</span><span>{agenda?eventTime(agenda.minute):`10:${clock(time)}`}</span></div><div className="camera-bottom"><span>3D 공간과 동기화</span><button title="실내 시점으로 보기" aria-label="실내 시점으로 보기" onClick={()=>useUI.getState().setCamera('floor')}><Expand size={13}/></button></div></div><div className="camera-tabs"><button className={camera==='1'?'selected':''} onClick={()=>{setCamera('1');}}>01 <span>동측 전경</span></button><button className={camera==='2'?'selected':''} onClick={()=>setCamera('2')}>02 <span>서측 전경</span></button></div></>:<button className="camera-off" onClick={()=>toggle('cctv')}>카메라 뷰 열기 <ArrowRight size={14}/></button>}
-  </section>;
 }
 function SelectedPerson(){
   const id=useUI(s=>s.selected);useUI(s=>s.data.time);const p=world.people.find(p=>p.id===id);if(!p)return null;
@@ -73,25 +67,25 @@ function ViewControls(){
 }
 function About(){
   const toggle=useUI(s=>s.toggle),quality=useUI(s=>s.quality),setQuality=useUI(s=>s.setQuality);
-  return <div className="modal-backdrop" onClick={()=>toggle('help')}><section className="about-modal" role="dialog" aria-modal="true" aria-label="JEONJO 프로젝트 정보" onClick={e=>e.stopPropagation()}><button className="modal-close icon-button" aria-label="정보 닫기" onClick={()=>toggle('help')}><X size={20}/></button><Logo/><span className="eyebrow">A LIVING DIGITAL VENUE</span><h2>작은 움직임까지,<br/>하나의 공간으로.</h2><p>JEONJO는 AWS 행사장 참고 영상을 바탕으로 만든 인터랙티브 3D 관제 시뮬레이션입니다.</p><div className="about-facts"><span><b>120</b>익명 인물</span><span><b>4</b>서로 다른 역할</span><span><b>3</b>연결된 출입구</span></div><p className="about-note">인물과 관제 수치는 시뮬레이션에서 계산합니다. 실제 CCTV·영상 AI는 연결하지 않았으며, 공간 치수와 출입구 구성은 시연을 위한 가정입니다. 대기·분산 모델은 실제 안전성 평가를 대신하지 않습니다.</p><div className="quality-selector"><span>렌더링 품질</span><button className={quality==='high'?'selected':''} onClick={()=>setQuality('high')}>고화질</button><button className={quality==='balanced'?'selected':''} onClick={()=>setQuality('balanced')}>성능 우선</button></div><div className="shortcuts"><span><kbd>Space</kbd> 재생·정지</span><span><kbd>1</kbd><kbd>2</kbd><kbd>3</kbd> 시점 변경</span><span><kbd>Esc</kbd> 선택 해제</span></div></section></div>;
+  return <div className="modal-backdrop" onClick={()=>toggle('help')}><section className="about-modal" role="dialog" aria-modal="true" aria-label="JEONJO 프로젝트 정보" onClick={e=>e.stopPropagation()}><button className="modal-close icon-button" aria-label="정보 닫기" onClick={()=>toggle('help')}><X size={20}/></button><Logo/><span className="eyebrow">A LIVING DIGITAL VENUE</span><h2>작은 움직임까지,<br/>하나의 공간으로.</h2><p>JEONJO는 AWS 행사장 참고 영상을 바탕으로 만든 인터랙티브 3D 관제 시뮬레이션입니다.</p><div className="about-facts"><span><b>120</b>익명 인물</span><span><b>4</b>서로 다른 역할</span><span><b>3</b>연결된 출입구</span></div><p className="about-note">인물과 관제 수치는 시뮬레이션에서 계산합니다. CAM1·CAM2는 현장 녹화 영상이며 실시간 CCTV·영상 AI 분석은 연결하지 않았습니다. 공간 치수와 출입구 구성은 시연을 위한 가정입니다. 대기·분산 모델은 실제 안전성 평가를 대신하지 않습니다.</p><div className="quality-selector"><span>렌더링 품질</span><button className={quality==='high'?'selected':''} onClick={()=>setQuality('high')}>고화질</button><button className={quality==='balanced'?'selected':''} onClick={()=>setQuality('balanced')}>성능 우선</button></div><div className="shortcuts"><span><kbd>Space</kbd> 재생·정지</span><span><kbd>1</kbd><kbd>2</kbd><kbd>3</kbd> 시점 변경</span><span><kbd>Esc</kbd> 선택 해제</span></div></section></div>;
 }
 export default function App(){
   useEffect(()=>startDeviceSync(),[]);
-  const panel=useUI(s=>s.panel),labMode=panel==='lab',analyticsMode=panel==='analytics';
+  const panel=useUI(s=>s.panel),cinema=useUI(s=>s.cinema),labMode=panel==='lab',analyticsMode=panel==='analytics'&&!cinema;
   const previousRunning=useRef(true);
   useEffect(()=>{if(!labMode)return;previousRunning.current=world.running;world.setRunning(false);useUI.getState().setCamera('overview');return()=>{useLab.setState({playing:false});world.setRunning(previousRunning.current);};},[labMode]);
-  const d=useUI(s=>s.data),help=useUI(s=>s.help),cinema=useUI(s=>s.cinema),night=useUI(s=>s.night),panelVisible=useUI(s=>s.panelVisible);const progress=useProgress();
-  useEffect(()=>{void useJudgment.getState().check();void world.initialize().then(()=>{if(!world.agenda)world.startAgenda(600);});const key=(e:KeyboardEvent)=>{if((e.target as HTMLElement)?.closest('input,select,textarea,button,[role="button"]'))return;if(e.code==='Space'){e.preventDefault();if(useUI.getState().panel==='lab')useLab.setState(s=>({playing:!s.playing,time:s.time>=(s.replay?.horizon??Infinity)?0:s.time}));else world.setRunning(!world.running);}if(e.key==='1')useUI.getState().setCamera('overview');if(e.key==='2')useUI.getState().setCamera('top');if(e.key==='3')useUI.getState().setCamera('floor');if(e.key==='Escape'){useUI.setState({selected:null,help:false,cinema:false});useLab.setState({selected:null});}};window.addEventListener('keydown',key);return()=>window.removeEventListener('keydown',key);},[]);
+  const d=useUI(s=>s.data),help=useUI(s=>s.help),night=useUI(s=>s.night),panelVisible=useUI(s=>s.panelVisible);const progress=useProgress();
+  useEffect(()=>{void useJudgment.getState().check();void world.initialize().then(()=>{if(!world.agenda)world.startAgenda(600);});const key=(e:KeyboardEvent)=>{if(e.key==='Escape'){useUI.setState({selected:null,help:false,cinema:false});useLab.setState({selected:null});return;}if((e.target as HTMLElement)?.closest('input,select,textarea,button,[role="button"]'))return;if(e.code==='Space'){e.preventDefault();if(useUI.getState().panel==='lab')useLab.setState(s=>({playing:!s.playing,time:s.time>=(s.replay?.horizon??Infinity)?0:s.time}));else world.setRunning(!world.running);}if(e.key==='1')useUI.getState().setCamera('overview');if(e.key==='2')useUI.getState().setCamera('top');if(e.key==='3')useUI.getState().setCamera('floor');};window.addEventListener('keydown',key);return()=>window.removeEventListener('keydown',key);},[]);
   useEffect(()=>{if(import.meta.env.DEV)(window as unknown as {crowdguard:typeof world}).crowdguard=world;},[]);
   return <div className={`app ${labMode?'lab-mode':''} ${analyticsMode?'analytics-mode':''} ${panel==='people'?'people-focus':''} ${cinema?'cinema':''} ${night?'night-mode':''} ${panelVisible?'':'panels-hidden'}`}>
     <main className="workspace"><div className="scene-host"><SceneBoundary><Scene/></SceneBoundary></div>{analyticsMode?<Suspense fallback={<div className="analytics-loading">분석 대시보드를 불러오는 중입니다.</div>}><AnalyticsDashboard/></Suspense>:<>
       {labMode?<><LabStats/><LabHUD/></>:<><SceneIdentity/><Stats/></>}<ViewControls/><Operations/>
-      <aside className="floating-feed" aria-label="동기화된 가상 CCTV"><VirtualFeed/></aside>
+      <aside className="floating-feed" aria-label="가상 및 실제 CCTV 영상"><CctvMonitor/></aside>
       {d.story&&<div className="story-card"><Sparkles size={16}/><span>LIVE TOUR</span><strong>{storyNames[d.storyStep]}</strong><b>{Math.max(0,85-Math.floor(d.time))}s</b></div>}
       <div className="scene-footer"><div className="legend">{Object.entries(roleNames).map(([role,label])=><span key={role}><i className={`role-dot ${role}`}/>{label}</span>)}</div><div className="interaction-hint"><MousePointer2 size={12}/>드래그로 회전 · 스크롤로 확대</div></div>
       {!labMode&&<><EventToast/><Journey/></>}</>}
       {(!d.ready||progress.active)&&!d.error&&<div className="loading-screen"><Logo/><h2>공간에 생명을 불어넣는 중</h2><p>{!d.ready?'이동 공간을 계산합니다.':'캐릭터와 행사장 에셋을 불러옵니다.'}</p><div className="loading-track"><i style={{width:`${Math.max(8,progress.progress)}%`}}/></div></div>}
       {d.error&&<div className="loading-screen"><h2>공간을 준비하지 못했습니다.</h2><p>{d.error}</p><button onClick={()=>location.reload()}>다시 시도</button></div>}
-    </main><Header/><DecisionAutomation/>{help&&<About/>}
+    </main><Header/>{cinema&&<button className="cinema-restore" onClick={()=>useUI.setState({cinema:false})} aria-label="대시보드 다시 보기"><Grid2X2 size={15}/>대시보드 보기<kbd>Esc</kbd></button>}<DecisionAutomation/>{help&&<About/>}
   </div>;
 }

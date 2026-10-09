@@ -107,22 +107,24 @@ function VirtualCamera(){
   const enabled=useUI(s=>s.cctv),night=useUI(s=>s.night),walls=useUI(s=>s.walls);const resources=useMemo(()=>{
     const camera=new THREE.PerspectiveCamera(68,16/9,.15,90);camera.position.set(13.3,3.5,6.5);camera.lookAt(-4,.8,-2);
     const target=new THREE.WebGLRenderTarget(384,216,{depthBuffer:true});target.texture.colorSpace=THREE.SRGBColorSpace;
-    return{camera,target,buffer:new Uint8Array(384*216*4),last:-1,key:''};
+    return{camera,target,buffer:new Uint8Array(384*216*4),last:-1,key:'',canvas:null as HTMLCanvasElement|null};
   },[]);
   useEffect(()=>()=>resources.target.dispose(),[resources]);
   useFrame(({gl,scene})=>{
     if(!enabled)return;
     const canvas=document.getElementById('virtual-cctv') as HTMLCanvasElement|null;
-    if(!canvas)return;
-    const key=`${canvas.dataset.camera}-${night}-${walls}-${world.revision}`;
-    if(world.time-resources.last<.18&&world.time>=resources.last&&key===resources.key)return;
-    resources.last=world.time;resources.key=key;
+    if(!canvas||!canvas.clientWidth)return;
+    const width=canvas.width,height=canvas.height;
+    const key=`${canvas.dataset.camera}-${night}-${walls}-${world.revision}-${width}-${height}`;
+    if(world.time-resources.last<.18&&world.time>=resources.last&&key===resources.key&&resources.canvas===canvas)return;
+    resources.last=world.time;resources.key=key;resources.canvas=canvas;
+    if(resources.target.width!==width||resources.target.height!==height){resources.target.setSize(width,height);resources.buffer=new Uint8Array(width*height*4);}
     if(canvas.dataset.camera==='2'){resources.camera.position.set(-13.3,3.5,-5.5);resources.camera.lookAt(4,.7,3);}else{resources.camera.position.set(13.3,3.5,6.5);resources.camera.lookAt(-4,.8,-2);}
     const old=gl.getRenderTarget(),oldShadows=gl.shadowMap.autoUpdate,oldTone=gl.toneMapping,oldBackground=scene.background;
     gl.shadowMap.autoUpdate=false;gl.toneMapping=THREE.ACESFilmicToneMapping;scene.background=new THREE.Color(night?'#647065':'#d7dfd1');
-    gl.setRenderTarget(resources.target);gl.render(scene,resources.camera);gl.readRenderTargetPixels(resources.target,0,0,384,216,resources.buffer);
+    gl.setRenderTarget(resources.target);gl.render(scene,resources.camera);gl.readRenderTargetPixels(resources.target,0,0,width,height,resources.buffer);
     gl.setRenderTarget(old);gl.shadowMap.autoUpdate=oldShadows;gl.toneMapping=oldTone;scene.background=oldBackground;
-    const ctx=canvas.getContext('2d');ctx?.putImageData(new ImageData(new Uint8ClampedArray(resources.buffer),384,216),0,0);
+    const ctx=canvas.getContext('2d');ctx?.putImageData(new ImageData(new Uint8ClampedArray(resources.buffer),width,height),0,0);
   },-.5);
   return null;
 }

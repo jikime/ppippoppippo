@@ -13,7 +13,8 @@
     "device:beacon": "python3 device/bridge.py --device beacon",
     "device:voices": "node device/generate-voices.mjs",
     "device:esp32:build": "pio run -d device/esp32",
-    "device:test": "python3 -m unittest discover -s device/tests -v"
+    "device:test": "python3 -m unittest discover -s device/tests -v",
+    "cctv:prepare": "node scripts/prepare-cctv.mjs"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.0",
