@@ -1,0 +1,47 @@
+{
+  "created_at_kst": "2026-10-09T17:15:59.371147+09:00",
+  "source_name": "트랙1_삐뽀삐뽀_codex-logs.zip",
+  "source_bytes": 287068079,
+  "source_sha256": "61744c91e2952a9057f0c319dd3f9a72374c38b8215312b6a511b71d21e005fb",
+  "public_archive_name": "트랙1_삐뽀삐뽀_codex-logs.zip",
+  "public_archive_bytes": 287070610,
+  "public_archive_sha256": "99dcbafdbcbac3efc2f5d1fd41621f7ae710d0172b001ed158b2e68b2a996894",
+  "sanitization": "Nested archive text: remove AWS presigned URL query strings; original kept outside Git.",
+  "verification": {
+    "signed_urls_redacted": 8,
+    "archives_checked": 8,
+    "files_checked": 33
+  },
+  "parts": [
+    {
+      "name": "트랙1_삐뽀삐뽀_codex-logs.zip.part001",
+      "bytes": 50331648,
+      "sha256": "21923d9b00bb2bba619b7146ebbfcdb09741895898af2c859fb70ac50f50645b"
+    },
+    {
+      "name": "트랙1_삐뽀삐뽀_codex-logs.zip.part002",
+      "bytes": 50331648,
+      "sha256": "e73a49020213b95c0a65160b9bbb3e18fe2087784da9b58382d4c120eada5e92"
+    },
+    {
+      "name": "트랙1_삐뽀삐뽀_codex-logs.zip.part003",
+      "bytes": 50331648,
+      "sha256": "a9a12bb5567120ac93a28095d90f372ecb97c7314df2b644a039fcb46c454573"
+    },
+    {
+      "name": "트랙1_삐뽀삐뽀_codex-logs.zip.part004",
+      "bytes": 50331648,
+      "sha256": "1558b51c63221fdbbaa59f07c06b8bd0f7763cda0f91cc75da08484538322ef0"
+    },
+    {
+      "name": "트랙1_삐뽀삐뽀_codex-logs.zip.part005",
+      "bytes": 50331648,
+      "sha256": "ea294ce999138662a6691f3503987c12c3610b30fab05d75b7f02424c4b11087"
+    },
+    {
+      "name": "트랙1_삐뽀삐뽀_codex-logs.zip.part006",
+      "bytes": 35412370,
+      "sha256": "02222f8795777fc53013a373da56dc04d1a4b512253870ba281fdb35f470450c"
+    }
+  ]
+}
