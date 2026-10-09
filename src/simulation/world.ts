@@ -6,6 +6,9 @@ import { EXITS, PATROL, SEATS, TABLES, distance, vector } from './layout';
 import type { ExitId, Vec } from './layout';
 import { ACTION_LABELS, agendaIntent, permittedAction, phaseAt, segmentAt } from './agenda';
 import type { AgendaState, DecisionAction, Intent } from './agenda';
+import { persona } from './profiles';
+import type { Persona } from './profiles';
+import { PersonMonitor } from '../people/monitor';
 
 export type Role='participant'|'operator'|'judge'|'host';
 export type State='working'|'walking'|'waiting'|'guiding'|'visiting'|'outside'|'presenting'|'idle'|'blocked'|'notArrived'|'preparing'|'listening'|'serving'|'eating'|'networking'|'submitting'|'judging'|'checking'|'applauding'|'photograph'|'cleaning';
@@ -17,6 +20,7 @@ const behavior=createMachine({
 });
 const events:Record<State,string>={working:'WORK',walking:'WALK',waiting:'WAIT',guiding:'GUIDE',visiting:'VISIT',outside:'EXIT',presenting:'PRESENT',idle:'IDLE',blocked:'BLOCK',notArrived:'ARRIVE',preparing:'PREPARE',listening:'LISTEN',serving:'SERVE',eating:'EAT',networking:'NETWORK',submitting:'SUBMIT',judging:'JUDGE',checking:'CHECK',applauding:'APPLAUD',photograph:'PHOTO',cleaning:'CLEAN'};
 export interface Person {
+  profile:Persona;
   id:string; role:Role; variant:string; position:Vec; previous:Vec; heading:number;
   state:State; actor:ReturnType<typeof createActor<typeof behavior>>;
   speed:number; agent?:CrowdAgent; goal?:Vec; goalName:string;
@@ -37,6 +41,7 @@ export interface Snapshot {
 }
 
 export class World {
+  monitor=new PersonMonitor();
   navigation=new Navigation(); people:Person[]=[];exits:ExitState[]=EXITS.map(e=>({id:e.id,open:true,queue:[],departed:0,nextRelease:0}));
   ready=false;error:string|null=null;time=0;running=true;speed=1;scenario:Scenario='normal';guidance=false;
   agenda:AgendaState|null=null;controlVersion=0;
@@ -44,7 +49,7 @@ export class World {
   accumulator=0;alpha=0;private lastPublish=-1;private lastHistory=-1;private lastRouteUpdate=-1;private counter=0;private started?:Promise<void>;
   private listeners=new Set<()=>void>();
   subscribe=(fn:()=>void)=>{this.listeners.add(fn);return()=>this.listeners.delete(fn);};
-  publish(){this.listeners.forEach(fn=>fn());}
+  publish(){this.monitor.capture(this.people,this.time,this.revision);this.listeners.forEach(fn=>fn());}
   async initialize(){return this.started??=(async()=>{try{await this.navigation.initialize();this.ready=true;this.reset();}catch(e){this.error=e instanceof Error?e.message:String(e);this.publish();}})();}
   log(title:string,detail:string,level:Log['level']='info'){
     this.logs.unshift({id:++this.counter,time:this.time,title,detail,level});this.logs=this.logs.slice(0,80);
@@ -76,7 +81,7 @@ export class World {
     this.publish();
   }
   private add(id:string,role:Role,variant:string,position:Vec,ordinal:number){
-    const p:Person={id,role,variant,position:{...position},previous:{...position},heading:0,state:'idle',actor:createActor(behavior).start(),speed:0,goalName:'대기',nextAction:0,ordinal,stage:'roam',path:[],stepDistance:0,sitting:false,planRound:0,motionCheckpoint:{...position},lastProgressTime:this.time,recoveryUntil:0};
+    const p:Person={profile:persona(ordinal),id,role,variant,position:{...position},previous:{...position},heading:0,state:'idle',actor:createActor(behavior).start(),speed:0,goalName:'대기',nextAction:0,ordinal,stage:'roam',path:[],stepDistance:0,sitting:false,planRound:0,motionCheckpoint:{...position},lastProgressTime:this.time,recoveryUntil:0};
     this.people.push(p);return p;
   }
   private ensureAgent(p:Person){

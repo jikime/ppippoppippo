@@ -8,7 +8,12 @@
     "build": "tsc -b && vite build",
     "preview": "vite preview --host 0.0.0.0",
     "assets": "node scripts/generate-assets.mjs",
-    "test": "vitest run"
+    "test": "vitest run",
+    "device:bridge": "python3 device/bridge.py",
+    "device:beacon": "python3 device/bridge.py --device beacon",
+    "device:voices": "node device/generate-voices.mjs",
+    "device:esp32:build": "pio run -d device/esp32",
+    "device:test": "python3 -m unittest discover -s device/tests -v"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.0",

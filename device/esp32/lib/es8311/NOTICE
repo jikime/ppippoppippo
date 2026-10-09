@@ -1,0 +1,7 @@
+ES8311 Arduino codec driver
+Copyright 2015-2022 Espressif Systems (Shanghai) CO LTD
+License: Apache-2.0 (see LICENSE and each source header)
+
+Source: Waveshare ESP32-S3-AUDIO-Board official demo, Arduino/libraries/es8311
+https://files.waveshare.com/wiki/ESP32-S3-AUDIO-Board/ESP32-S3-AUDIO-Board-Demo.zip
+Downloaded 2026-10-09. Source files preserved as supplied.

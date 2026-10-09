@@ -11,13 +11,15 @@ import { People } from './People';
 import { useUI } from '../state';
 import { world } from '../simulation/world';
 import { EXITS } from '../simulation/layout';
+import { useLab } from '../lab/store';
+import { ReplayScene } from '../lab/ReplayScene';
 
 function Environment(){
   const {gl,scene}=useThree();
   useEffect(()=>{const pmrem=new THREE.PMREMGenerator(gl);const room=new RoomEnvironment();const target=pmrem.fromScene(room,.04);scene.environment=target.texture;scene.environmentIntensity=.35;room.dispose();pmrem.dispose();return()=>{scene.environment=null;target.dispose();};},[gl,scene]);
   return null;
 }
-function Simulation(){const state=useThree();useEffect(()=>{if(import.meta.env.DEV)(window as unknown as {venueScene:typeof state}).venueScene=state;},[state]);useFrame((_,dt)=>world.advance(dt),-3);return null;}
+function Simulation(){const state=useThree();useEffect(()=>{if(import.meta.env.DEV)(window as unknown as {venueScene:typeof state}).venueScene=state;},[state]);useFrame((_,dt)=>{if(useUI.getState().panel!=='lab')world.advance(dt);},-3);return null;}
 function CameraRig(){
   const controls=useRef<Controls>(null);const {camera,size}=useThree();
   const cinema=useUI(s=>s.cinema),panelVisible=useUI(s=>s.panelVisible);
@@ -125,20 +127,21 @@ function VirtualCamera(){
 }
 function Contents(){
   const night=useUI(s=>s.night),quality=useUI(s=>s.quality);
+  const lab=useUI(s=>s.panel==='lab'),replay=useLab(s=>s.replay);
   return <>
     <Simulation/><Environment/><CameraRig/><AdaptiveResolution/>
     <ambientLight intensity={night?.18:.25}/><hemisphereLight args={['#e5f4ef','#8f9b82',night?.35:.65]}/>
     <directionalLight position={[-10,22,12]} intensity={night?1.1:2.1} color={night?'#b5cdd8':'#fff7df'} castShadow shadow-mapSize={quality==='high'?[2048,2048]:[1024,1024]} shadow-camera-left={-23} shadow-camera-right={23} shadow-camera-top={20} shadow-camera-bottom={-20} shadow-normalBias={.025} shadow-bias={-.0001} shadow-radius={3}/>
     {night&&<><pointLight position={[0,4,-2]} intensity={25} color="#fff0c6" distance={22}/><pointLight position={[-9,4,-2]} intensity={18} color="#d0ecd9" distance={18}/><pointLight position={[9,4,-2]} intensity={18} color="#d0ecd9" distance={18}/></>}
     <mesh rotation-x={-Math.PI/2} position-y={-.65} receiveShadow><planeGeometry args={[200,200]}/><shadowMaterial transparent opacity={.13}/></mesh>
-    <Venue/><Suspense fallback={null}><People/></Suspense>
-    <Routes/><Heatmap/><VirtualCamera/>
+    <Venue/><Suspense fallback={null}>{lab&&replay?<ReplayScene/>:<People/>}</Suspense>
+    {!lab&&<><Routes/><Heatmap/><VirtualCamera/></>}
     {quality==='high'&&<EffectComposer multisampling={2}><Bloom luminanceThreshold={3.2} intensity={.15} mipmapBlur/><ToneMapping mode={ToneMappingMode.ACES_FILMIC}/></EffectComposer>}
   </>;
 }
 export function Scene(){
   const night=useUI(s=>s.night),dpr=useUI(s=>s.renderDpr);const select=useUI(s=>s.select);
   return <div className={`scene-container ${night?'night':''}`} aria-label="AWS 행사장 인터랙티브 3D 모델">
-    <Canvas shadows dpr={dpr} camera={{position:[26,28,34],fov:34,near:.1,far:260}} gl={{antialias:true,alpha:true,powerPreference:'high-performance'}} onPointerMissed={()=>select(null)}><Contents/></Canvas>
+    <Canvas shadows dpr={dpr} camera={{position:[26,28,34],fov:34,near:.1,far:260}} gl={{antialias:true,alpha:true,powerPreference:'high-performance'}} onPointerMissed={()=>{select(null);useLab.setState({selected:null});}}><Contents/></Canvas>
   </div>;
 }

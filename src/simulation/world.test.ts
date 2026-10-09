@@ -47,6 +47,12 @@ describe('shared venue simulation',()=>{
   test('reset restores the full venue including doors and queues',()=>{
     world.reset();const s=world.snapshot();expect(s.time).toBe(0);expect(s.inside).toBe(120);expect(s.outside).toBe(0);expect(s.waiting).toBe(0);expect(s.exits.every(e=>e.open)).toBe(true);expect(s.guidance).toBe(false);
   });
+  test('person monitoring records final goals, freezes while paused and resets between worlds',()=>{
+    world.reset('break');run(5);world.publish();const p=world.people[0],m=world.monitor.get(p.id)!;
+    expect(m.goal).toBe(p.goalName);expect(m.events[0].detail).toBe(p.goalName);
+    const history=structuredClone(m);world.setRunning(false);world.advance(.1);world.publish();expect(world.monitor.get(p.id)).toEqual(history);
+    world.reset();expect(world.monitor.get(p.id)?.speeds).toHaveLength(1);expect(world.monitor.get(p.id)?.events[0].time).toBe(0);
+  });
   test('all 108 participants eventually exit without stranded queues',()=>{
     world.reset('break');run(180);expect(world.snapshot().outside).toBe(108);expect(world.snapshot().waiting).toBe(0);expect(world.snapshot().inside).toBe(12);
   },30000);

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Activity, ArrowUpRight, Bell, Box, BrainCircuit, CalendarDays, Check, ChevronRight, CircleHelp, Clock3, DoorOpen, Maximize2, Moon, Pause, Play, RotateCcw, ShieldCheck, Sun, Users, X } from 'lucide-react';
+import { Activity, ArrowUpRight, Bell, Box, BrainCircuit, CalendarDays, Check, ChevronRight, CircleHelp, Clock3, DoorOpen, FlaskConical, Maximize2, Moon, Pause, Play, RotateCcw, ShieldCheck, Sun, Usb, Users, X } from 'lucide-react';
 import { useUI } from './state';
 import { world } from './simulation/world';
 import type { Log } from './simulation/world';
@@ -10,15 +10,15 @@ import { openAgenda } from './AgendaPanel';
 const shortNames=['체크인','DevDay','AWS 세션','오전 개발','점심','오후 개발','제출 점검','1차 심사','결선 발표','결선 심사','시상·퇴장'];
 export function Header(){
   const ui=useUI(),d=ui.data,j=useJudgment();
-  const tabs=[{id:'overview' as const,label:'공간 관제',icon:Box,value:d.inside},{id:'people' as const,label:'인물 탐색',icon:Users,value:d.total},{id:'events' as const,label:'상황 기록',icon:Activity,value:d.logs.length},{id:'agenda' as const,label:'행사 일정',icon:CalendarDays,value:'12'}];
+  const tabs=[{id:'lab' as const,label:'세계 실험실',icon:FlaskConical,value:'LAB'},{id:'overview' as const,label:'공간 관제',icon:Box,value:d.inside},{id:'people' as const,label:'인물 탐색',icon:Users,value:d.total},{id:'events' as const,label:'상황 기록',icon:Activity,value:d.logs.length},{id:'agenda' as const,label:'행사 일정',icon:CalendarDays,value:'12'},{id:'device' as const,label:'디바이스 알림',icon:Usb,value:'USB'}];
   const panel=(id:typeof ui.panel)=>useUI.setState({panel:id,panelVisible:ui.panel===id?!ui.panelVisible:true,mobilePanel:true,cinema:false});
   return <header className="topbar">
-    <button className="brand" aria-label="CrowdGuard 전체 조감도" onClick={()=>ui.setCamera('overview')}><span className="brand-symbol"><ShieldCheck size={22}/></span><span>CrowdGuard<small>VENUE OPERATIONS</small></span></button>
+    <button className="brand" aria-label="JEONJO 전체 조감도" onClick={()=>ui.setCamera('overview')}><span className="brand-symbol"><ShieldCheck size={22}/></span><span>JEONJO<small>VENUE OPERATIONS</small></span></button>
     <span className="header-divider"/>
     <nav className="status-navigation" aria-label="관제 메뉴">{tabs.map(({id,label,icon:Icon,value})=><button key={id} aria-label={label} aria-pressed={ui.panel===id&&ui.panelVisible} className={ui.panel===id&&ui.panelVisible?'active':''} onClick={()=>panel(id)}><Icon size={15}/><span>{label}</span><b>{value}</b></button>)}</nav>
     <div className="header-tools">
       <button className={`decision-status ${j.error?'unavailable':j.loading?'thinking':j.result?'evaluated':''}`} aria-label="OpenAI 판단 패널" onClick={()=>useUI.setState({panel:'agenda',panelVisible:true,mobilePanel:true,cinema:false})}><BrainCircuit size={14}/><span>OpenAI</span><small>{j.loading?'판단 중':j.error?'연결 확인':j.result?`${j.result.elapsedMs}ms`:'대기'}</small></button>
-      <div className={`header-clock ${d.running?'':'paused'}`}><i/><span>{d.running?'LIVE':'PAUSED'}</span><b>{d.agenda?eventTime(d.agenda.minute):`${String(Math.floor(d.time/60)).padStart(2,'0')}:${String(Math.floor(d.time%60)).padStart(2,'0')}`}</b><small>KST</small></div>
+      <div className={`header-clock ${d.running?'':'paused'}`}><i/><span>{ui.panel==='lab'?'LAB':d.running?'LIVE':'PAUSED'}</span><b>{ui.panel==='lab'?'실험 모드':d.agenda?eventTime(d.agenda.minute):`${String(Math.floor(d.time/60)).padStart(2,'0')}:${String(Math.floor(d.time%60)).padStart(2,'0')}`}</b><small>KST</small></div>
       <button className="header-icon" aria-label={ui.night?'주간 조명':'야간 조명'} title={ui.night?'주간 조명':'야간 조명'} onClick={()=>ui.toggle('night')}>{ui.night?<Sun size={17}/>:<Moon size={17}/>}</button>
       <button className="header-icon" aria-label="프로젝트 정보" title="프로젝트 정보" onClick={()=>ui.toggle('help')}><CircleHelp size={17}/></button>
     </div>

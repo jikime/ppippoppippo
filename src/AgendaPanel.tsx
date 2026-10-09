@@ -7,14 +7,14 @@ import { useUI } from './state';
 import { fresh, useJudgment } from './decision/store';
 
 export function DecisionAutomation(){
-  const j=useJudgment(),d=useUI(s=>s.data),last=useRef('');
+  const j=useJudgment(),d=useUI(s=>s.data),lab=useUI(s=>s.panel==='lab'),last=useRef('');
   useEffect(()=>{
     const key=`${d.revision}:${d.agenda?.phaseId}:${d.agenda?.segment}`;
-    if(!j.auto||!j.configured||j.loading||!d.ready||last.current===key)return;
+    if(lab||!j.auto||!j.configured||j.loading||!d.ready||last.current===key)return;
     // Manual scene jumps can be closer together than the server's rate limit.
     const timer=setTimeout(()=>{last.current=key;void useJudgment.getState().evaluate();},Math.max(0,j.nextRequestAt-Date.now()));
     return()=>clearTimeout(timer);
-  },[d.ready,d.revision,d.agenda?.phaseId,d.agenda?.segment,j.auto,j.configured,j.loading,j.nextRequestAt]);
+  },[lab,d.ready,d.revision,d.agenda?.phaseId,d.agenda?.segment,j.auto,j.configured,j.loading,j.nextRequestAt]);
   return null;
 }
 export function DecisionPanel(){

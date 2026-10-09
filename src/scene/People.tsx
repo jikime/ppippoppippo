@@ -22,7 +22,7 @@ function Avatar({person:p}:{person:Person}){
   useEffect(()=>()=>{mixer.stopAllAction();mixer.uncacheRoot(rig);},[mixer,rig]);
   useFrame((_,dt)=>{
     if(!root.current)return;
-    const distantSeated=bakedSeat(p)&&_.camera.position.distanceTo(new THREE.Vector3(p.position.x,1,p.position.z))>22;
+    const distantSeated=!selected&&bakedSeat(p)&&_.camera.position.distanceTo(new THREE.Vector3(p.position.x,1,p.position.z))>22;
     root.current.visible=p.state!=='outside'&&p.state!=='notArrived'&&!distantSeated;
     const alpha=world.running?world.alpha:1;
     root.current.position.set(THREE.MathUtils.lerp(p.previous.x,p.position.x,alpha),.018,THREE.MathUtils.lerp(p.previous.z,p.position.z,alpha));
@@ -57,7 +57,7 @@ function SeatedInstances({variant}:{variant:string}){
   useFrame(({camera})=>{
     if(!instance.current)return;
     for(let i=0;i<people.length;i++){
-      const p=people[i],show=bakedSeat(p)&&Math.hypot(camera.position.x-p.position.x,camera.position.y-1,camera.position.z-p.position.z)>22;
+      const p=people[i],show=useUI.getState().selected!==p.id&&bakedSeat(p)&&Math.hypot(camera.position.x-p.position.x,camera.position.y-1,camera.position.z-p.position.z)>22;
       dummy.position.set(p.position.x,.018,p.position.z);dummy.rotation.set(0,p.heading,0);dummy.scale.setScalar(show?1:0);dummy.updateMatrix();instance.current.setMatrixAt(i,dummy.matrix);
     }
     instance.current.instanceMatrix.needsUpdate=true;instance.current.boundingSphere=new THREE.Sphere(new THREE.Vector3(),30);

@@ -1,6 +1,8 @@
-import { Component, useEffect, useState } from 'react';
+import { DevicePanel } from './device/DevicePanel';
+import { startDeviceSync } from './device/store';
+import { Component, useEffect, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
-import { Activity, ArrowRight, ArrowUpRight, Box, Camera, Check, ChevronRight, DoorOpen, Expand, Eye, Focus, Grid2X2, Layers3, LocateFixed, Maximize2, MousePointer2, Navigation, Radio, Search, ShieldCheck, Sparkles, Users, X } from 'lucide-react';
+import { Activity, ArrowRight, ArrowUpRight, Box, Camera, Check, ChevronRight, DoorOpen, Expand, Eye, Focus, Grid2X2, Layers3, LocateFixed, Maximize2, MousePointer2, Navigation, Radio, ShieldCheck, Sparkles, Users, X } from 'lucide-react';
 import { useProgress } from '@react-three/drei';
 import { Scene } from './scene/Scene';
 import { useUI } from './state';
@@ -10,6 +12,10 @@ import { AgendaPanel, DecisionAutomation } from './AgendaPanel';
 import { eventTime } from './simulation/agenda';
 import { Header, SceneIdentity, SituationSummary, Journey, EventToast } from './Hud';
 import { useJudgment } from './decision/store';
+import { PeoplePanel } from './people/PeoplePanel';
+import { LabPanel, LabStats } from './lab/LabPanel';
+import { LabHUD } from './lab/LabHUD';
+import { useLab } from './lab/store';
 
 const clock=(time:number)=>`${String(Math.floor(time/60)).padStart(2,'0')}:${String(Math.floor(time%60)).padStart(2,'0')}`;
 const storyNames=['일상을 관찰하다','이동을 이해하다','변화를 감지하다','사람을 안내하다','흐름을 회복하다','시연 완료'];
@@ -54,15 +60,10 @@ function Overview(){
     {!selected&&<Events/>}
   </>;
 }
-function PeoplePanel(){
-  const [query,setQuery]=useState(''),[role,setRole]=useState('all');useUI(s=>s.data.time);
-  const selected=useUI(s=>s.selected);const people=world.people.filter(p=>(role==='all'||p.role===role)&&(p.id.toLowerCase().includes(query.toLowerCase())||roleNames[p.role].includes(query)));
-  return <>{selected&&<SelectedPerson/>}<div className="people-filters"><label className="search-input"><Search size={15}/><input aria-label="인물 검색" placeholder="ID 또는 역할 검색" value={query} onChange={e=>setQuery(e.target.value)}/></label><select aria-label="역할 필터" value={role} onChange={e=>setRole(e.target.value)}><option value="all">모든 역할</option>{Object.entries(roleNames).map(([value,label])=><option key={value} value={value}>{label}</option>)}</select></div><div className="people-count">{people.length}명의 익명 인물</div><div className="people-list">{people.map(p=><button key={p.id} className={selected===p.id?'selected':''} onClick={()=>useUI.getState().select(p.id)}><span className={`role-dot ${p.role}`}/><span><b>{p.id}</b><small>{roleNames[p.role]}</small></span><em>{stateNames[p.state]}</em><ChevronRight size={13}/></button>)}{!people.length&&<div className="empty-state">검색 결과가 없습니다.</div>}</div></>;
-}
 function Operations(){
   const panel=useUI(s=>s.panel),d=useUI(s=>s.data),mobilePanel=useUI(s=>s.mobilePanel),visible=useUI(s=>s.panelVisible);
   if(!visible)return null;
-  return <aside className={`operations-panel ${mobilePanel?'mobile-open':''}`}><div className="operations-header"><div><span className="eyebrow">OPERATIONS</span><h2>{panel==='overview'?'공간의 흐름':panel==='people'?'사람들의 움직임':panel==='agenda'?'행사 시간표':'상황 타임라인'}</h2></div><span className={`live-pill ${!d.running?'paused':''}`}><i/>{d.running?'LIVE':'PAUSED'}</span><button className="mobile-panel-close icon-button" aria-label="관제 패널 닫기" onClick={()=>useUI.setState({mobilePanel:false,panelVisible:false})}><X size={17}/></button></div><div className="mobile-panel-tabs">{(['overview','people','events','agenda'] as const).map((tab,i)=><button key={tab} className={panel===tab?'selected':''} onClick={()=>useUI.getState().setPanel(tab)}>{['공간 관제','인물 탐색','이벤트','시간표'][i]}</button>)}</div><div className="operations-content" key={panel}>{panel==='overview'?<Overview/>:panel==='people'?<PeoplePanel/>:panel==='agenda'?<AgendaPanel/>:<Events full/>}</div><div className="panel-footer"><ShieldCheck size={13}/><span>공간을 이해하고, 사람을 지키다.</span></div></aside>;
+  return <aside className={`operations-panel ${mobilePanel?'mobile-open':''}`}><div className="operations-header"><div><span className="eyebrow">OPERATIONS</span><h2>{panel==='overview'?'공간의 흐름':panel==='people'?'사람들의 움직임':panel==='agenda'?'행사 시간표':panel==='device'?'디바이스 알림':panel==='lab'?'다중 세계 실험실':'상황 타임라인'}</h2></div><span className={`live-pill ${!d.running?'paused':''}`}><i/>{panel==='lab'?'LAB':d.running?'LIVE':'PAUSED'}</span><button className="mobile-panel-close icon-button" aria-label="관제 패널 닫기" onClick={()=>useUI.setState({mobilePanel:false,panelVisible:false})}><X size={17}/></button></div><div className="mobile-panel-tabs">{(['overview','people','events','agenda','device','lab'] as const).map((tab,i)=><button key={tab} className={panel===tab?'selected':''} onClick={()=>useUI.getState().setPanel(tab)}>{['공간 관제','인물 탐색','이벤트','시간표','디바이스','실험실'][i]}</button>)}</div><div className="operations-content" key={panel}>{panel==='overview'?<Overview/>:panel==='people'?<PeoplePanel/>:panel==='agenda'?<AgendaPanel/>:panel==='device'?<DevicePanel/>:panel==='lab'?<LabPanel/>:<Events full/>}</div><div className="panel-footer"><ShieldCheck size={13}/><span>공간을 이해하고, 사람을 지키다.</span></div></aside>;
 }
 function ViewControls(){
   const ui=useUI();
@@ -70,19 +71,23 @@ function ViewControls(){
 }
 function About(){
   const toggle=useUI(s=>s.toggle),quality=useUI(s=>s.quality),setQuality=useUI(s=>s.setQuality);
-  return <div className="modal-backdrop" onClick={()=>toggle('help')}><section className="about-modal" role="dialog" aria-modal="true" aria-label="CrowdGuard 프로젝트 정보" onClick={e=>e.stopPropagation()}><button className="modal-close icon-button" aria-label="정보 닫기" onClick={()=>toggle('help')}><X size={20}/></button><Logo/><span className="eyebrow">A LIVING DIGITAL VENUE</span><h2>작은 움직임까지,<br/>하나의 공간으로.</h2><p>CrowdGuard는 AWS 행사장 참고 영상을 바탕으로 만든 인터랙티브 3D 관제 시뮬레이션입니다.</p><div className="about-facts"><span><b>120</b>익명 인물</span><span><b>4</b>서로 다른 역할</span><span><b>3</b>연결된 출입구</span></div><p className="about-note">인물과 관제 수치는 시뮬레이션에서 계산합니다. 실제 CCTV·영상 AI는 연결하지 않았으며, 공간 치수와 출입구 구성은 시연을 위한 가정입니다. 대기·분산 모델은 실제 안전성 평가를 대신하지 않습니다.</p><div className="quality-selector"><span>렌더링 품질</span><button className={quality==='high'?'selected':''} onClick={()=>setQuality('high')}>고화질</button><button className={quality==='balanced'?'selected':''} onClick={()=>setQuality('balanced')}>성능 우선</button></div><div className="shortcuts"><span><kbd>Space</kbd> 재생·정지</span><span><kbd>1</kbd><kbd>2</kbd><kbd>3</kbd> 시점 변경</span><span><kbd>Esc</kbd> 선택 해제</span></div></section></div>;
+  return <div className="modal-backdrop" onClick={()=>toggle('help')}><section className="about-modal" role="dialog" aria-modal="true" aria-label="JEONJO 프로젝트 정보" onClick={e=>e.stopPropagation()}><button className="modal-close icon-button" aria-label="정보 닫기" onClick={()=>toggle('help')}><X size={20}/></button><Logo/><span className="eyebrow">A LIVING DIGITAL VENUE</span><h2>작은 움직임까지,<br/>하나의 공간으로.</h2><p>JEONJO는 AWS 행사장 참고 영상을 바탕으로 만든 인터랙티브 3D 관제 시뮬레이션입니다.</p><div className="about-facts"><span><b>120</b>익명 인물</span><span><b>4</b>서로 다른 역할</span><span><b>3</b>연결된 출입구</span></div><p className="about-note">인물과 관제 수치는 시뮬레이션에서 계산합니다. 실제 CCTV·영상 AI는 연결하지 않았으며, 공간 치수와 출입구 구성은 시연을 위한 가정입니다. 대기·분산 모델은 실제 안전성 평가를 대신하지 않습니다.</p><div className="quality-selector"><span>렌더링 품질</span><button className={quality==='high'?'selected':''} onClick={()=>setQuality('high')}>고화질</button><button className={quality==='balanced'?'selected':''} onClick={()=>setQuality('balanced')}>성능 우선</button></div><div className="shortcuts"><span><kbd>Space</kbd> 재생·정지</span><span><kbd>1</kbd><kbd>2</kbd><kbd>3</kbd> 시점 변경</span><span><kbd>Esc</kbd> 선택 해제</span></div></section></div>;
 }
 export default function App(){
+  useEffect(()=>startDeviceSync(),[]);
+  const panel=useUI(s=>s.panel),labMode=panel==='lab';
+  const previousRunning=useRef(true);
+  useEffect(()=>{if(!labMode)return;previousRunning.current=world.running;world.setRunning(false);useUI.getState().setCamera('overview');return()=>{useLab.setState({playing:false});world.setRunning(previousRunning.current);};},[labMode]);
   const d=useUI(s=>s.data),help=useUI(s=>s.help),cinema=useUI(s=>s.cinema),night=useUI(s=>s.night),panelVisible=useUI(s=>s.panelVisible);const progress=useProgress();
-  useEffect(()=>{void useJudgment.getState().check();void world.initialize().then(()=>{if(!world.agenda)world.startAgenda(600);});const key=(e:KeyboardEvent)=>{if((e.target as HTMLElement)?.matches('input,select,textarea'))return;if(e.code==='Space'){e.preventDefault();world.setRunning(!world.running);}if(e.key==='1')useUI.getState().setCamera('overview');if(e.key==='2')useUI.getState().setCamera('top');if(e.key==='3')useUI.getState().setCamera('floor');if(e.key==='Escape')useUI.setState({selected:null,help:false,cinema:false});};window.addEventListener('keydown',key);return()=>window.removeEventListener('keydown',key);},[]);
+  useEffect(()=>{void useJudgment.getState().check();void world.initialize().then(()=>{if(!world.agenda)world.startAgenda(600);});const key=(e:KeyboardEvent)=>{if((e.target as HTMLElement)?.matches('input,select,textarea'))return;if(e.code==='Space'){e.preventDefault();if(useUI.getState().panel==='lab')useLab.setState(s=>({playing:!s.playing,time:s.time>=(s.replay?.horizon??Infinity)?0:s.time}));else world.setRunning(!world.running);}if(e.key==='1')useUI.getState().setCamera('overview');if(e.key==='2')useUI.getState().setCamera('top');if(e.key==='3')useUI.getState().setCamera('floor');if(e.key==='Escape'){useUI.setState({selected:null,help:false,cinema:false});useLab.setState({selected:null});}};window.addEventListener('keydown',key);return()=>window.removeEventListener('keydown',key);},[]);
   useEffect(()=>{if(import.meta.env.DEV)(window as unknown as {crowdguard:typeof world}).crowdguard=world;},[]);
-  return <div className={`app ${cinema?'cinema':''} ${night?'night-mode':''} ${panelVisible?'':'panels-hidden'}`}>
+  return <div className={`app ${labMode?'lab-mode':''} ${panel==='people'?'people-focus':''} ${cinema?'cinema':''} ${night?'night-mode':''} ${panelVisible?'':'panels-hidden'}`}>
     <main className="workspace"><SceneBoundary><Scene/></SceneBoundary>
-      <SceneIdentity/><Stats/><ViewControls/><Operations/>
+      {labMode?<><LabStats/><LabHUD/></>:<><SceneIdentity/><Stats/></>}<ViewControls/><Operations/>
       <aside className="floating-feed" aria-label="동기화된 가상 CCTV"><VirtualFeed/></aside>
       {d.story&&<div className="story-card"><Sparkles size={16}/><span>LIVE TOUR</span><strong>{storyNames[d.storyStep]}</strong><b>{Math.max(0,85-Math.floor(d.time))}s</b></div>}
       <div className="scene-footer"><div className="legend">{Object.entries(roleNames).map(([role,label])=><span key={role}><i className={`role-dot ${role}`}/>{label}</span>)}</div><div className="interaction-hint"><MousePointer2 size={12}/>드래그로 회전 · 스크롤로 확대</div></div>
-      <EventToast/><Journey/>
+      {!labMode&&<><EventToast/><Journey/></>}
       {(!d.ready||progress.active)&&!d.error&&<div className="loading-screen"><Logo/><h2>공간에 생명을 불어넣는 중</h2><p>{!d.ready?'이동 공간을 계산합니다.':'캐릭터와 행사장 에셋을 불러옵니다.'}</p><div className="loading-track"><i style={{width:`${Math.max(8,progress.progress)}%`}}/></div></div>}
       {d.error&&<div className="loading-screen"><h2>공간을 준비하지 못했습니다.</h2><p>{d.error}</p><button onClick={()=>location.reload()}>다시 시도</button></div>}
     </main><Header/><DecisionAutomation/>{help&&<About/>}
