@@ -1,0 +1,33 @@
+compiled_at=2026-10-09T16:14:03.930350+09:00
+reference_repository_code_sha=58878e58d2ae6d4e00ffc877dc82b78007a8eb22
+reference_scope=local submitted repository BEFORE evidence commit; not remote deployment proof
+snapshot_scope=project-specific at collection time; not full event history
+process_query_scope=own account and verified project path matches; relative-path processes may be missed; full command lines discarded
+
+server_id=SERVER_01
+collected_at=2026-10-09T16:09:17.092196+09:00
+os=Linux-6.8.0-100-generic-x86_64-with-glibc2.39
+project_accounts=ACCOUNT_01
+account_scope=existing client SSH profile plus authenticated current account; other permitted users unverified
+project_processes=none_observed_in_scoped_query
+project_containers=CONTAINER_01 (connected development container); host image and unrelated containers unqueried
+deployed_git_sha=N/A
+working_tree=not_git_checkout
+limitations=historical auth coverage unavailable; non-Git model delivery possible; command lines and environment variables excluded
+model_artifact=fire.pt sha256=43d5c051fc7cf634cb734c29cfdbf9c500abb3176fb175d25cb2edf073c7c2b3 bytes=5448794
+model_artifact=fall-window.pt sha256=7f7ff8c37986d8485015759ca46550cda19fe0e973ba82728f1a62f458ebd4a8 bytes=3013
+model_artifact=pose.pt sha256=869e83fcdffdc7371fa4e34cd8e51c838cc729571d1635e5141e3075e9319dc0 bytes=6255593
+
+server_id=SERVER_02
+collected_at=2026-10-09T16:10:49+09:00
+os=ProductName:		macOS; ProductVersion:		27.0.1; BuildVersion:		26A434
+project_accounts=ACCOUNT_02
+account_scope=existing client SSH profile plus authenticated current account; other permitted users unverified
+project_processes=none_observed_in_scoped_query
+project_containers=N/A - project container usage not verified
+deployed_git_sha=N/A
+working_tree=not_git_checkout
+limitations=historical auth coverage unavailable; non-Git model delivery possible; command lines and environment variables excluded
+model_artifact=fire.pt sha256=da84e867ecd56c421a0c2004efae05393bc805950463ef6f842c3bc5bc46133d bytes=not_collected
+model_artifact=fall-window.pt sha256=7f7ff8c37986d8485015759ca46550cda19fe0e973ba82728f1a62f458ebd4a8 bytes=not_collected
+model_artifact=pose.pt sha256=869e83fcdffdc7371fa4e34cd8e51c838cc729571d1635e5141e3075e9319dc0 bytes=not_collected

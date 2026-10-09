@@ -1,0 +1,17 @@
+# External server evidence - pseudonymized public excerpt
+# compiled_at=2026-10-09T16:14:03.930350+09:00
+# requested_range=2026-10-09T00:00:00+09:00 through each server collection timestamp
+# actual_event_work_start=not_recorded; midnight is a query bound, not a claimed work start
+# historical_authentication_coverage=unavailable; no claim of zero historical access
+# source=existing server auth facilities where readable, plus verified current SSH session snapshots
+# redacted_fields=host,account,source_ip,destination_ip,key_fingerprint
+# session_snapshot lines are collector-generated alternatives, NOT fabricated sshd Accepted records
+# current snapshots establish only the successful collection sessions, not earlier activity or identity
+# SERVER_01 collected_at=2026-10-09T16:09:17.092196+09:00
+# SERVER_01 historical_auth_success_lines_obtained=0
+# SERVER_01 historical_log_status=unavailable_or_incomplete; see 01_server_usage.md
+2026-10-09T16:09:17.092196+09:00 SERVER_01 session_snapshot account=ACCOUNT_01 source_ip=IP_01 source_port=59377 destination_ip=IP_02 destination_port=30001 protocol=SSH remote_command_exit=0 source=SSH_CONNECTION observation=current_authenticated_collection_session
+# SERVER_02 collected_at=2026-10-09T16:10:49+09:00
+# SERVER_02 historical_auth_success_lines_obtained=0
+# SERVER_02 historical_log_status=unavailable_or_incomplete; see 01_server_usage.md
+2026-10-09T16:10:49+09:00 SERVER_02 session_snapshot account=ACCOUNT_02 source_ip=IP_03 source_port=58486 destination_ip=IP_04 destination_port=22 protocol=SSH remote_command_exit=0 source=SSH_CONNECTION observation=current_authenticated_collection_session
