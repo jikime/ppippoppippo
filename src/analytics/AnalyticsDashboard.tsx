@@ -5,7 +5,7 @@ import { Activity,ArrowUpRight,BarChart3,Box,FlaskConical,Grid2X2,Layers3,Maximi
 import { useShallow } from 'zustand/react/shallow';
 import { useUI } from '../state';
 import { world } from '../simulation/world';
-import { EXITS,ROOM,TABLES,roleNames,stateNames } from '../simulation/layout';
+import { EXITS,ROOM,TABLES,roleNames,roleEntries,roleColors,stateNames } from '../simulation/layout';
 import { eventTime,phaseAt } from '../simulation/agenda';
 import { useLab } from '../lab/store';
 import { FINDINGS,HAZARDS,hazardNames,regressionKeys } from '../lab/model';
@@ -14,6 +14,7 @@ import { downloadReport,report } from '../lab/report';
 import { experimentSummary,shortFindingNames } from './data';
 import type { DensityCell } from './data';
 import { useTelemetry } from './telemetry';
+import { RoleDot } from '../people/RoleDot';
 import './analytics.css';
 
 const C={lime:'#a2db58',cyan:'#63ccd6',amber:'#efb46c',violet:'#a6a1df',muted:'#90a6b9',grid:'#293b4d',red:'#eb8b82'};
@@ -48,10 +49,10 @@ function DensityMap({density,people,animate}:{density:ReturnType<typeof useTelem
 function PersonCard({people}:{people:ReturnType<typeof useTelemetry>['people']}){
   const id=useUI(s=>s.selected),p=people.find(p=>p.id===id)??people[0];
   if(!p)return <Card kicker="PERSON MONITOR" title="인물 모니터링"><Empty>인물을 불러오는 중입니다.</Empty></Card>;
-  return <Card kicker="PERSON MONITOR" title="선택한 합성 참가자" className="analytics-person">
+  return <Card kicker="PERSON MONITOR" title="선택한 합성 인물" className="analytics-person">
     <select aria-label="분석 대시보드 인물 선택" value={p.id} onChange={e=>useUI.getState().select(e.target.value)}>{people.map(p=><option value={p.id} key={p.id}>{p.profile.name} · {p.id}</option>)}</select>
-    <div className="analytics-person-name"><div className="analytics-avatar"><Users size={24}/></div><div><small>{p.id} · {p.profile.team}</small><h3>{p.profile.name}</h3><span>{p.profile.job}</span></div></div>
-    <div className="analytics-person-state"><i/>{stateNames[p.state]}<small>{roleNames[p.role]}</small></div>
+    <div className="analytics-person-name"><div className="analytics-avatar" style={{color:roleColors[p.role],backgroundColor:`${roleColors[p.role]}18`}}><Users size={24}/></div><div><small>{p.id} · {p.profile.team}</small><h3>{p.profile.name}</h3><span>{p.profile.job}</span></div></div>
+    <div className="analytics-person-state"><i/>{stateNames[p.state]}<small><RoleDot role={p.role}/>{roleNames[p.role]}</small></div>
     <dl><div><dt>현재 목적지</dt><dd>{p.goalName}</dd></div><div><dt>현재 이동 속도</dt><dd>{p.speed.toFixed(2)} <small>m/s</small></dd></div><div><dt>이동 지원 가정</dt><dd>{p.profile.needsAssistance?'담당자 배정 필요':'독립 이동'}</dd></div></dl>
     <p className="analytics-person-objective">{p.profile.objective}</p>
     <button className="analytics-button" onClick={()=>useUI.setState({panel:'people',selected:p.id,panelVisible:true,mobilePanel:true,cinema:false})}>상태 이력·관찰 메모<ArrowUpRight size={14}/></button>
@@ -62,14 +63,14 @@ function PersonCard({people}:{people:ReturnType<typeof useTelemetry>['people']})
 const LiveCharts=memo(function LiveCharts({data,animate}:{data:ReturnType<typeof useTelemetry>;animate:boolean}){
   const {snapshot:d,people,density}=data;
   const activity=d.activities.filter(a=>a.state!=='outside'&&a.state!=='notArrived').map(a=>({name:stateNames[a.state],value:a.count,fill:[C.lime,C.cyan,C.violet,C.amber,C.red,'#5f88ba','#c4d4d8'][Object.keys(stateNames).indexOf(a.state)%7]}));
-  const roles=Object.entries(roleNames).map(([role,name])=>({name,count:people.filter(p=>p.role===role&&!['outside','notArrived'].includes(p.state)).length}));
+  const roles=roleEntries.map(([role,name])=>({role,name,color:roleColors[role],count:people.filter(p=>p.role===role&&!['outside','notArrived'].includes(p.state)).length}));
   const exits=d.exits.map(e=>({...e,name:`출구 ${e.id}${e.open?'':' · 통제'}`}));
   return <div className="analytics-grid">
     <Card kicker="SPATIAL DENSITY" title="공간별 인구밀도" className="analytics-wide" note={`2m 격자 · 바닥 ${density.area}㎡ 가정, 가구 면적 포함. 색상은 밀도 구간이며 안전 등급이 아닙니다.${density.outsideFootprint?` 지도 바깥 이동 인원 ${density.outsideFootprint}명은 밀도에서 제외합니다.`:''}`}>
       <DensityMap density={density} people={people} animate={animate}/>
     </Card>
     <Card kicker="ACTIVITY MIX" title="현재 활동 분포" note={`현재 체류 ${d.inside}명 기준 · 퇴장 ${d.outside}명 · 입장 예정 ${d.expected}명 제외`}>
-      {activity.length?<><div className="chart-stage donut-stage"><ResponsiveContainer width="100%" height="100%" minWidth={0} initialDimension={{width:320,height:250}}><PieChart accessibilityLayer><Pie data={activity} dataKey="value" nameKey="name" innerRadius="59%" outerRadius="83%" paddingAngle={2} stroke="none" isAnimationActive={animate} animationDuration={600}/><Tooltip contentStyle={tooltip} itemStyle={{color:'#edf5fc'}} formatter={v=>[`${v}명`,'인원']}/></PieChart></ResponsiveContainer><div className="donut-center"><b>{d.inside}</b><span>현재 체류 · 명</span></div></div><div className="activity-key">{activity.map(a=><div key={a.name}><i style={{background:a.fill}}/><span>{a.name}</span><b>{a.value}<small>명</small></b></div>)}</div><div className="analytics-roles"><h3>역할별 구성</h3>{roles.map((r,i)=><div key={r.name}><span>{r.name}</span><div><i style={{width:`${r.count/Math.max(1,d.inside)*100}%`,background:[C.cyan,C.lime,C.amber,C.violet][i]}}/></div><b>{r.count}<small>명</small></b></div>)}</div></>:<Empty>현재 체류 인원이 없습니다.</Empty>}
+      {activity.length?<><div className="chart-stage donut-stage"><ResponsiveContainer width="100%" height="100%" minWidth={0} initialDimension={{width:320,height:250}}><PieChart accessibilityLayer><Pie data={activity} dataKey="value" nameKey="name" innerRadius="59%" outerRadius="83%" paddingAngle={2} stroke="none" isAnimationActive={animate} animationDuration={600}/><Tooltip contentStyle={tooltip} itemStyle={{color:'#edf5fc'}} formatter={v=>[`${v}명`,'인원']}/></PieChart></ResponsiveContainer><div className="donut-center"><b>{d.inside}</b><span>현재 체류 · 명</span></div></div><div className="activity-key">{activity.map(a=><div key={a.name}><i style={{background:a.fill}}/><span>{a.name}</span><b>{a.value}<small>명</small></b></div>)}</div><div className="analytics-roles"><h3>역할별 구성</h3>{roles.map(r=><div key={r.name}><span><RoleDot role={r.role}/>{r.name}</span><div><i style={{width:`${r.count/Math.max(1,d.inside)*100}%`,background:r.color}}/></div><b>{r.count}<small>명</small></b></div>)}</div></>:<Empty>현재 체류 인원이 없습니다.</Empty>}
     </Card>
     <Card kicker="FLOW OVER TIME" title="이동과 대기의 흐름" className="analytics-wide" note="최근 90개 시뮬레이션 초 표본 · 이동·대기는 체류 인원에 포함됩니다. 일시정지하면 기록도 멈춥니다.">
       {d.history.length>1?<div className="chart-stage"><ResponsiveContainer width="100%" height="100%" minWidth={0} initialDimension={{width:700,height:270}}><AreaChart data={d.history} margin={{top:12,right:18,left:-13,bottom:0}} accessibilityLayer>

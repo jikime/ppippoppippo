@@ -1,6 +1,7 @@
 import { useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
-import { Html, RoundedBox } from '@react-three/drei';
+import { RoundedBox } from '@react-three/drei';
+import { SceneHtml as Html } from './SceneHtml';
 import * as THREE from 'three';
 import { EXITS } from '../simulation/layout';
 import { useUI } from '../state';

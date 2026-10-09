@@ -81,7 +81,7 @@ TUYA_OPEN_SDK=/tmp/crowdguard-tuyaopen sh device/build-firmware.sh
 
 출력은 `device/firmware/dist/firmware_1.0.0/` 아래에 생성됩니다. 새 설치에는 SDK가 생성한 `firmware_QIO_1.0.0.bin`을 사용합니다. OTA 패키지나 코어별 바이너리와 혼동하지 않습니다.
 
-문구의 원본은 [alerts.json](alerts.json)입니다. 한국어 글꼴은 저장소의 Pretendard 가변 글꼴을 400/800 굵기로 고정한 뒤 필요한 글자만 추려 포함했습니다. 문구·강조 부분·픽토그램을 바꾸면 아래 명령으로 헤더와 글꼴을 다시 생성한 뒤 빌드합니다.
+문구의 원본은 [alerts.json](alerts.json)입니다. 한국어 글꼴은 저장소의 Pretendard 가변 글꼴을 400/800 굵기로 고정한 뒤 필요한 글자만 추려 포함했습니다. 행동 안내는 최대 두 줄이며, 굵기가 바뀌는 지점에서도 줄바꿈이 유지되도록 각 줄을 별도 LVGL 영역으로 표시합니다. 강조 문구는 본문의 한 줄 안에 정확히 한 번 있어야 합니다. 문구·강조 부분·픽토그램을 바꾸면 아래 명령으로 헤더와 글꼴을 다시 생성한 뒤 빌드합니다.
 
 ```sh
 node device/generate-assets.mjs
@@ -123,7 +123,7 @@ cg_alert 1,<epoch>,<revision>,<kind>,<zone>,<source>,<count>,<fresh>\r
 CG_ACK 1,<epoch>,<revision>\r\n
 ```
 
-`kind`는 alerts.json의 0부터 시작하는 순서, `zone`은 전체/A/B/C의 0/1/2/3, `source`는 시뮬레이션/시험의 0/1입니다. `fresh`는 0 또는 1입니다. 문자열 명령 삽입을 막기 위해 검증된 숫자만 전송하며 보드가 한국어 문구를 선택합니다. 오래된 revision과 같은 revision의 다른 내용은 거부합니다. `cg_status`로 현재 경고 종류와 연결 상태를 확인할 수 있습니다. 가로 화면 펌웨어는 `panel=480x320 rotation=90 emphasis=800 icon=fire`처럼 해상도·강조 굵기·현재 픽토그램도 응답합니다. `body_h`는 실제 LVGL 행동 안내 영역의 높이입니다.
+`kind`는 alerts.json의 0부터 시작하는 순서, `zone`은 전체/A/B/C의 0/1/2/3, `source`는 시뮬레이션/시험의 0/1입니다. `fresh`는 0 또는 1입니다. 문자열 명령 삽입을 막기 위해 검증된 숫자만 전송하며 보드가 한국어 문구를 선택합니다. 오래된 revision과 같은 revision의 다른 내용은 거부합니다. `cg_status`로 현재 경고 종류와 연결 상태를 확인할 수 있습니다. 가로 화면 펌웨어는 `panel=480x320 rotation=90 emphasis=800 icon=fire`처럼 해상도·강조 굵기·현재 픽토그램도 응답합니다. `body_h`는 실제 LVGL 행동 안내 영역의 높이, `body_lines`는 명시한 안내 줄 수입니다.
 
 ```sh
 npm test

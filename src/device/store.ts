@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { world } from '../simulation/world';
 import { alertKey, SimulationAlerts, sortAlerts } from './alerts';
 import type { DeviceAlert, DeviceState } from './alerts';
+import { devicePreviewOnly } from './mode';
 
 interface DeviceStore {
   alerts: DeviceAlert[]; tests: DeviceAlert[]; state: DeviceState | null; error: string;
@@ -26,6 +27,11 @@ export function startDeviceSync() {
     const snapshot = world.snapshot();
     const alerts = sortAlerts([...rules.update(snapshot,Date.now()), ...useDevice.getState().tests]);
     useDevice.setState({alerts});
+    if (devicePreviewOnly) {
+      useDevice.setState({state:null,error:''});
+      if (!stopped) timer = setTimeout(tick,1000);
+      return;
+    }
     try {
       const response = await fetch('/api/device/publish', {
         method:'POST', headers:{'Content-Type':'application/json'},

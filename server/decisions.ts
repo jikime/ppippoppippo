@@ -1,15 +1,20 @@
-import type { IncomingMessage, ServerResponse } from 'node:http';
+import type { IncomingMessage } from 'node:http';
 import type { Plugin } from 'vite';
 import { decisionRequest, DecisionRefusal, parseContext, parseResult } from '../src/decision/contract.ts';
 import { parseReview, parseReviewResult, reviewRequest } from '../src/lab/review.ts';
 
-// This module is loaded by Vite's Node process only. No key enters the browser bundle.
-export function decisionsPlugin(key:string):Plugin {
+// Shared by Vite and the AWS Lambda adapter; never imported by the browser.
+export type DecisionHttpRequest = Pick<IncomingMessage,'url'|'method'|'headers'> & AsyncIterable<Uint8Array>;
+export interface DecisionHttpResponse {
+  writeHead(status:number,headers:Record<string,string>):unknown;
+  end(body:string):unknown;
+}
+export function createDecisionsMiddleware(key:string) {
   let busy=false,lastRequest=0;
-  const send=(res:ServerResponse,status:number,data:unknown)=>{
+  const send=(res:DecisionHttpResponse,status:number,data:unknown)=>{
     res.writeHead(status,{'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store'});res.end(JSON.stringify(data));
   };
-  const middleware=async(req:IncomingMessage,res:ServerResponse,next:()=>void)=>{
+  return async(req:DecisionHttpRequest,res:DecisionHttpResponse,next:()=>void)=>{
     const path=req.url?.split('?')[0];if(!path?.startsWith('/api/decisions/')){next();return;}
     if(req.headers.origin){
       try{if(new URL(req.headers.origin).host!==req.headers.host){send(res,403,{error:'허용되지 않은 요청 출처입니다.'});return;}}
@@ -42,5 +47,9 @@ export function decisionsPlugin(key:string):Plugin {
     }catch(error){send(res,error instanceof DecisionRefusal?422:502,{error:error instanceof DecisionRefusal?error.message:error instanceof Error&&error.name==='TimeoutError'?'OpenAI Decisions 응답 시간이 초과되었습니다. 다시 요청해 주세요.':'OpenAI Decisions 연결 또는 응답 검증에 실패했습니다.'});}
     finally{busy=false;}
   };
+}
+
+export function decisionsPlugin(key:string):Plugin {
+  const middleware=createDecisionsMiddleware(key);
   return {name:'crowdguard-decisions',configureServer(server){server.middlewares.use(middleware);},configurePreviewServer(server){server.middlewares.use(middleware);}};
 }

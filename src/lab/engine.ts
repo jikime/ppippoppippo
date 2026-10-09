@@ -1,4 +1,4 @@
-import { EXITS, SEATS } from '../simulation/layout';
+import { EXITS, SEATS, staffStart } from '../simulation/layout';
 import { persona, randomSource } from '../simulation/profiles';
 import { HAZARDS, FINDINGS, findingValue, hazardNames } from './model';
 import type { Conditions, FindingKey, Manual, Metrics, PairResult, Point, Replay, RunConfig, TraceAgent } from './model';
@@ -14,7 +14,7 @@ export function conditionsFor(config:RunConfig,index:number):Conditions {
 }
 function startAt(i:number):Point {
   if(i<108){const s=SEATS[(i*37)%108];return{x:s.x,z:s.z};}
-  return{x:-12+(i-108)%7*4,z:-5.5};
+  const {x,z}=staffStart(i);return{x,z};
 }
 // A fixed aisle graph derived from the table rows. It is an event/queue model,
 // not the Recast crowd solver or a smoke, injury, structural or clinical model.

@@ -30,6 +30,7 @@ describe('행사 시간표와 인물 행동',()=>{
     world.startAgenda(1020);const seen=run(40);expect(seen.has('checking')).toBe(true);
     expect(world.people.filter(p=>p.role==='participant').every(p=>p.state!=='working')).toBe(true);
     expect(world.logs.some(log=>log.title.includes('17:00'))).toBe(true);
+    expect(world.people.filter(p=>p.role==='paramedic').every(p=>p.goalName.includes('응급지원')&&p.state!=='checking')).toBe(true);
   });
   test('1차 발표에서 발표자·심사·식사·네트워킹이 병행된다',()=>{
     world.startAgenda(1030);const seen=run(75);
@@ -55,6 +56,6 @@ describe('행사 시간표와 인물 행동',()=>{
     world.startAgenda(540,true);const phases=new Set<string>();
     for(let i=0;i<900*20;i++){world.tick(.05);phases.add(world.agenda!.phaseId);if(i%200===0){const s=world.snapshot();expect(s.inside+s.outside+s.expected).toBe(120);}}
     expect([...phases]).toEqual(AGENDA.map(a=>a.id));expect(world.agenda?.minute).toBe(1260);expect(world.agenda?.auto).toBe(false);
-    expect(world.snapshot().expected).toBe(0);expect(world.snapshot().outside).toBe(108);
+    expect(world.snapshot().expected).toBe(0);expect(world.snapshot().outside,JSON.stringify(world.people.filter(p=>p.role==='participant'&&p.state!=='outside').map(p=>({id:p.id,state:p.state,position:p.position,goal:p.goal,nearby:world.people.filter(n=>n.id!==p.id&&n.state!=='outside'&&Math.hypot(n.position.x-p.position.x,n.position.z-p.position.z)<1.5).map(n=>({id:n.id,state:n.state,position:n.position,goal:n.goal}))})))).toBe(108);
   },30000);
 });

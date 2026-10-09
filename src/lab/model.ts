@@ -1,6 +1,6 @@
 import type { Persona } from '../simulation/profiles.ts';
 
-export const MODEL_VERSION = 'venue-event-queue/1.0';
+export const MODEL_VERSION = 'venue-event-queue/1.1';
 export const HAZARDS = ['fire','blackout','security','allergy'] as const;
 export type Hazard = typeof HAZARDS[number];
 export const hazardNames: Record<Hazard,string> = {fire:'화재 구역',blackout:'정전·출구 통제',security:'보안 위협 의심',allergy:'점심·알레르기'};
@@ -8,7 +8,7 @@ export const RULES = {
   balancedExits: {title:'출입구 분산',detail:'거리와 예상 대기를 함께 계산해 이용 가능한 출구를 배정합니다.'},
   avoidHazard: {title:'위험 구역 경로 제외',detail:'지정된 위험 구역을 지나는 경로는 배정 후보에서 제외합니다.'},
   multimodalAlert: {title:'복수 채널 안내',detail:'음성 안내를 놓치는 페르소나에게 화면 안내를 함께 전달합니다.'},
-  assistedEvacuation: {title:'이동 지원 담당 배정',detail:'지원 요청을 5명의 운영요원에게 순서대로 배정합니다.'},
+  assistedEvacuation: {title:'이동 지원 담당 배정',detail:'지원 요청을 운영요원 3명과 응급구조사 2명에게 순서대로 배정합니다.'},
   securityProtocol: {title:'보안 위협 확인 절차',detail:'일반 퇴장 안내를 중단하고 담당자 확인·수신 확인 절차를 실행합니다.'},
   allergyCheck: {title:'배식 전 알레르기 확인',detail:'식재료가 맞지 않으면 대체식 또는 담당자 확인 대기로 전환합니다.'},
 } as const;

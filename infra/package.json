@@ -1,0 +1,22 @@
+{
+  "name": "ppippoppippo-infra",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "prepare:aws": "node scripts/prepare.mjs",
+    "validate": "node scripts/validate.mjs",
+    "preflight": "node scripts/preflight.mjs",
+    "deploy": "node scripts/deploy.mjs",
+    "smoke": "node scripts/smoke.mjs",
+    "preview": "../node_modules/.bin/vite preview --config preview.config.ts --host 127.0.0.1 --port 4179 --strictPort",
+    "test": "../node_modules/.bin/vitest run --root .. infra",
+    "typecheck": "../node_modules/.bin/tsc -p tsconfig.json"
+  },
+  "devDependencies": {
+    "esbuild": "0.28.2",
+    "yaml": "2.9.1"
+  }
+}

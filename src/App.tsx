@@ -7,11 +7,12 @@ import { useProgress } from '@react-three/drei';
 import { Scene } from './scene/Scene';
 import { useUI } from './state';
 import { world } from './simulation/world';
-import { EXITS, roleNames, stateNames } from './simulation/layout';
+import { EXITS, roleNames, roleEntries, roleColors, stateNames } from './simulation/layout';
 import { AgendaPanel, DecisionAutomation } from './AgendaPanel';
 import { Header, SceneIdentity, SituationSummary, Journey, EventToast } from './Hud';
 import { useJudgment } from './decision/store';
 import { PeoplePanel } from './people/PeoplePanel';
+import { RoleDot } from './people/RoleDot';
 import { LabPanel, LabStats } from './lab/LabPanel';
 import { LabHUD } from './lab/LabHUD';
 import { useLab } from './lab/store';
@@ -42,7 +43,7 @@ function Stats(){
 }
 function SelectedPerson(){
   const id=useUI(s=>s.selected);useUI(s=>s.data.time);const p=world.people.find(p=>p.id===id);if(!p)return null;
-  return <section className="selected-card"><div className="selected-heading"><div className={`person-avatar ${p.role}`}><Users size={20}/></div><div><strong>{p.id}</strong><span>{roleNames[p.role]}</span></div><button className="icon-button" title="선택 해제" aria-label="선택 해제" onClick={()=>useUI.getState().select(null)}><X size={15}/></button></div><div className="selected-status"><span className={`role-dot ${p.role}`}/>{stateNames[p.state]}</div><dl><div><dt>목적지</dt><dd>{p.goalName}</dd></div><div><dt>위치</dt><dd>{p.state==='outside'?'행사장 외부':p.position.x<-4.7?'서측 팀 구역':p.position.x>4.7?'동측 팀 구역':'중앙 팀 구역'}</dd></div></dl><button className="follow-button" disabled={p.state==='outside'||p.state==='notArrived'} onClick={()=>useUI.getState().setCamera('follow')}><Focus size={14}/>이 인물 따라가기<ArrowUpRight size={14}/></button></section>;
+  return <section className="selected-card"><div className="selected-heading"><div className="person-avatar" style={{color:roleColors[p.role],backgroundColor:`${roleColors[p.role]}18`}}><Users size={20}/></div><div><strong>{p.id}</strong><span>{roleNames[p.role]}</span></div><button className="icon-button" title="선택 해제" aria-label="선택 해제" onClick={()=>useUI.getState().select(null)}><X size={15}/></button></div><div className="selected-status"><RoleDot role={p.role}/>{stateNames[p.state]}</div><dl><div><dt>목적지</dt><dd>{p.goalName}</dd></div><div><dt>위치</dt><dd>{p.state==='outside'?'행사장 외부':p.position.x<-4.7?'서측 팀 구역':p.position.x>4.7?'동측 팀 구역':'중앙 팀 구역'}</dd></div></dl><button className="follow-button" disabled={p.state==='outside'||p.state==='notArrived'} onClick={()=>useUI.getState().setCamera('follow')}><Focus size={14}/>이 인물 따라가기<ArrowUpRight size={14}/></button></section>;
 }
 function Events({full=false}:{full?:boolean}){
   const logs=useUI(s=>s.data.logs);return <section className={`events-section ${full?'full':''}`}><div className="section-heading"><span>활동 기록</span><span className="muted-count">{logs.length}</span></div><div className="event-list">{logs.slice(0,full?80:3).map(log=><div className={`event-item ${log.level}`} key={log.id}><div className="event-symbol">{log.level==='success'?<Check size={11}/>:log.level==='warning'?<Activity size={11}/>:<Radio size={11}/>}</div><div><strong>{log.title}</strong><p>{log.detail}</p></div><time>{clock(log.time)}</time></div>)}</div></section>;
@@ -51,7 +52,7 @@ function Overview(){
   const d=useUI(s=>s.data);const selected=useUI(s=>s.selected);
   return <><SituationSummary/>{selected&&<SelectedPerson/>}
     <section className="exit-section"><div className="section-heading"><span>출입구 제어</span><span className="muted-label">클릭하여 상태 변경</span></div>{d.exits.map((e,i)=><button className={`exit-row ${e.open?'':'closed'}`} key={e.id} onClick={()=>world.toggleExit(e.id)} aria-label={`${e.id} 출입구 ${e.open?'통제':'개방'}`}><span className="exit-letter">{e.id}</span><span className="exit-name">{EXITS[i].name}<small>대기 {e.queue}명 · 퇴장 {e.departed}명</small></span><span className="exit-state"><i/>{e.open?'개방':'통제'}</span><ChevronRight size={13}/></button>)}</section>
-    <button className={`dispatch-button ${d.guidance?'dispatched':''}`} disabled={d.guidance||!d.ready} onClick={()=>world.dispatch()}>{d.guidance?<Check size={17}/>:<Navigation size={17}/>}<span>{d.guidance?(d.guides?`현장 안내 ${d.guides}명`:'현장 이동 중'):'운영요원 배치'}<small>{d.guidance?`${d.guides}/5명 도착 · 동선 분산 적용`:'5명의 운영요원에게 안내 요청'}</small></span><ArrowUpRight size={16}/></button>
+    <button className={`dispatch-button ${d.guidance?'dispatched':''}`} disabled={d.guidance||!d.ready} onClick={()=>world.dispatch()}>{d.guidance?<Check size={17}/>:<Navigation size={17}/>}<span>{d.guidance?(d.guides?`현장 안내 ${d.guides}명`:'현장 이동 중'):'현장 인력 배치'}<small>{d.guidance?`${d.guides}/5명 도착 · 동선 분산 적용`:'운영요원 3명 · 응급구조사 2명'}</small></span><ArrowUpRight size={16}/></button>
     <section className="zones-section"><div className="section-heading"><span>구역별 현황</span><span className="muted-label">현재 인원</span></div>{d.zones.map((z,i)=><div className="zone-row" key={z.name}><div className="zone-row-top"><span><i className={`zone-color zone-${i}`}/>{z.name.split(' · ')[1]}</span><strong>{z.count}<small>명</small></strong></div><div className="zone-track"><i style={{width:`${Math.min(100,z.count/55*100)}%`}}/></div><div className="zone-caption"><span>{z.pressure>6?'대기열 관찰 중':'정상 흐름'}</span><span>이동 {z.moving}명</span></div></div>)}</section>
     {!selected&&<Events/>}
   </>;
@@ -82,7 +83,7 @@ export default function App(){
       {labMode?<><LabStats/><LabHUD/></>:<><SceneIdentity/><Stats/></>}<ViewControls/><Operations/>
       <aside className="floating-feed" aria-label="가상 및 실제 CCTV 영상"><CctvMonitor/></aside>
       {d.story&&<div className="story-card"><Sparkles size={16}/><span>LIVE TOUR</span><strong>{storyNames[d.storyStep]}</strong><b>{Math.max(0,85-Math.floor(d.time))}s</b></div>}
-      <div className="scene-footer"><div className="legend">{Object.entries(roleNames).map(([role,label])=><span key={role}><i className={`role-dot ${role}`}/>{label}</span>)}</div><div className="interaction-hint"><MousePointer2 size={12}/>드래그로 회전 · 스크롤로 확대</div></div>
+      <div className="scene-footer"><div className="legend" aria-label="캐릭터 역할 색상">{roleEntries.map(([role,label])=><span key={role}><RoleDot role={role}/>{label}</span>)}</div><div className="interaction-hint"><MousePointer2 size={12}/>드래그로 회전 · 스크롤로 확대</div></div>
       {!labMode&&<><EventToast/><Journey/></>}</>}
       {(!d.ready||progress.active)&&!d.error&&<div className="loading-screen"><Logo/><h2>공간에 생명을 불어넣는 중</h2><p>{!d.ready?'이동 공간을 계산합니다.':'캐릭터와 행사장 에셋을 불러옵니다.'}</p><div className="loading-track"><i style={{width:`${Math.max(8,progress.progress)}%`}}/></div></div>}
       {d.error&&<div className="loading-screen"><h2>공간을 준비하지 못했습니다.</h2><p>{d.error}</p><button onClick={()=>location.reload()}>다시 시도</button></div>}

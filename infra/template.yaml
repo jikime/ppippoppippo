@@ -1,0 +1,479 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: ppippoppippo public demo - private S3, CloudFront, HTTP API and Decisions Lambda in ap-southeast-2. See infra/README.md.
+Metadata:
+  AWSToolsMetrics:
+    AWSAgentToolkit: aws-cloudformation@3
+Parameters:
+  ArtifactBucket:
+    Type: String
+    Description: Private artifact bucket created by bootstrap.yaml in the same Region.
+  ArtifactKey:
+    Type: String
+    AllowedPattern: 'lambda/[a-f0-9]{64}\.zip'
+  OpenAISecretArn:
+    Type: String
+    Default: ''
+    AllowedPattern: '^$|^arn:aws:secretsmanager:ap-southeast-2:[0-9]{12}:secret:[a-zA-Z0-9/_+=.@-]+$'
+    Description: Optional same-project secret ARN with JSON key OPENAI_API_KEY; empty disables AI.
+  SecretRevision:
+    Type: String
+    Default: '1'
+    AllowedPattern: '[a-zA-Z0-9._-]{1,64}'
+    Description: Change this value after rotating secret values to refresh Lambda configuration.
+Conditions:
+  HasOpenAIKey: !Not [!Equals [!Ref OpenAISecretArn, '']]
+Resources:
+  SiteBucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Metadata:
+      com.aws.cloudformation.Context:
+        why: Serve only the Vite production output, including local fonts, models and CCTV media.
+        must: Private OAC origin in ap-southeast-2; retain versions for recovery.
+    Properties:
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      OwnershipControls:
+        Rules: [{ObjectOwnership: BucketOwnerEnforced}]
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault: {SSEAlgorithm: AES256}
+      VersioningConfiguration: {Status: Enabled}
+  OriginSecret:
+    Type: AWS::SecretsManager::Secret
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Metadata:
+      com.aws.cloudformation.Context:
+        why: Authenticate CloudFront to API Gateway so public visitors use the configured HTTPS entry point.
+        must: Never send this generated value to the browser or write it in outputs or logs.
+    Properties:
+      Description: !Sub '${AWS::StackName} private CloudFront origin header'
+      GenerateSecretString:
+        SecretStringTemplate: '{}'
+        GenerateStringKey: token
+        PasswordLength: 48
+        ExcludePunctuation: true
+  DecisionsLogs:
+    Type: AWS::Logs::LogGroup
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Metadata:
+      com.aws.cloudformation.Context:
+        why: Diagnose runtime failures without logging request bodies or credentials.
+        must: Keep logs in the selected Region and expire entries after 14 days.
+    Properties:
+      LogGroupName: !Sub '/aws/lambda/${AWS::StackName}-decisions'
+      RetentionInDays: 14
+  AuthorizerLogs:
+    Type: AWS::Logs::LogGroup
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Metadata:
+      com.aws.cloudformation.Context:
+        why: Diagnose origin authorization runtime errors.
+        must: Do not log the origin verification header.
+    Properties:
+      LogGroupName: !Sub '/aws/lambda/${AWS::StackName}-origin-authorizer'
+      RetentionInDays: 14
+  ApiLogs:
+    Type: AWS::Logs::LogGroup
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Metadata:
+      com.aws.cloudformation.Context:
+        why: Record API status and latency for deployment troubleshooting.
+        must: Log no headers, request bodies or OpenAI responses; retain 14 days.
+    Properties:
+      RetentionInDays: 14
+  DecisionsRole:
+    Type: AWS::IAM::Role
+    Metadata:
+      com.aws.cloudformation.Context:
+        why: Decisions Lambda calls OpenAI over HTTPS and only needs AWS log writes.
+        must: No broad AWS permissions; secrets are resolved by CloudFormation during deployment.
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal: {Service: lambda.amazonaws.com}
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: WriteOwnLogs
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action: [logs:CreateLogStream, logs:PutLogEvents]
+                Resource: !GetAtt DecisionsLogs.Arn
+  AuthorizerRole:
+    Type: AWS::IAM::Role
+    Metadata:
+      com.aws.cloudformation.Context:
+        why: Isolate the origin authorizer from the OpenAI API key and other AWS permissions.
+        must: Only write to the authorizer log group.
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal: {Service: lambda.amazonaws.com}
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: WriteOwnLogs
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action: [logs:CreateLogStream, logs:PutLogEvents]
+                Resource: !GetAtt AuthorizerLogs.Arn
+  DecisionsFunction:
+    Type: AWS::Lambda::Function
+    Metadata:
+      com.aws.cloudformation.Context:
+        why: Reuse the existing Decisions contracts and server middleware behind an HTTP API v2 adapter.
+        must: gpt-6-luna and server-only API key; 15-second upstream timeout; no VPC or Lambda at Edge.
+    Properties:
+      FunctionName: !Sub '${AWS::StackName}-decisions'
+      Runtime: nodejs22.x
+      Architectures: [arm64]
+      Handler: index.handler
+      Role: !GetAtt DecisionsRole.Arn
+      MemorySize: 256
+      Timeout: 20
+      Code: {S3Bucket: !Ref ArtifactBucket, S3Key: !Ref ArtifactKey}
+      Environment:
+        Variables:
+          OPENAI_API_KEY: !If [HasOpenAIKey, !Sub '{{resolve:secretsmanager:${OpenAISecretArn}:SecretString:OPENAI_API_KEY}}', '']
+          ORIGIN_SECRET: !Sub '{{resolve:secretsmanager:${OriginSecret}:SecretString:token}}'
+          SECRET_REVISION: !Ref SecretRevision
+  AuthorizerFunction:
+    Type: AWS::Lambda::Function
+    Metadata:
+      com.aws.cloudformation.Context:
+        why: Reject direct API Gateway calls without the CloudFront-generated origin credential; website visitors need no login.
+        must: This function must not receive the OpenAI API key.
+    Properties:
+      FunctionName: !Sub '${AWS::StackName}-origin-authorizer'
+      Runtime: nodejs22.x
+      Architectures: [arm64]
+      Handler: index.authorizer
+      Role: !GetAtt AuthorizerRole.Arn
+      MemorySize: 128
+      Timeout: 5
+      Code: {S3Bucket: !Ref ArtifactBucket, S3Key: !Ref ArtifactKey}
+      Environment:
+        Variables:
+          ORIGIN_SECRET: !Sub '{{resolve:secretsmanager:${OriginSecret}:SecretString:token}}'
+          SECRET_REVISION: !Ref SecretRevision
+  HttpApi:
+    Type: AWS::ApiGatewayV2::Api
+    Metadata:
+      com.aws.cloudformation.Context:
+        why: Forward the existing same-origin /api/decisions paths to Lambda.
+        must: Regional HTTP API only; all configured routes require the origin authorizer.
+    Properties:
+      Name: !Sub '${AWS::StackName}-api'
+      ProtocolType: HTTP
+  OriginAuthorizer:
+    Type: AWS::ApiGatewayV2::Authorizer
+    Metadata:
+      com.aws.cloudformation.Context:
+        why: Enforce CloudFront origin authentication before the application handler runs.
+        must: Cache only by the private origin header, not a client-controlled user identity.
+    Properties:
+      ApiId: !Ref HttpApi
+      Name: cloudfront-origin
+      AuthorizerType: REQUEST
+      AuthorizerPayloadFormatVersion: '2.0'
+      EnableSimpleResponses: true
+      AuthorizerResultTtlInSeconds: 300
+      IdentitySource: ['$request.header.x-origin-verify']
+      AuthorizerUri: !Sub 'arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${AuthorizerFunction.Arn}/invocations'
+  AuthorizerPermission:
+    Type: AWS::Lambda::Permission
+    Metadata:
+      com.aws.cloudformation.Context:
+        why: Allow only this API authorizer to invoke its Lambda function.
+        must: Restrict the source to this project and authorizer ARN.
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref AuthorizerFunction
+      Principal: apigateway.amazonaws.com
+      SourceAccount: !Ref AWS::AccountId
+      SourceArn: !Sub 'arn:${AWS::Partition}:execute-api:${AWS::Region}:${AWS::AccountId}:${HttpApi}/authorizers/${OriginAuthorizer}'
+  ApiIntegration:
+    Type: AWS::ApiGatewayV2::Integration
+    Metadata:
+      com.aws.cloudformation.Context:
+        why: Adapt HTTP requests with the documented API Gateway payload 2.0 format.
+        must: Keep the integration timeout longer than the function timeout.
+    Properties:
+      ApiId: !Ref HttpApi
+      IntegrationType: AWS_PROXY
+      IntegrationUri: !GetAtt DecisionsFunction.Arn
+      PayloadFormatVersion: '2.0'
+      TimeoutInMillis: 25000
+  DecisionsRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Metadata:
+      com.aws.cloudformation.Context:
+        why: Expose status, evaluate and review through the existing application router.
+        must: Require the custom authorizer; device APIs are deliberately absent.
+    Properties:
+      ApiId: !Ref HttpApi
+      RouteKey: 'ANY /api/decisions/{proxy+}'
+      AuthorizationType: CUSTOM
+      AuthorizerId: !Ref OriginAuthorizer
+      Target: !Sub 'integrations/${ApiIntegration}'
+  ApiStage:
+    Type: AWS::ApiGatewayV2::Stage
+    DependsOn: [DecisionsPermission, AuthorizerPermission, DecisionsRoute]
+    Metadata:
+      com.aws.cloudformation.Context:
+        why: Deploy routes automatically and provide basic throttling for a public demo.
+        must: Throttling is best effort, not a spending cap or per-user quota.
+    Properties:
+      ApiId: !Ref HttpApi
+      StageName: '$default'
+      AutoDeploy: true
+      DefaultRouteSettings:
+        ThrottlingBurstLimit: 5
+        ThrottlingRateLimit: 2
+        DetailedMetricsEnabled: true
+      AccessLogSettings:
+        DestinationArn: !GetAtt ApiLogs.Arn
+        Format: '{"requestId":"$context.requestId","route":"$context.routeKey","status":"$context.status","latency":"$context.responseLatency"}'
+  DecisionsPermission:
+    Type: AWS::Lambda::Permission
+    Metadata:
+      com.aws.cloudformation.Context:
+        why: Permit the configured HTTP API to invoke Decisions Lambda.
+        must: Scope invocation to this API, project and Decisions route prefix.
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref DecisionsFunction
+      Principal: apigateway.amazonaws.com
+      SourceAccount: !Ref AWS::AccountId
+      SourceArn: !Sub 'arn:${AWS::Partition}:execute-api:${AWS::Region}:${AWS::AccountId}:${HttpApi}/*/*/api/decisions/*'
+  SiteOriginAccess:
+    Type: AWS::CloudFront::OriginAccessControl
+    Metadata:
+      com.aws.cloudformation.Context:
+        why: Let CloudFront retrieve private S3 objects without a public website bucket.
+        must: Always sign origin requests with SigV4.
+    Properties:
+      OriginAccessControlConfig:
+        Name: !Sub '${AWS::StackName}-s3'
+        OriginAccessControlOriginType: s3
+        SigningBehavior: always
+        SigningProtocol: sigv4
+  ViewerGate:
+    Type: AWS::CloudFront::Function
+    Metadata:
+      com.aws.cloudformation.Context:
+        why: Preserve the viewer host and route SPA navigation for a public website and public AI API.
+        must: Allow all viewer networks as requested; overwrite spoofed origin headers; no Lambda at Edge.
+    Properties:
+      Name: !Sub '${AWS::StackName}-viewer'
+      AutoPublish: true
+      FunctionConfig: {Comment: Public website SPA routing and origin headers, Runtime: cloudfront-js-2.0}
+      FunctionCode: |
+        function handler(event) {
+          var request = event.request;
+          request.headers['x-viewer-host'] = {value: request.headers.host.value};
+          delete request.headers['x-origin-verify'];
+          if (request.uri.indexOf('/api/') !== 0 && request.uri.split('/').pop().indexOf('.') === -1) {
+            request.uri = '/index.html';
+          }
+          return request;
+        }
+  StaticCachePolicy:
+    Type: AWS::CloudFront::CachePolicy
+    Metadata:
+      com.aws.cloudformation.Context:
+        why: Cache hashed assets while honoring no-cache on HTML and replaceable media.
+        must: Minimum TTL zero; public static files must not contain server secrets.
+    Properties:
+      CachePolicyConfig:
+        Name: !Sub '${AWS::StackName}-static'
+        MinTTL: 0
+        DefaultTTL: 300
+        MaxTTL: 31536000
+        ParametersInCacheKeyAndForwardedToOrigin:
+          EnableAcceptEncodingGzip: true
+          EnableAcceptEncodingBrotli: true
+          CookiesConfig: {CookieBehavior: none}
+          HeadersConfig: {HeaderBehavior: none}
+          QueryStringsConfig: {QueryStringBehavior: none}
+  ApiCachePolicy:
+    Type: AWS::CloudFront::CachePolicy
+    Metadata:
+      com.aws.cloudformation.Context:
+        why: Never cache personalized API status, decisions, review results or errors.
+        must: All TTLs must remain zero.
+    Properties:
+      CachePolicyConfig:
+        Name: !Sub '${AWS::StackName}-api'
+        MinTTL: 0
+        DefaultTTL: 0
+        MaxTTL: 0
+        ParametersInCacheKeyAndForwardedToOrigin:
+          EnableAcceptEncodingGzip: false
+          CookiesConfig: {CookieBehavior: none}
+          HeadersConfig: {HeaderBehavior: none}
+          QueryStringsConfig: {QueryStringBehavior: none}
+  ApiOriginPolicy:
+    Type: AWS::CloudFront::OriginRequestPolicy
+    Metadata:
+      com.aws.cloudformation.Context:
+        why: Forward only headers consumed by Decisions middleware; use the API origin Host.
+        must: Forward Origin and the overwritten viewer host for same-origin validation.
+    Properties:
+      OriginRequestPolicyConfig:
+        Name: !Sub '${AWS::StackName}-api-origin'
+        CookiesConfig: {CookieBehavior: none}
+        QueryStringsConfig: {QueryStringBehavior: none}
+        HeadersConfig:
+          HeaderBehavior: whitelist
+          Headers: [Content-Type, Origin, x-viewer-host]
+  SecurityHeaders:
+    Type: AWS::CloudFront::ResponseHeadersPolicy
+    Metadata:
+      com.aws.cloudformation.Context:
+        why: Require HTTPS and prevent MIME sniffing and third-party framing.
+        must: Keep WASM, Web Workers and local media functional.
+    Properties:
+      ResponseHeadersPolicyConfig:
+        Name: !Sub '${AWS::StackName}-security'
+        SecurityHeadersConfig:
+          ContentTypeOptions: {Override: true}
+          FrameOptions: {FrameOption: DENY, Override: true}
+          ReferrerPolicy: {ReferrerPolicy: same-origin, Override: true}
+          StrictTransportSecurity: {AccessControlMaxAgeSec: 31536000, Override: true}
+  Distribution:
+    Type: AWS::CloudFront::Distribution
+    DependsOn: ApiStage
+    Metadata:
+      com.aws.cloudformation.Context:
+        why: Serve the public web app and API at a single HTTPS origin without a custom domain.
+        must: Global CloudFront only; Regional origins stay in ap-southeast-2; apply ViewerGate to every behavior.
+    Properties:
+      DistributionConfig:
+        Enabled: true
+        Comment: !Sub '${AWS::StackName} public demo / secret revision ${SecretRevision}'
+        DefaultRootObject: index.html
+        IPV6Enabled: true
+        HttpVersion: http2and3
+        PriceClass: PriceClass_All
+        ViewerCertificate: {CloudFrontDefaultCertificate: true}
+        # Disable CloudFront's separate error cache without rewriting API errors to HTML.
+        CustomErrorResponses:
+          - {ErrorCode: 400, ErrorCachingMinTTL: 0}
+          - {ErrorCode: 403, ErrorCachingMinTTL: 0}
+          - {ErrorCode: 404, ErrorCachingMinTTL: 0}
+          - {ErrorCode: 405, ErrorCachingMinTTL: 0}
+          - {ErrorCode: 414, ErrorCachingMinTTL: 0}
+          - {ErrorCode: 416, ErrorCachingMinTTL: 0}
+          - {ErrorCode: 500, ErrorCachingMinTTL: 0}
+          - {ErrorCode: 501, ErrorCachingMinTTL: 0}
+          - {ErrorCode: 502, ErrorCachingMinTTL: 0}
+          - {ErrorCode: 503, ErrorCachingMinTTL: 0}
+          - {ErrorCode: 504, ErrorCachingMinTTL: 0}
+        Origins:
+          - Id: site
+            DomainName: !GetAtt SiteBucket.RegionalDomainName
+            OriginAccessControlId: !GetAtt SiteOriginAccess.Id
+            S3OriginConfig: {OriginAccessIdentity: ''}
+          - Id: api
+            DomainName: !Sub '${HttpApi}.execute-api.${AWS::Region}.${AWS::URLSuffix}'
+            CustomOriginConfig:
+              HTTPSPort: 443
+              OriginProtocolPolicy: https-only
+              OriginSSLProtocols: [TLSv1.2]
+              OriginReadTimeout: 30
+            OriginCustomHeaders:
+              - HeaderName: x-origin-verify
+                HeaderValue: !Sub '{{resolve:secretsmanager:${OriginSecret}:SecretString:token}}'
+        DefaultCacheBehavior:
+          TargetOriginId: site
+          ViewerProtocolPolicy: redirect-to-https
+          AllowedMethods: [GET, HEAD, OPTIONS]
+          CachedMethods: [GET, HEAD]
+          Compress: true
+          CachePolicyId: !Ref StaticCachePolicy
+          ResponseHeadersPolicyId: !Ref SecurityHeaders
+          FunctionAssociations:
+            - EventType: viewer-request
+              FunctionARN: !GetAtt ViewerGate.FunctionARN
+        CacheBehaviors:
+          - PathPattern: '/api/*'
+            TargetOriginId: api
+            ViewerProtocolPolicy: https-only
+            AllowedMethods: [GET, HEAD, OPTIONS, PUT, PATCH, POST, DELETE]
+            CachedMethods: [GET, HEAD]
+            Compress: true
+            CachePolicyId: !Ref ApiCachePolicy
+            OriginRequestPolicyId: !Ref ApiOriginPolicy
+            ResponseHeadersPolicyId: !Ref SecurityHeaders
+            FunctionAssociations:
+              - EventType: viewer-request
+                FunctionARN: !GetAtt ViewerGate.FunctionARN
+  SiteBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Metadata:
+      com.aws.cloudformation.Context:
+        why: Permit object reads only from this CloudFront distribution and require HTTPS.
+        must: Keep all S3 public access blocks enabled.
+    Properties:
+      Bucket: !Ref SiteBucket
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal: {Service: cloudfront.amazonaws.com}
+            Action: s3:GetObject
+            Resource: !Sub '${SiteBucket.Arn}/*'
+            Condition:
+              StringEquals:
+                AWS:SourceArn: !Sub 'arn:${AWS::Partition}:cloudfront::${AWS::AccountId}:distribution/${Distribution}'
+          - Effect: Deny
+            Principal: '*'
+            Action: s3:*
+            Resource: [!GetAtt SiteBucket.Arn, !Sub '${SiteBucket.Arn}/*']
+            Condition:
+              Bool: {aws:SecureTransport: 'false'}
+  ApiFailureAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Metadata:
+      com.aws.cloudformation.Context:
+        why: Surface API failures in CloudWatch during a demo without sending external notifications.
+        must: No message destinations are configured; this is a console-visible alarm only.
+    Properties:
+      AlarmDescription: Decisions HTTP API returned at least three 5xx responses in five minutes.
+      Namespace: AWS/ApiGateway
+      MetricName: 5xx
+      Dimensions: [{Name: ApiId, Value: !Ref HttpApi}]
+      Statistic: Sum
+      Period: 300
+      EvaluationPeriods: 1
+      Threshold: 3
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      TreatMissingData: notBreaching
+Outputs:
+  WebsiteUrl:
+    Value: !Sub 'https://${Distribution.DomainName}'
+  SiteBucketName:
+    Value: !Ref SiteBucket
+  DistributionId:
+    Value: !Ref Distribution
+  ApiEndpoint:
+    Description: Diagnostic origin URL; direct unauthenticated access must be rejected.
+    Value: !GetAtt HttpApi.ApiEndpoint
+  DecisionsFunctionName:
+    Value: !Ref DecisionsFunction

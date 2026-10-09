@@ -4,13 +4,14 @@ import { AlertTriangle, Check, Plug, Usb, Volume2 } from 'lucide-react';
 import { alertInfo, alertKey, catalog, displayFor } from './alerts';
 import type { DeviceAlert } from './alerts';
 import { useDevice } from './store';
+import { devicePreviewOnly } from './mode';
 import { AlertPictogram } from './AlertPictogram';
 import './device.css';
 
 const tests: DeviceAlert['kind'][] = ['fire','fall','medical','weapon','congestion'];
 export function DevicePanel() {
   const device = useDevice(), [zone,setZone] = useState(0);
-  const display = device.state?.display ?? displayFor(device.alerts,false);
+  const display = device.state?.display ?? displayFor(device.alerts,devicePreviewOnly);
   const info = alertInfo(display.kind), connected = device.state?.bridge.connected === true;
   const instruction = info.emphasis ? info.instruction.split(info.emphasis) : [info.instruction];
   const beaconConnected = device.state?.devices?.beacon.connected === true;
@@ -20,8 +21,10 @@ export function DevicePanel() {
   const palette = {'--device-accent':accent,'--device-background':catalog.colors.background,'--device-text':catalog.colors.text,
     '--device-live':catalog.colors.normal,'--device-waiting':catalog.colors.waiting} as CSSProperties;
   return <section className="device-panel">
+    {devicePreviewOnly?<p className="device-caption" role="status">웹 미리보기 모드입니다. 아래 시험은 화면에서만 동작합니다. 실제 USB 장치 제어는 맥에서 로컬 앱과 브리지를 실행해 주세요.</p>:<>
     <div className={`device-connection ${connected?'connected':''}`} role="status"><Usb size={17}/><div><strong>{connected?'Tuya 화면 · 응답 확인':'Tuya 화면 · 연결 대기'}</strong><small>{connected?'마지막 전송에 보드가 응답했습니다.':'USB 연결과 알림 펌웨어를 확인해 주세요.'}</small></div></div>
     <div className={`device-connection ${beaconConnected?'connected':''}`} role="status"><Volume2 size={17}/><div><strong>{beaconConnected?'ESP32 LED·음성 · 응답 확인':'ESP32 LED·음성 · 연결 대기'}</strong><small>{beaconConnected?'LED 상태 적용 응답을 받았습니다. 음성은 보드에 저장된 안내를 재생합니다.':'ESP32 보드와 LED·음성 브리지를 확인해 주세요.'}</small></div></div>
+    </>}
     <div className="device-beacon-preview" style={palette}>
       <div className={`device-led-ring pattern-${display.fresh?display.kind:display.kind==='clear'?'waiting':display.kind}`} aria-hidden="true">{Array.from({length:7},(_,i)=><i key={i} style={{'--led-index':i} as CSSProperties}/>)}</div>
       <div><strong>{!display.fresh&&display.kind==='clear'?'하늘색 연결 대기':patterns[display.kind]}</strong><small>7개 LED · 한국어 AI 합성 음성</small></div>
@@ -31,7 +34,7 @@ export function DevicePanel() {
     <div className="section-heading"><span>디스플레이 미리보기</span><small>480 × 320 · 가로</small></div>
     <div className={`device-display ${info.severity}`} style={palette} aria-label="디바이스 경고 미리보기">
       <div className="device-screen-brand"><div><strong>{catalog.labels.brand}</strong><span>{display.source==='test'?'시험 경고':'시뮬레이션'}</span></div><AlertPictogram kind={display.kind} fresh={display.fresh}/></div>
-      <div className={`device-freshness ${display.fresh?'':'stale'}`}>{display.fresh?'관제 수신 중':'연결 대기 · 마지막 안내'}</div>
+      <div className={`device-freshness ${display.fresh?'':'stale'}`}>{devicePreviewOnly?'웹 미리보기 · 장치 전송 없음':display.fresh?'관제 수신 중':'연결 대기 · 마지막 안내'}</div>
       <div className="device-screen-content"><small>{display.kind==='clear'?'관제 안내':info.severity==='critical'?'위험 경고':'주의 안내'}</small><h3>{info.title}</h3><span className="device-zone">{catalog.zones[display.zone]}</span><p>{instruction[0]}{info.emphasis&&<strong>{info.emphasis}</strong>}{instruction[1]}</p></div>
       <div className="device-screen-footer">전체 경고 {display.count}건</div><span className="device-screen-ack">{catalog.labels.ack}</span>
     </div>

@@ -2,12 +2,24 @@ import { describe, expect, test } from 'vitest';
 import { conditionsFor, positionAt, replayWorld, runPair, simulate } from './engine';
 import { BASELINE, IMPROVED, rankFindings, validConfig } from './model';
 import type { RunConfig } from './model';
-import { TABLES } from '../simulation/layout';
+import { TABLES, staffStart } from '../simulation/layout';
 import { persona } from '../simulation/profiles';
 import { report } from './report';
 
 const config:RunConfig={seed:20261009,count:100,hazard:'mixed',horizon:180,baseline:{...BASELINE},candidate:{...IMPROVED}};
 describe('reproducible paired world experiments',()=>{
+  test('replays keep staff uniforms separate at the same distinct posts as the live venue',()=>{
+    const result=runPair({...config,hazard:'blackout'},0);
+    const replay=replayWorld(config,result,'before');
+    const positions=replay.agents.map(a=>({id:a.persona.id,position:positionAt(a,0)}));
+    for(let i=0;i<positions.length;i++)for(let j=i+1;j<positions.length;j++){
+      const a=positions[i],b=positions[j];
+      expect(Math.hypot(a.position.x-b.position.x,a.position.z-b.position.z),`${a.id} overlaps ${b.id}`).toBeGreaterThan(.5);
+    }
+    const staff=replay.agents.filter(a=>a.persona.role!=='participant');
+    expect(staff.filter(a=>a.persona.role==='paramedic')).toHaveLength(2);
+    for(const a of staff){const {x,z}=staffStart(a.persona.ordinal);expect(positionAt(a,0)).toEqual({x,z});}
+  });
   test('seed controls the environment and all person traits independently of manual branches',()=>{
     const first=runPair(config,4);expect(runPair(config,4)).toEqual(first);expect(runPair({...config,seed:8},4)).not.toEqual(first);
     const b=replayWorld(config,first,'before'),a=replayWorld(config,first,'after');

@@ -8,10 +8,14 @@ import { replayPositionAt } from './engine';
 import { hazardNames } from './model';
 import type { TraceAgent } from './model';
 import { useUI } from '../state';
+import { characterUrl, characterVariant } from '../simulation/appearance';
+import { roleNames } from '../simulation/layout';
+import { RoleDot } from '../people/RoleDot';
+import { RoleMarker } from '../scene/RoleMarker';
 
 function ReplayAvatar({agent:a}:{agent:TraceAgent}){
-  const p=a.persona,variant=p.role==='participant'?['participant-teal','participant-navy','participant-cream'][p.ordinal%3]:p.role;
-  const gltf=useGLTF(`/models/${variant}.glb`),root=useRef<THREE.Group>(null);
+  const p=a.persona,variant=characterVariant(p.role,p.ordinal);
+  const gltf=useGLTF(characterUrl(variant)),root=useRef<THREE.Group>(null);
   const selected=useLab(s=>s.selected===p.id);
   const rig=useMemo(()=>{const o=clone(gltf.scene);o.traverse(m=>{if(m instanceof THREE.Mesh){m.castShadow=true;m.frustumCulled=false;}});return o;},[gltf.scene]);
   const mixer=useMemo(()=>new THREE.AnimationMixer(rig),[rig]);
@@ -31,8 +35,9 @@ function ReplayAvatar({agent:a}:{agent:TraceAgent}){
     mixer.setTime(t*(walking?p.walkSpeed:1)+p.ordinal*.173);
   });
   return <group ref={root} onClick={e=>{e.stopPropagation();useLab.setState({selected:p.id});}} onPointerOver={e=>{e.stopPropagation();document.body.style.cursor='pointer';}} onPointerOut={()=>document.body.style.cursor='auto'}><primitive object={rig}/>
-    {(selected||a.risky||a.allergyMismatch)&&<mesh rotation-x={-Math.PI/2} position-y={.035}><ringGeometry args={[.3,selected?.4:.35,24]}/><meshBasicMaterial color={selected?'#fbca5a':a.allergyMismatch?'#b660d4':'#ee7954'} transparent opacity={.8}/></mesh>}
-    {selected&&<Html position={[0,2.1,0]} center zIndexRange={[25,10]}><div className="person-label"><b>{p.name}</b><span>{p.id} · 실험 인물</span></div></Html>}
+    <RoleMarker role={p.role} selected={selected}/>
+    {(a.risky||a.allergyMismatch)&&<mesh rotation-x={-Math.PI/2} position-y={.035}><ringGeometry args={[.49,.54,24]}/><meshBasicMaterial color={a.allergyMismatch?'#b660d4':'#ee7954'} transparent opacity={.8}/></mesh>}
+    {selected&&<Html position={[0,2.45,0]} center zIndexRange={[25,10]}><div className="person-label"><RoleDot role={p.role}/><b>{p.name}</b><span>{p.id} · {roleNames[p.role]}</span></div></Html>}
   </group>;
 }
 function HazardZone(){
