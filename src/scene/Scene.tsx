@@ -121,7 +121,7 @@ function VirtualCamera(){
     if(resources.target.width!==width||resources.target.height!==height){resources.target.setSize(width,height);resources.buffer=new Uint8Array(width*height*4);}
     if(canvas.dataset.camera==='2'){resources.camera.position.set(-13.3,3.5,-5.5);resources.camera.lookAt(4,.7,3);}else{resources.camera.position.set(13.3,3.5,6.5);resources.camera.lookAt(-4,.8,-2);}
     const old=gl.getRenderTarget(),oldShadows=gl.shadowMap.autoUpdate,oldTone=gl.toneMapping,oldBackground=scene.background;
-    gl.shadowMap.autoUpdate=false;gl.toneMapping=THREE.ACESFilmicToneMapping;scene.background=new THREE.Color(night?'#647065':'#d7dfd1');
+    gl.shadowMap.autoUpdate=false;gl.toneMapping=THREE.ACESFilmicToneMapping;scene.background=new THREE.Color('#000000');
     gl.setRenderTarget(resources.target);gl.render(scene,resources.camera);gl.readRenderTargetPixels(resources.target,0,0,width,height,resources.buffer);
     gl.setRenderTarget(old);gl.shadowMap.autoUpdate=oldShadows;gl.toneMapping=oldTone;scene.background=oldBackground;
     const ctx=canvas.getContext('2d');ctx?.putImageData(new ImageData(new Uint8ClampedArray(resources.buffer),width,height),0,0);
@@ -132,6 +132,7 @@ function Contents(){
   const night=useUI(s=>s.night),quality=useUI(s=>s.quality);
   const lab=useUI(s=>s.panel==='lab'),replay=useLab(s=>s.replay);
   return <>
+    <color attach="background" args={['#000000']}/>
     <Simulation/><Environment/><CameraRig/><AdaptiveResolution/>
     <ambientLight intensity={night?.18:.25}/><hemisphereLight args={['#e5f4ef','#8f9b82',night?.35:.65]}/>
     <directionalLight position={[-10,22,12]} intensity={night?1.1:2.1} color={night?'#b5cdd8':'#fff7df'} castShadow shadow-mapSize={quality==='high'?[2048,2048]:[1024,1024]} shadow-camera-left={-23} shadow-camera-right={23} shadow-camera-top={20} shadow-camera-bottom={-20} shadow-normalBias={.025} shadow-bias={-.0001} shadow-radius={3}/>
