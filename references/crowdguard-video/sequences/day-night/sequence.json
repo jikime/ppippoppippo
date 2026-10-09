@@ -1,0 +1,130 @@
+{
+  "video": "V02",
+  "name": "day-night",
+  "start": 16.0,
+  "end": 19.0,
+  "requested_fps": "8",
+  "frames": [
+    {
+      "time": 16.0,
+      "source_frame": 384,
+      "image": "sequences/day-night/frame_00001.jpg"
+    },
+    {
+      "time": 16.125,
+      "source_frame": 387,
+      "image": "sequences/day-night/frame_00002.jpg"
+    },
+    {
+      "time": 16.25,
+      "source_frame": 390,
+      "image": "sequences/day-night/frame_00003.jpg"
+    },
+    {
+      "time": 16.375,
+      "source_frame": 393,
+      "image": "sequences/day-night/frame_00004.jpg"
+    },
+    {
+      "time": 16.5,
+      "source_frame": 396,
+      "image": "sequences/day-night/frame_00005.jpg"
+    },
+    {
+      "time": 16.625,
+      "source_frame": 399,
+      "image": "sequences/day-night/frame_00006.jpg"
+    },
+    {
+      "time": 16.75,
+      "source_frame": 402,
+      "image": "sequences/day-night/frame_00007.jpg"
+    },
+    {
+      "time": 16.875,
+      "source_frame": 405,
+      "image": "sequences/day-night/frame_00008.jpg"
+    },
+    {
+      "time": 17.0,
+      "source_frame": 408,
+      "image": "sequences/day-night/frame_00009.jpg"
+    },
+    {
+      "time": 17.125,
+      "source_frame": 411,
+      "image": "sequences/day-night/frame_00010.jpg"
+    },
+    {
+      "time": 17.25,
+      "source_frame": 414,
+      "image": "sequences/day-night/frame_00011.jpg"
+    },
+    {
+      "time": 17.375,
+      "source_frame": 417,
+      "image": "sequences/day-night/frame_00012.jpg"
+    },
+    {
+      "time": 17.5,
+      "source_frame": 420,
+      "image": "sequences/day-night/frame_00013.jpg"
+    },
+    {
+      "time": 17.625,
+      "source_frame": 423,
+      "image": "sequences/day-night/frame_00014.jpg"
+    },
+    {
+      "time": 17.75,
+      "source_frame": 426,
+      "image": "sequences/day-night/frame_00015.jpg"
+    },
+    {
+      "time": 17.875,
+      "source_frame": 429,
+      "image": "sequences/day-night/frame_00016.jpg"
+    },
+    {
+      "time": 18.0,
+      "source_frame": 432,
+      "image": "sequences/day-night/frame_00017.jpg"
+    },
+    {
+      "time": 18.125,
+      "source_frame": 435,
+      "image": "sequences/day-night/frame_00018.jpg"
+    },
+    {
+      "time": 18.25,
+      "source_frame": 438,
+      "image": "sequences/day-night/frame_00019.jpg"
+    },
+    {
+      "time": 18.375,
+      "source_frame": 441,
+      "image": "sequences/day-night/frame_00020.jpg"
+    },
+    {
+      "time": 18.5,
+      "source_frame": 444,
+      "image": "sequences/day-night/frame_00021.jpg"
+    },
+    {
+      "time": 18.625,
+      "source_frame": 447,
+      "image": "sequences/day-night/frame_00022.jpg"
+    },
+    {
+      "time": 18.75,
+      "source_frame": 450,
+      "image": "sequences/day-night/frame_00023.jpg"
+    },
+    {
+      "time": 18.875,
+      "source_frame": 453,
+      "image": "sequences/day-night/frame_00024.jpg"
+    }
+  ],
+  "contact_sheet": "contact-sheets/day-night.jpg"
+}

@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>CrowdGuard · 3D 구현 레퍼런스</title>
+  <link rel="stylesheet" href="gallery.css">
+  <script defer src="reference-data.js"></script>
+  <script defer src="gallery.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="#top"><span class="brand-mark">C</span> CrowdGuard <span class="muted">/ REFERENCE</span></a>
+    <nav aria-label="자료 탐색">
+      <a href="#shots">핵심 장면</a><a href="#viewer">영상·프레임</a><a href="#motion">애니메이션</a><a href="#assets">에셋 명세</a><a href="#implementation">구현 기준</a>
+    </nav>
+  </header>
+  <main id="top">
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-copy">
+        <p class="eyebrow">VISUAL REFERENCE LIBRARY <span>2026.10.09</span></p>
+        <h1 id="hero-title">움직이는 공간,<br><em>읽히는 운영 상태.</em></h1>
+        <p class="lead">네 영상에서 찾은 3D 표현을 CrowdGuard의 관객, 출구, 동선, 관제 화면에 연결합니다.</p>
+        <p class="muted">캡처와 제작 명세를 모은 구현 참고 자료입니다. 영상에서 확인한 모습과 새로 제안하는 동작을 구분했습니다.</p>
+        <a class="button primary" href="#shots">핵심 장면 살펴보기 <span>↗</span></a>
+      </div>
+      <a class="hero-visual" href="#viewer" data-watch="V02" data-time="12" aria-label="V02 운영 공간 조감도 영상 보기">
+        <img src="keyframes/K06.png" alt="상태 라벨과 객체 카드가 배치된 3D 창고 관제 화면">
+        <span class="image-caption"><span>V02 · 3D 관제</span><span>00:12 →</span></span>
+      </a>
+    </section>
+    <div class="stats" id="stats" aria-label="자료 구성"></div>
+    <section aria-labelledby="direction-title">
+      <div class="section-heading"><div><p class="eyebrow">01 / DIRECTION</p><h2 id="direction-title">네 영상의 역할</h2></div><p>공간 중심 관제를 기본으로, UI·카메라·건축 표현을 더합니다.</p></div>
+      <div class="direction-grid" id="directions"></div>
+    </section>
+    <section id="shots" aria-labelledby="shots-title">
+      <div class="section-heading"><div><p class="eyebrow">02 / KEY FRAMES</p><h2 id="shots-title">제작할 때 다시 볼 18개 장면</h2></div><p>이미지를 누르면 원본 해상도 PNG와 제작 메모가 열립니다.</p></div>
+      <div class="filters" id="shot-filters" role="group" aria-label="핵심 장면 필터"></div>
+      <div class="shot-grid" id="shot-grid"></div>
+    </section>
+    <section id="viewer" aria-labelledby="viewer-title">
+      <div class="section-heading"><div><p class="eyebrow">03 / FRAME EXPLORER</p><h2 id="viewer-title">영상과 프레임을 함께 확인</h2></div><p>시각은 원본 영상 기준 · 프레임 번호는 0부터 시작</p></div>
+      <div class="viewer-layout">
+        <div class="video-panel panel">
+          <div class="control-row"><label for="video-select">원본 영상</label><select id="video-select"></select></div>
+          <video id="player" controls playsinline muted preload="metadata"></video>
+          <div class="control-row playback-row"><output id="player-time">00:00.000</output><label for="speed">재생 속도</label><select id="speed"><option value="0.25">0.25×</option><option value="0.5">0.5×</option><option value="1" selected>1×</option></select><button id="play-range" type="button">선택 구간 반복</button></div>
+          <p class="muted small" id="video-meta"></p>
+          <div class="links" id="video-links"></div>
+          <div class="segments" id="segments" aria-label="영상 구간 바로가기"></div>
+        </div>
+        <div class="frame-panel panel">
+          <div class="control-row"><label for="sequence-select">프레임 묶음</label><select id="sequence-select"></select></div>
+          <button class="frame-image" id="frame-zoom" type="button" aria-label="현재 프레임 확대"><img id="frame-preview" alt="선택한 원본 프레임"></button>
+          <div class="frame-scrubber"><button id="frame-prev" type="button" aria-label="이전 프레임">←</button><input id="frame-range" type="range" min="0" value="0" aria-label="프레임 탐색"><button id="frame-next" type="button" aria-label="다음 프레임">→</button></div>
+          <div class="frame-caption"><output id="frame-info"></output><button id="frame-seek" class="text-button" type="button">영상에서 보기 ↗</button></div>
+          <p id="sequence-note"></p><p id="sequence-apply" class="muted small"></p>
+          <div class="links"><a id="frame-file" target="_blank" rel="noopener">캡처 파일 열기 ↗</a><a id="sheet-file" target="_blank" rel="noopener">프레임 모아보기 ↗</a></div>
+        </div>
+      </div>
+      <p class="footnote">전체를 1초 간격으로 추출하고 동작 구간 9개를 더 촘촘하게 저장했습니다. 차량 회전(2초)과 층 조립(1초)은 원본의 모든 프레임을 담았습니다. PNG도 원본 영상의 압축 손실을 복구하지는 않습니다.</p>
+    </section>
+    <section id="motion" aria-labelledby="motion-title">
+      <div class="section-heading"><div><p class="eyebrow">04 / MOTION SPECIFICATION</p><h2 id="motion-title">움직임을 구현하는 기준</h2></div><p>장식 동작과 시뮬레이션 상태를 연결하는 10개 항목</p></div>
+      <div class="motion-grid" id="motion-grid"></div>
+    </section>
+    <section id="assets" aria-labelledby="assets-title">
+      <div class="section-heading"><div><p class="eyebrow">05 / ASSET SPECIFICATION</p><h2 id="assets-title">공간을 구성할 에셋 18종</h2></div><p>P0 핵심 동작 · P1 공간과 관제 · P2 발표 연출</p></div>
+      <div class="asset-toolbar"><div class="filters" id="asset-filters" role="group" aria-label="에셋 우선순위"></div><label class="search-label">에셋 찾기 <input id="asset-search" type="search" placeholder="관객, 출구, 조명…"></label></div>
+      <p class="muted small">직접 관찰: 영상에 해당 표현이 있음 · 형태 응용: 다른 시설을 참고해 변형 · CrowdGuard 추가: 영상과 별도로 설계</p>
+      <div class="asset-grid" id="asset-grid"></div><p id="asset-empty" hidden>검색에 맞는 에셋이 없습니다.</p>
+    </section>
+    <section id="implementation" aria-labelledby="implementation-title">
+      <div class="section-heading"><div><p class="eyebrow">06 / IMPLEMENTATION HANDOFF</p><h2 id="implementation-title">현재 시뮬레이터에서 이어갈 작업</h2></div><p>먼저 상태를 연결하고, 그 위에 동작과 공간을 만듭니다.</p></div>
+      <div class="handoff-grid"><article class="panel"><h3>현재 구현과의 차이</h3><ul id="gaps"></ul></article><article class="panel"><h3>에셋 공통 규칙</h3><div id="contract"></div></article></div>
+      <ol class="build-order" id="build-order"></ol>
+      <div class="handoff-grid"><article class="panel"><h3>성능 설계 제안</h3><ul id="performance"></ul></article><article class="panel"><h3>완료 판단 기준</h3><ul id="done"></ul></article></div>
+      <details class="panel evidence"><summary>관찰 범위와 자료 재사용 방법</summary><ul id="evidence"></ul><p>이 폴더 전체를 함께 보관하면 인터넷이나 별도 서버 없이 <code>index.html</code>을 열 수 있습니다. V03은 브라우저 재생용 H.264 미리보기를 사용하며 HEVC 원본도 보관했습니다.</p><p>다른 구간을 원본의 모든 프레임으로 추출하는 예시 (이 폴더에서 실행):</p><pre><code>python3 scripts/capture.py sequence V02 --start 40 --end 42 --fps source --name vehicle-turn-extra
+python3 scripts/build_gallery.py</code></pre><p class="small muted">Python 3, Pillow, ffmpeg, ffprobe가 필요합니다. 새 시퀀스를 갤러리에 표시하려면 reference-catalog.json의 sequences에 설명을 추가한 뒤 갤러리를 다시 생성합니다.</p><div class="links"><a href="reference-catalog.json" target="_blank" rel="noopener">제작 명세 JSON ↗</a><a href="reference-data.json" target="_blank" rel="noopener">캡처 연결 데이터 ↗</a><a href="manifest.json" target="_blank" rel="noopener">원본·메타데이터 ↗</a><a href="scripts/capture.py" download>추출 스크립트 ↓</a></div></details>
+    </section>
+    <footer><span>CrowdGuard / 3D REFERENCE LIBRARY</span><span>4개의 제공 영상에 근거한 분석 · 제작 명세 단계</span></footer>
+  </main>
+  <dialog id="lightbox"><button id="lightbox-close" class="close-button" type="button" aria-label="확대 화면 닫기">닫기 ×</button><img id="lightbox-image" alt=""><div class="lightbox-copy"><p class="eyebrow" id="lightbox-meta"></p><h2 id="lightbox-title"></h2><p id="lightbox-note"></p><div class="links"><button type="button" class="button primary" id="lightbox-watch">영상의 같은 시점 보기 ↗</button><a id="lightbox-file" target="_blank" rel="noopener">원본 해상도 캡처 ↗</a></div></div></dialog>
+  <noscript>갤러리를 이용하려면 JavaScript를 활성화하세요. reference-catalog.json에 전체 제작 명세가 있습니다.</noscript>
+</body>
+</html>

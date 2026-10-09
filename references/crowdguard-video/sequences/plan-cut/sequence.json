@@ -1,0 +1,130 @@
+{
+  "video": "V04",
+  "name": "plan-cut",
+  "start": 19.0,
+  "end": 22.0,
+  "requested_fps": "8",
+  "frames": [
+    {
+      "time": 19.0,
+      "source_frame": 456,
+      "image": "sequences/plan-cut/frame_00001.jpg"
+    },
+    {
+      "time": 19.125,
+      "source_frame": 459,
+      "image": "sequences/plan-cut/frame_00002.jpg"
+    },
+    {
+      "time": 19.25,
+      "source_frame": 462,
+      "image": "sequences/plan-cut/frame_00003.jpg"
+    },
+    {
+      "time": 19.375,
+      "source_frame": 465,
+      "image": "sequences/plan-cut/frame_00004.jpg"
+    },
+    {
+      "time": 19.5,
+      "source_frame": 468,
+      "image": "sequences/plan-cut/frame_00005.jpg"
+    },
+    {
+      "time": 19.625,
+      "source_frame": 471,
+      "image": "sequences/plan-cut/frame_00006.jpg"
+    },
+    {
+      "time": 19.75,
+      "source_frame": 474,
+      "image": "sequences/plan-cut/frame_00007.jpg"
+    },
+    {
+      "time": 19.875,
+      "source_frame": 477,
+      "image": "sequences/plan-cut/frame_00008.jpg"
+    },
+    {
+      "time": 20.0,
+      "source_frame": 480,
+      "image": "sequences/plan-cut/frame_00009.jpg"
+    },
+    {
+      "time": 20.125,
+      "source_frame": 483,
+      "image": "sequences/plan-cut/frame_00010.jpg"
+    },
+    {
+      "time": 20.25,
+      "source_frame": 486,
+      "image": "sequences/plan-cut/frame_00011.jpg"
+    },
+    {
+      "time": 20.375,
+      "source_frame": 489,
+      "image": "sequences/plan-cut/frame_00012.jpg"
+    },
+    {
+      "time": 20.5,
+      "source_frame": 492,
+      "image": "sequences/plan-cut/frame_00013.jpg"
+    },
+    {
+      "time": 20.625,
+      "source_frame": 495,
+      "image": "sequences/plan-cut/frame_00014.jpg"
+    },
+    {
+      "time": 20.75,
+      "source_frame": 498,
+      "image": "sequences/plan-cut/frame_00015.jpg"
+    },
+    {
+      "time": 20.875,
+      "source_frame": 501,
+      "image": "sequences/plan-cut/frame_00016.jpg"
+    },
+    {
+      "time": 21.0,
+      "source_frame": 504,
+      "image": "sequences/plan-cut/frame_00017.jpg"
+    },
+    {
+      "time": 21.125,
+      "source_frame": 507,
+      "image": "sequences/plan-cut/frame_00018.jpg"
+    },
+    {
+      "time": 21.25,
+      "source_frame": 510,
+      "image": "sequences/plan-cut/frame_00019.jpg"
+    },
+    {
+      "time": 21.375,
+      "source_frame": 513,
+      "image": "sequences/plan-cut/frame_00020.jpg"
+    },
+    {
+      "time": 21.5,
+      "source_frame": 516,
+      "image": "sequences/plan-cut/frame_00021.jpg"
+    },
+    {
+      "time": 21.625,
+      "source_frame": 519,
+      "image": "sequences/plan-cut/frame_00022.jpg"
+    },
+    {
+      "time": 21.75,
+      "source_frame": 522,
+      "image": "sequences/plan-cut/frame_00023.jpg"
+    },
+    {
+      "time": 21.875,
+      "source_frame": 525,
+      "image": "sequences/plan-cut/frame_00024.jpg"
+    }
+  ],
+  "contact_sheet": "contact-sheets/plan-cut.jpg"
+}

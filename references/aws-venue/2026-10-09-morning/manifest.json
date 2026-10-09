@@ -1,0 +1,1231 @@
+{
+  "scope": "2026-10-09 오전 생성된 KakaoTalk_Video_*.mp4 전수 목록",
+  "analysis_only": true,
+  "timestamp_basis": "ffprobe best_effort_timestamp_time (원본 프레임 실제 표시 시각)",
+  "capture_interval_target": 0.5,
+  "total_files": 17,
+  "venue_files": 13,
+  "style_files": 4,
+  "venue_duration": 74.233,
+  "new_captures": 165,
+  "videos": [
+    {
+      "id": "STYLE-093949",
+      "filename": "KakaoTalk_Video_2026-10-09-09-39-49.mp4",
+      "original_path": "/Users/jikime/Downloads/KakaoTalk_Video_2026-10-09-09-39-49.mp4",
+      "bytes": 2874108,
+      "created": "2026-10-09T09:39:51.199460",
+      "sha256": "2e938af3c09038137e916ade20bf6723c80e4b269dbc219be08d528f6bc6c636",
+      "group": "style",
+      "duration": 118.833333,
+      "width": 1280,
+      "height": 720,
+      "codec": "h264",
+      "avg_frame_rate": "24/1",
+      "nominal_frame_rate": "24/1",
+      "source_frames": 2852,
+      "audio": true,
+      "existing_reference": "../../crowdguard-video/index.html",
+      "frames_status": "기존 4개 영상의 캡처·분석 재사용"
+    },
+    {
+      "id": "STYLE-094001",
+      "filename": "KakaoTalk_Video_2026-10-09-09-40-01.mp4",
+      "original_path": "/Users/jikime/Downloads/KakaoTalk_Video_2026-10-09-09-40-01.mp4",
+      "bytes": 3435755,
+      "created": "2026-10-09T09:40:02.601119",
+      "sha256": "1f521b0945f95c373f9e488b93b8b130334a5b9637dccf872526aab4ae3725c1",
+      "group": "style",
+      "duration": 51.791667,
+      "width": 1300,
+      "height": 720,
+      "codec": "h264",
+      "avg_frame_rate": "24/1",
+      "nominal_frame_rate": "24/1",
+      "source_frames": 1243,
+      "audio": false,
+      "existing_reference": "../../crowdguard-video/index.html",
+      "frames_status": "기존 4개 영상의 캡처·분석 재사용"
+    },
+    {
+      "id": "STYLE-094011",
+      "filename": "KakaoTalk_Video_2026-10-09-09-40-11.mp4",
+      "original_path": "/Users/jikime/Downloads/KakaoTalk_Video_2026-10-09-09-40-11.mp4",
+      "bytes": 9901888,
+      "created": "2026-10-09T09:40:13.072618",
+      "sha256": "d8b9fe48230dad555a685366b52b3e68e236f6fc6a5cddebef89013453b2afea",
+      "group": "style",
+      "duration": 29.1,
+      "width": 1920,
+      "height": 1028,
+      "codec": "hevc",
+      "avg_frame_rate": "30/1",
+      "nominal_frame_rate": "30/1",
+      "source_frames": 873,
+      "audio": true,
+      "existing_reference": "../../crowdguard-video/index.html",
+      "frames_status": "기존 4개 영상의 캡처·분석 재사용"
+    },
+    {
+      "id": "STYLE-094018",
+      "filename": "KakaoTalk_Video_2026-10-09-09-40-18.mp4",
+      "original_path": "/Users/jikime/Downloads/KakaoTalk_Video_2026-10-09-09-40-18.mp4",
+      "bytes": 4003056,
+      "created": "2026-10-09T09:40:20.031057",
+      "sha256": "ce66d2a0840ac1471e459c341b05f53286b5268c7e33bf69d5e4c0e1fc0b3352",
+      "group": "style",
+      "duration": 29.708333,
+      "width": 1280,
+      "height": 720,
+      "codec": "h264",
+      "avg_frame_rate": "24/1",
+      "nominal_frame_rate": "24/1",
+      "source_frames": 713,
+      "audio": true,
+      "existing_reference": "../../crowdguard-video/index.html",
+      "frames_status": "기존 4개 영상의 캡처·분석 재사용"
+    },
+    {
+      "id": "AWS-103828",
+      "filename": "KakaoTalk_Video_2026-10-09-10-38-28.mp4",
+      "original_path": "/Users/jikime/Downloads/KakaoTalk_Video_2026-10-09-10-38-28.mp4",
+      "bytes": 1183751,
+      "created": "2026-10-09T10:38:30.005384",
+      "sha256": "a15adf726878f9468541a6f1ec7d73e3c58ea4939684e96e869f6781b3aeec73",
+      "group": "venue",
+      "duration": 2.966667,
+      "width": 1920,
+      "height": 1080,
+      "codec": "hevc",
+      "avg_frame_rate": "2640/89",
+      "nominal_frame_rate": "30/1",
+      "source_frames": 88,
+      "audio": true,
+      "source": "sources/KakaoTalk_Video_2026-10-09-10-38-28.mp4",
+      "frames": [
+        {
+          "source_frame": 0,
+          "time": 0.0,
+          "image": "frames/AWS-103828/frame_001.jpg"
+        },
+        {
+          "source_frame": 14,
+          "time": 0.5,
+          "image": "frames/AWS-103828/frame_002.jpg"
+        },
+        {
+          "source_frame": 29,
+          "time": 1.0,
+          "image": "frames/AWS-103828/frame_003.jpg"
+        },
+        {
+          "source_frame": 44,
+          "time": 1.5,
+          "image": "frames/AWS-103828/frame_004.jpg"
+        },
+        {
+          "source_frame": 59,
+          "time": 2.0,
+          "image": "frames/AWS-103828/frame_005.jpg"
+        },
+        {
+          "source_frame": 74,
+          "time": 2.5,
+          "image": "frames/AWS-103828/frame_006.jpg"
+        },
+        {
+          "source_frame": 87,
+          "time": 2.933333,
+          "image": "frames/AWS-103828/frame_007.jpg"
+        }
+      ],
+      "sheets": [
+        "contact-sheets/AWS-103828-01.jpg"
+      ],
+      "overview": "overviews/AWS-103828.jpg"
+    },
+    {
+      "id": "AWS-103846",
+      "filename": "KakaoTalk_Video_2026-10-09-10-38-46.mp4",
+      "original_path": "/Users/jikime/Downloads/KakaoTalk_Video_2026-10-09-10-38-46.mp4",
+      "bytes": 6852515,
+      "created": "2026-10-09T10:38:48.259964",
+      "sha256": "dbe1293ef3aacda639db8db644c125855dc84673569a737b577edd88381b6d21",
+      "group": "venue",
+      "duration": 17.0,
+      "width": 1920,
+      "height": 1080,
+      "codec": "hevc",
+      "avg_frame_rate": "30/1",
+      "nominal_frame_rate": "30/1",
+      "source_frames": 510,
+      "audio": true,
+      "source": "sources/KakaoTalk_Video_2026-10-09-10-38-46.mp4",
+      "frames": [
+        {
+          "source_frame": 0,
+          "time": 0.0,
+          "image": "frames/AWS-103846/frame_001.jpg"
+        },
+        {
+          "source_frame": 15,
+          "time": 0.5,
+          "image": "frames/AWS-103846/frame_002.jpg"
+        },
+        {
+          "source_frame": 30,
+          "time": 1.0,
+          "image": "frames/AWS-103846/frame_003.jpg"
+        },
+        {
+          "source_frame": 45,
+          "time": 1.5,
+          "image": "frames/AWS-103846/frame_004.jpg"
+        },
+        {
+          "source_frame": 60,
+          "time": 2.0,
+          "image": "frames/AWS-103846/frame_005.jpg"
+        },
+        {
+          "source_frame": 75,
+          "time": 2.5,
+          "image": "frames/AWS-103846/frame_006.jpg"
+        },
+        {
+          "source_frame": 90,
+          "time": 3.0,
+          "image": "frames/AWS-103846/frame_007.jpg"
+        },
+        {
+          "source_frame": 105,
+          "time": 3.5,
+          "image": "frames/AWS-103846/frame_008.jpg"
+        },
+        {
+          "source_frame": 120,
+          "time": 4.0,
+          "image": "frames/AWS-103846/frame_009.jpg"
+        },
+        {
+          "source_frame": 135,
+          "time": 4.5,
+          "image": "frames/AWS-103846/frame_010.jpg"
+        },
+        {
+          "source_frame": 150,
+          "time": 5.0,
+          "image": "frames/AWS-103846/frame_011.jpg"
+        },
+        {
+          "source_frame": 165,
+          "time": 5.5,
+          "image": "frames/AWS-103846/frame_012.jpg"
+        },
+        {
+          "source_frame": 180,
+          "time": 6.0,
+          "image": "frames/AWS-103846/frame_013.jpg"
+        },
+        {
+          "source_frame": 195,
+          "time": 6.5,
+          "image": "frames/AWS-103846/frame_014.jpg"
+        },
+        {
+          "source_frame": 210,
+          "time": 7.0,
+          "image": "frames/AWS-103846/frame_015.jpg"
+        },
+        {
+          "source_frame": 225,
+          "time": 7.5,
+          "image": "frames/AWS-103846/frame_016.jpg"
+        },
+        {
+          "source_frame": 240,
+          "time": 8.0,
+          "image": "frames/AWS-103846/frame_017.jpg"
+        },
+        {
+          "source_frame": 255,
+          "time": 8.5,
+          "image": "frames/AWS-103846/frame_018.jpg"
+        },
+        {
+          "source_frame": 270,
+          "time": 9.0,
+          "image": "frames/AWS-103846/frame_019.jpg"
+        },
+        {
+          "source_frame": 285,
+          "time": 9.5,
+          "image": "frames/AWS-103846/frame_020.jpg"
+        },
+        {
+          "source_frame": 300,
+          "time": 10.0,
+          "image": "frames/AWS-103846/frame_021.jpg"
+        },
+        {
+          "source_frame": 315,
+          "time": 10.5,
+          "image": "frames/AWS-103846/frame_022.jpg"
+        },
+        {
+          "source_frame": 330,
+          "time": 11.0,
+          "image": "frames/AWS-103846/frame_023.jpg"
+        },
+        {
+          "source_frame": 345,
+          "time": 11.5,
+          "image": "frames/AWS-103846/frame_024.jpg"
+        },
+        {
+          "source_frame": 360,
+          "time": 12.0,
+          "image": "frames/AWS-103846/frame_025.jpg"
+        },
+        {
+          "source_frame": 375,
+          "time": 12.5,
+          "image": "frames/AWS-103846/frame_026.jpg"
+        },
+        {
+          "source_frame": 390,
+          "time": 13.0,
+          "image": "frames/AWS-103846/frame_027.jpg"
+        },
+        {
+          "source_frame": 405,
+          "time": 13.5,
+          "image": "frames/AWS-103846/frame_028.jpg"
+        },
+        {
+          "source_frame": 420,
+          "time": 14.0,
+          "image": "frames/AWS-103846/frame_029.jpg"
+        },
+        {
+          "source_frame": 435,
+          "time": 14.5,
+          "image": "frames/AWS-103846/frame_030.jpg"
+        },
+        {
+          "source_frame": 450,
+          "time": 15.0,
+          "image": "frames/AWS-103846/frame_031.jpg"
+        },
+        {
+          "source_frame": 465,
+          "time": 15.5,
+          "image": "frames/AWS-103846/frame_032.jpg"
+        },
+        {
+          "source_frame": 480,
+          "time": 16.0,
+          "image": "frames/AWS-103846/frame_033.jpg"
+        },
+        {
+          "source_frame": 495,
+          "time": 16.5,
+          "image": "frames/AWS-103846/frame_034.jpg"
+        },
+        {
+          "source_frame": 509,
+          "time": 16.966667,
+          "image": "frames/AWS-103846/frame_035.jpg"
+        }
+      ],
+      "sheets": [
+        "contact-sheets/AWS-103846-01.jpg",
+        "contact-sheets/AWS-103846-02.jpg",
+        "contact-sheets/AWS-103846-03.jpg"
+      ],
+      "overview": "overviews/AWS-103846.jpg"
+    },
+    {
+      "id": "AWS-103854",
+      "filename": "KakaoTalk_Video_2026-10-09-10-38-54.mp4",
+      "original_path": "/Users/jikime/Downloads/KakaoTalk_Video_2026-10-09-10-38-54.mp4",
+      "bytes": 2587067,
+      "created": "2026-10-09T10:38:55.859626",
+      "sha256": "5fe84c252b36c5b95114ee80b4aa6fca97c80e8a57527e8a97c6c2a5e6ddbaaa",
+      "group": "venue",
+      "duration": 6.2,
+      "width": 1920,
+      "height": 1080,
+      "codec": "hevc",
+      "avg_frame_rate": "925/31",
+      "nominal_frame_rate": "30/1",
+      "source_frames": 185,
+      "audio": true,
+      "source": "sources/KakaoTalk_Video_2026-10-09-10-38-54.mp4",
+      "frames": [
+        {
+          "source_frame": 0,
+          "time": 0.0,
+          "image": "frames/AWS-103854/frame_001.jpg"
+        },
+        {
+          "source_frame": 14,
+          "time": 0.5,
+          "image": "frames/AWS-103854/frame_002.jpg"
+        },
+        {
+          "source_frame": 29,
+          "time": 1.0,
+          "image": "frames/AWS-103854/frame_003.jpg"
+        },
+        {
+          "source_frame": 44,
+          "time": 1.5,
+          "image": "frames/AWS-103854/frame_004.jpg"
+        },
+        {
+          "source_frame": 59,
+          "time": 2.0,
+          "image": "frames/AWS-103854/frame_005.jpg"
+        },
+        {
+          "source_frame": 74,
+          "time": 2.5,
+          "image": "frames/AWS-103854/frame_006.jpg"
+        },
+        {
+          "source_frame": 89,
+          "time": 3.0,
+          "image": "frames/AWS-103854/frame_007.jpg"
+        },
+        {
+          "source_frame": 104,
+          "time": 3.5,
+          "image": "frames/AWS-103854/frame_008.jpg"
+        },
+        {
+          "source_frame": 119,
+          "time": 4.0,
+          "image": "frames/AWS-103854/frame_009.jpg"
+        },
+        {
+          "source_frame": 134,
+          "time": 4.5,
+          "image": "frames/AWS-103854/frame_010.jpg"
+        },
+        {
+          "source_frame": 149,
+          "time": 5.0,
+          "image": "frames/AWS-103854/frame_011.jpg"
+        },
+        {
+          "source_frame": 164,
+          "time": 5.5,
+          "image": "frames/AWS-103854/frame_012.jpg"
+        },
+        {
+          "source_frame": 179,
+          "time": 6.0,
+          "image": "frames/AWS-103854/frame_013.jpg"
+        },
+        {
+          "source_frame": 184,
+          "time": 6.166667,
+          "image": "frames/AWS-103854/frame_014.jpg"
+        }
+      ],
+      "sheets": [
+        "contact-sheets/AWS-103854-01.jpg",
+        "contact-sheets/AWS-103854-02.jpg"
+      ],
+      "overview": "overviews/AWS-103854.jpg"
+    },
+    {
+      "id": "AWS-103900",
+      "filename": "KakaoTalk_Video_2026-10-09-10-39-00.mp4",
+      "original_path": "/Users/jikime/Downloads/KakaoTalk_Video_2026-10-09-10-39-00.mp4",
+      "bytes": 2009761,
+      "created": "2026-10-09T10:39:02.208369",
+      "sha256": "63f1137f16dd6dfbad1c79bdd99edd426d2c5e8f7ef869ec81e3245378a85b6d",
+      "group": "venue",
+      "duration": 4.9,
+      "width": 1920,
+      "height": 1080,
+      "codec": "hevc",
+      "avg_frame_rate": "30/1",
+      "nominal_frame_rate": "30/1",
+      "source_frames": 147,
+      "audio": true,
+      "source": "sources/KakaoTalk_Video_2026-10-09-10-39-00.mp4",
+      "frames": [
+        {
+          "source_frame": 0,
+          "time": 0.0,
+          "image": "frames/AWS-103900/frame_001.jpg"
+        },
+        {
+          "source_frame": 15,
+          "time": 0.5,
+          "image": "frames/AWS-103900/frame_002.jpg"
+        },
+        {
+          "source_frame": 30,
+          "time": 1.0,
+          "image": "frames/AWS-103900/frame_003.jpg"
+        },
+        {
+          "source_frame": 45,
+          "time": 1.5,
+          "image": "frames/AWS-103900/frame_004.jpg"
+        },
+        {
+          "source_frame": 60,
+          "time": 2.0,
+          "image": "frames/AWS-103900/frame_005.jpg"
+        },
+        {
+          "source_frame": 75,
+          "time": 2.5,
+          "image": "frames/AWS-103900/frame_006.jpg"
+        },
+        {
+          "source_frame": 90,
+          "time": 3.0,
+          "image": "frames/AWS-103900/frame_007.jpg"
+        },
+        {
+          "source_frame": 105,
+          "time": 3.5,
+          "image": "frames/AWS-103900/frame_008.jpg"
+        },
+        {
+          "source_frame": 120,
+          "time": 4.0,
+          "image": "frames/AWS-103900/frame_009.jpg"
+        },
+        {
+          "source_frame": 135,
+          "time": 4.5,
+          "image": "frames/AWS-103900/frame_010.jpg"
+        },
+        {
+          "source_frame": 146,
+          "time": 4.866667,
+          "image": "frames/AWS-103900/frame_011.jpg"
+        }
+      ],
+      "sheets": [
+        "contact-sheets/AWS-103900-01.jpg"
+      ],
+      "overview": "overviews/AWS-103900.jpg"
+    },
+    {
+      "id": "AWS-103908",
+      "filename": "KakaoTalk_Video_2026-10-09-10-39-08.mp4",
+      "original_path": "/Users/jikime/Downloads/KakaoTalk_Video_2026-10-09-10-39-08.mp4",
+      "bytes": 1630958,
+      "created": "2026-10-09T10:39:09.558752",
+      "sha256": "b1ce1887af826599ccb8e57c738bd9eae3c58d641d0bcc8c0beb76233da6c41c",
+      "group": "venue",
+      "duration": 4.0,
+      "width": 1920,
+      "height": 1080,
+      "codec": "hevc",
+      "avg_frame_rate": "30/1",
+      "nominal_frame_rate": "30/1",
+      "source_frames": 120,
+      "audio": true,
+      "source": "sources/KakaoTalk_Video_2026-10-09-10-39-08.mp4",
+      "frames": [
+        {
+          "source_frame": 0,
+          "time": 0.0,
+          "image": "frames/AWS-103908/frame_001.jpg"
+        },
+        {
+          "source_frame": 15,
+          "time": 0.5,
+          "image": "frames/AWS-103908/frame_002.jpg"
+        },
+        {
+          "source_frame": 30,
+          "time": 1.0,
+          "image": "frames/AWS-103908/frame_003.jpg"
+        },
+        {
+          "source_frame": 45,
+          "time": 1.5,
+          "image": "frames/AWS-103908/frame_004.jpg"
+        },
+        {
+          "source_frame": 60,
+          "time": 2.0,
+          "image": "frames/AWS-103908/frame_005.jpg"
+        },
+        {
+          "source_frame": 75,
+          "time": 2.5,
+          "image": "frames/AWS-103908/frame_006.jpg"
+        },
+        {
+          "source_frame": 90,
+          "time": 3.0,
+          "image": "frames/AWS-103908/frame_007.jpg"
+        },
+        {
+          "source_frame": 105,
+          "time": 3.5,
+          "image": "frames/AWS-103908/frame_008.jpg"
+        },
+        {
+          "source_frame": 119,
+          "time": 3.966667,
+          "image": "frames/AWS-103908/frame_009.jpg"
+        }
+      ],
+      "sheets": [
+        "contact-sheets/AWS-103908-01.jpg"
+      ],
+      "overview": "overviews/AWS-103908.jpg"
+    },
+    {
+      "id": "AWS-103918",
+      "filename": "KakaoTalk_Video_2026-10-09-10-39-18.mp4",
+      "original_path": "/Users/jikime/Downloads/KakaoTalk_Video_2026-10-09-10-39-18.mp4",
+      "bytes": 2620570,
+      "created": "2026-10-09T10:39:19.109243",
+      "sha256": "46476232aea3675384e7f02e4c6ac19648f310be0a94b4cdb0b7eb5ac6d13e85",
+      "group": "venue",
+      "duration": 6.066667,
+      "width": 1920,
+      "height": 1080,
+      "codec": "hevc",
+      "avg_frame_rate": "30/1",
+      "nominal_frame_rate": "30/1",
+      "source_frames": 182,
+      "audio": true,
+      "source": "sources/KakaoTalk_Video_2026-10-09-10-39-18.mp4",
+      "frames": [
+        {
+          "source_frame": 0,
+          "time": 0.0,
+          "image": "frames/AWS-103918/frame_001.jpg"
+        },
+        {
+          "source_frame": 15,
+          "time": 0.5,
+          "image": "frames/AWS-103918/frame_002.jpg"
+        },
+        {
+          "source_frame": 30,
+          "time": 1.0,
+          "image": "frames/AWS-103918/frame_003.jpg"
+        },
+        {
+          "source_frame": 45,
+          "time": 1.5,
+          "image": "frames/AWS-103918/frame_004.jpg"
+        },
+        {
+          "source_frame": 60,
+          "time": 2.0,
+          "image": "frames/AWS-103918/frame_005.jpg"
+        },
+        {
+          "source_frame": 75,
+          "time": 2.5,
+          "image": "frames/AWS-103918/frame_006.jpg"
+        },
+        {
+          "source_frame": 90,
+          "time": 3.0,
+          "image": "frames/AWS-103918/frame_007.jpg"
+        },
+        {
+          "source_frame": 105,
+          "time": 3.5,
+          "image": "frames/AWS-103918/frame_008.jpg"
+        },
+        {
+          "source_frame": 120,
+          "time": 4.0,
+          "image": "frames/AWS-103918/frame_009.jpg"
+        },
+        {
+          "source_frame": 135,
+          "time": 4.5,
+          "image": "frames/AWS-103918/frame_010.jpg"
+        },
+        {
+          "source_frame": 150,
+          "time": 5.0,
+          "image": "frames/AWS-103918/frame_011.jpg"
+        },
+        {
+          "source_frame": 165,
+          "time": 5.5,
+          "image": "frames/AWS-103918/frame_012.jpg"
+        },
+        {
+          "source_frame": 180,
+          "time": 6.0,
+          "image": "frames/AWS-103918/frame_013.jpg"
+        },
+        {
+          "source_frame": 181,
+          "time": 6.033333,
+          "image": "frames/AWS-103918/frame_014.jpg"
+        }
+      ],
+      "sheets": [
+        "contact-sheets/AWS-103918-01.jpg",
+        "contact-sheets/AWS-103918-02.jpg"
+      ],
+      "overview": "overviews/AWS-103918.jpg"
+    },
+    {
+      "id": "AWS-103924",
+      "filename": "KakaoTalk_Video_2026-10-09-10-39-24.mp4",
+      "original_path": "/Users/jikime/Downloads/KakaoTalk_Video_2026-10-09-10-39-24.mp4",
+      "bytes": 1750641,
+      "created": "2026-10-09T10:39:25.506675",
+      "sha256": "376578142c121e608d3835b2ab74d447537466c5e23f9ed8efc2934327850868",
+      "group": "venue",
+      "duration": 4.166667,
+      "width": 1920,
+      "height": 1080,
+      "codec": "hevc",
+      "avg_frame_rate": "30/1",
+      "nominal_frame_rate": "30/1",
+      "source_frames": 125,
+      "audio": true,
+      "source": "sources/KakaoTalk_Video_2026-10-09-10-39-24.mp4",
+      "frames": [
+        {
+          "source_frame": 0,
+          "time": 0.0,
+          "image": "frames/AWS-103924/frame_001.jpg"
+        },
+        {
+          "source_frame": 15,
+          "time": 0.5,
+          "image": "frames/AWS-103924/frame_002.jpg"
+        },
+        {
+          "source_frame": 30,
+          "time": 1.0,
+          "image": "frames/AWS-103924/frame_003.jpg"
+        },
+        {
+          "source_frame": 45,
+          "time": 1.5,
+          "image": "frames/AWS-103924/frame_004.jpg"
+        },
+        {
+          "source_frame": 60,
+          "time": 2.0,
+          "image": "frames/AWS-103924/frame_005.jpg"
+        },
+        {
+          "source_frame": 75,
+          "time": 2.5,
+          "image": "frames/AWS-103924/frame_006.jpg"
+        },
+        {
+          "source_frame": 90,
+          "time": 3.0,
+          "image": "frames/AWS-103924/frame_007.jpg"
+        },
+        {
+          "source_frame": 105,
+          "time": 3.5,
+          "image": "frames/AWS-103924/frame_008.jpg"
+        },
+        {
+          "source_frame": 120,
+          "time": 4.0,
+          "image": "frames/AWS-103924/frame_009.jpg"
+        },
+        {
+          "source_frame": 124,
+          "time": 4.133333,
+          "image": "frames/AWS-103924/frame_010.jpg"
+        }
+      ],
+      "sheets": [
+        "contact-sheets/AWS-103924-01.jpg"
+      ],
+      "overview": "overviews/AWS-103924.jpg"
+    },
+    {
+      "id": "AWS-103931",
+      "filename": "KakaoTalk_Video_2026-10-09-10-39-31.mp4",
+      "original_path": "/Users/jikime/Downloads/KakaoTalk_Video_2026-10-09-10-39-31.mp4",
+      "bytes": 1880890,
+      "created": "2026-10-09T10:39:32.171457",
+      "sha256": "e4b88933dc8bd7ef38cbaf3d30b3bf8279fef79547354970c1f1e380d36df2fe",
+      "group": "venue",
+      "duration": 4.533333,
+      "width": 1920,
+      "height": 1080,
+      "codec": "hevc",
+      "avg_frame_rate": "30/1",
+      "nominal_frame_rate": "30/1",
+      "source_frames": 136,
+      "audio": true,
+      "source": "sources/KakaoTalk_Video_2026-10-09-10-39-31.mp4",
+      "frames": [
+        {
+          "source_frame": 0,
+          "time": 0.0,
+          "image": "frames/AWS-103931/frame_001.jpg"
+        },
+        {
+          "source_frame": 15,
+          "time": 0.5,
+          "image": "frames/AWS-103931/frame_002.jpg"
+        },
+        {
+          "source_frame": 30,
+          "time": 1.0,
+          "image": "frames/AWS-103931/frame_003.jpg"
+        },
+        {
+          "source_frame": 45,
+          "time": 1.5,
+          "image": "frames/AWS-103931/frame_004.jpg"
+        },
+        {
+          "source_frame": 60,
+          "time": 2.0,
+          "image": "frames/AWS-103931/frame_005.jpg"
+        },
+        {
+          "source_frame": 75,
+          "time": 2.5,
+          "image": "frames/AWS-103931/frame_006.jpg"
+        },
+        {
+          "source_frame": 90,
+          "time": 3.0,
+          "image": "frames/AWS-103931/frame_007.jpg"
+        },
+        {
+          "source_frame": 105,
+          "time": 3.5,
+          "image": "frames/AWS-103931/frame_008.jpg"
+        },
+        {
+          "source_frame": 120,
+          "time": 4.0,
+          "image": "frames/AWS-103931/frame_009.jpg"
+        },
+        {
+          "source_frame": 135,
+          "time": 4.5,
+          "image": "frames/AWS-103931/frame_010.jpg"
+        }
+      ],
+      "sheets": [
+        "contact-sheets/AWS-103931-01.jpg"
+      ],
+      "overview": "overviews/AWS-103931.jpg"
+    },
+    {
+      "id": "AWS-103938",
+      "filename": "KakaoTalk_Video_2026-10-09-10-39-38.mp4",
+      "original_path": "/Users/jikime/Downloads/KakaoTalk_Video_2026-10-09-10-39-38.mp4",
+      "bytes": 1841291,
+      "created": "2026-10-09T10:39:40.159245",
+      "sha256": "a0707b666a68de5e04eba0cb481d831810160e31e285e12fab9f2fadc77c90f8",
+      "group": "venue",
+      "duration": 4.2,
+      "width": 1920,
+      "height": 1080,
+      "codec": "hevc",
+      "avg_frame_rate": "625/21",
+      "nominal_frame_rate": "30/1",
+      "source_frames": 125,
+      "audio": true,
+      "source": "sources/KakaoTalk_Video_2026-10-09-10-39-38.mp4",
+      "frames": [
+        {
+          "source_frame": 0,
+          "time": 0.0,
+          "image": "frames/AWS-103938/frame_001.jpg"
+        },
+        {
+          "source_frame": 14,
+          "time": 0.5,
+          "image": "frames/AWS-103938/frame_002.jpg"
+        },
+        {
+          "source_frame": 29,
+          "time": 1.0,
+          "image": "frames/AWS-103938/frame_003.jpg"
+        },
+        {
+          "source_frame": 44,
+          "time": 1.5,
+          "image": "frames/AWS-103938/frame_004.jpg"
+        },
+        {
+          "source_frame": 59,
+          "time": 2.0,
+          "image": "frames/AWS-103938/frame_005.jpg"
+        },
+        {
+          "source_frame": 74,
+          "time": 2.5,
+          "image": "frames/AWS-103938/frame_006.jpg"
+        },
+        {
+          "source_frame": 89,
+          "time": 3.0,
+          "image": "frames/AWS-103938/frame_007.jpg"
+        },
+        {
+          "source_frame": 104,
+          "time": 3.5,
+          "image": "frames/AWS-103938/frame_008.jpg"
+        },
+        {
+          "source_frame": 119,
+          "time": 4.0,
+          "image": "frames/AWS-103938/frame_009.jpg"
+        },
+        {
+          "source_frame": 124,
+          "time": 4.166667,
+          "image": "frames/AWS-103938/frame_010.jpg"
+        }
+      ],
+      "sheets": [
+        "contact-sheets/AWS-103938-01.jpg"
+      ],
+      "overview": "overviews/AWS-103938.jpg"
+    },
+    {
+      "id": "AWS-103949",
+      "filename": "KakaoTalk_Video_2026-10-09-10-39-49.mp4",
+      "original_path": "/Users/jikime/Downloads/KakaoTalk_Video_2026-10-09-10-39-49.mp4",
+      "bytes": 1452633,
+      "created": "2026-10-09T10:39:50.215757",
+      "sha256": "57be0b4734fd5571e2be3b657726e2526c16c871e3ed22ddd2bba24f0e99a1cf",
+      "group": "venue",
+      "duration": 3.4,
+      "width": 1920,
+      "height": 1080,
+      "codec": "hevc",
+      "avg_frame_rate": "30/1",
+      "nominal_frame_rate": "30/1",
+      "source_frames": 102,
+      "audio": true,
+      "source": "sources/KakaoTalk_Video_2026-10-09-10-39-49.mp4",
+      "frames": [
+        {
+          "source_frame": 0,
+          "time": 0.0,
+          "image": "frames/AWS-103949/frame_001.jpg"
+        },
+        {
+          "source_frame": 15,
+          "time": 0.5,
+          "image": "frames/AWS-103949/frame_002.jpg"
+        },
+        {
+          "source_frame": 30,
+          "time": 1.0,
+          "image": "frames/AWS-103949/frame_003.jpg"
+        },
+        {
+          "source_frame": 45,
+          "time": 1.5,
+          "image": "frames/AWS-103949/frame_004.jpg"
+        },
+        {
+          "source_frame": 60,
+          "time": 2.0,
+          "image": "frames/AWS-103949/frame_005.jpg"
+        },
+        {
+          "source_frame": 75,
+          "time": 2.5,
+          "image": "frames/AWS-103949/frame_006.jpg"
+        },
+        {
+          "source_frame": 90,
+          "time": 3.0,
+          "image": "frames/AWS-103949/frame_007.jpg"
+        },
+        {
+          "source_frame": 101,
+          "time": 3.366667,
+          "image": "frames/AWS-103949/frame_008.jpg"
+        }
+      ],
+      "sheets": [
+        "contact-sheets/AWS-103949-01.jpg"
+      ],
+      "overview": "overviews/AWS-103949.jpg"
+    },
+    {
+      "id": "AWS-103956",
+      "filename": "KakaoTalk_Video_2026-10-09-10-39-56.mp4",
+      "original_path": "/Users/jikime/Downloads/KakaoTalk_Video_2026-10-09-10-39-56.mp4",
+      "bytes": 2886881,
+      "created": "2026-10-09T10:39:57.196176",
+      "sha256": "2ddb02328e5acab466fc69da99f36be0692a8f0905d0dbab5168a9cb71780a64",
+      "group": "venue",
+      "duration": 6.866667,
+      "width": 1920,
+      "height": 1080,
+      "codec": "hevc",
+      "avg_frame_rate": "30/1",
+      "nominal_frame_rate": "30/1",
+      "source_frames": 206,
+      "audio": true,
+      "source": "sources/KakaoTalk_Video_2026-10-09-10-39-56.mp4",
+      "frames": [
+        {
+          "source_frame": 0,
+          "time": 0.0,
+          "image": "frames/AWS-103956/frame_001.jpg"
+        },
+        {
+          "source_frame": 15,
+          "time": 0.5,
+          "image": "frames/AWS-103956/frame_002.jpg"
+        },
+        {
+          "source_frame": 30,
+          "time": 1.0,
+          "image": "frames/AWS-103956/frame_003.jpg"
+        },
+        {
+          "source_frame": 45,
+          "time": 1.5,
+          "image": "frames/AWS-103956/frame_004.jpg"
+        },
+        {
+          "source_frame": 60,
+          "time": 2.0,
+          "image": "frames/AWS-103956/frame_005.jpg"
+        },
+        {
+          "source_frame": 75,
+          "time": 2.5,
+          "image": "frames/AWS-103956/frame_006.jpg"
+        },
+        {
+          "source_frame": 90,
+          "time": 3.0,
+          "image": "frames/AWS-103956/frame_007.jpg"
+        },
+        {
+          "source_frame": 105,
+          "time": 3.5,
+          "image": "frames/AWS-103956/frame_008.jpg"
+        },
+        {
+          "source_frame": 120,
+          "time": 4.0,
+          "image": "frames/AWS-103956/frame_009.jpg"
+        },
+        {
+          "source_frame": 135,
+          "time": 4.5,
+          "image": "frames/AWS-103956/frame_010.jpg"
+        },
+        {
+          "source_frame": 150,
+          "time": 5.0,
+          "image": "frames/AWS-103956/frame_011.jpg"
+        },
+        {
+          "source_frame": 165,
+          "time": 5.5,
+          "image": "frames/AWS-103956/frame_012.jpg"
+        },
+        {
+          "source_frame": 180,
+          "time": 6.0,
+          "image": "frames/AWS-103956/frame_013.jpg"
+        },
+        {
+          "source_frame": 195,
+          "time": 6.5,
+          "image": "frames/AWS-103956/frame_014.jpg"
+        },
+        {
+          "source_frame": 205,
+          "time": 6.833333,
+          "image": "frames/AWS-103956/frame_015.jpg"
+        }
+      ],
+      "sheets": [
+        "contact-sheets/AWS-103956-01.jpg",
+        "contact-sheets/AWS-103956-02.jpg"
+      ],
+      "overview": "overviews/AWS-103956.jpg"
+    },
+    {
+      "id": "AWS-104003",
+      "filename": "KakaoTalk_Video_2026-10-09-10-40-03.mp4",
+      "original_path": "/Users/jikime/Downloads/KakaoTalk_Video_2026-10-09-10-40-03.mp4",
+      "bytes": 2291345,
+      "created": "2026-10-09T10:40:03.914829",
+      "sha256": "424a17b7f341aa7c87520cef4c19a745d6bc133e7ee6d0e68de16ad7f3694202",
+      "group": "venue",
+      "duration": 5.5,
+      "width": 1920,
+      "height": 1080,
+      "codec": "hevc",
+      "avg_frame_rate": "30/1",
+      "nominal_frame_rate": "30/1",
+      "source_frames": 165,
+      "audio": true,
+      "source": "sources/KakaoTalk_Video_2026-10-09-10-40-03.mp4",
+      "frames": [
+        {
+          "source_frame": 0,
+          "time": 0.0,
+          "image": "frames/AWS-104003/frame_001.jpg"
+        },
+        {
+          "source_frame": 15,
+          "time": 0.5,
+          "image": "frames/AWS-104003/frame_002.jpg"
+        },
+        {
+          "source_frame": 30,
+          "time": 1.0,
+          "image": "frames/AWS-104003/frame_003.jpg"
+        },
+        {
+          "source_frame": 45,
+          "time": 1.5,
+          "image": "frames/AWS-104003/frame_004.jpg"
+        },
+        {
+          "source_frame": 60,
+          "time": 2.0,
+          "image": "frames/AWS-104003/frame_005.jpg"
+        },
+        {
+          "source_frame": 75,
+          "time": 2.5,
+          "image": "frames/AWS-104003/frame_006.jpg"
+        },
+        {
+          "source_frame": 90,
+          "time": 3.0,
+          "image": "frames/AWS-104003/frame_007.jpg"
+        },
+        {
+          "source_frame": 105,
+          "time": 3.5,
+          "image": "frames/AWS-104003/frame_008.jpg"
+        },
+        {
+          "source_frame": 120,
+          "time": 4.0,
+          "image": "frames/AWS-104003/frame_009.jpg"
+        },
+        {
+          "source_frame": 135,
+          "time": 4.5,
+          "image": "frames/AWS-104003/frame_010.jpg"
+        },
+        {
+          "source_frame": 150,
+          "time": 5.0,
+          "image": "frames/AWS-104003/frame_011.jpg"
+        },
+        {
+          "source_frame": 164,
+          "time": 5.466667,
+          "image": "frames/AWS-104003/frame_012.jpg"
+        }
+      ],
+      "sheets": [
+        "contact-sheets/AWS-104003-01.jpg"
+      ],
+      "overview": "overviews/AWS-104003.jpg"
+    },
+    {
+      "id": "AWS-104011",
+      "filename": "KakaoTalk_Video_2026-10-09-10-40-11.mp4",
+      "original_path": "/Users/jikime/Downloads/KakaoTalk_Video_2026-10-09-10-40-11.mp4",
+      "bytes": 1854050,
+      "created": "2026-10-09T10:40:12.466699",
+      "sha256": "57f63496ba5497d49862664a010ce302b6d59016d052c11d7fa8cbfb7c87e950",
+      "group": "venue",
+      "duration": 4.433333,
+      "width": 1920,
+      "height": 1080,
+      "codec": "hevc",
+      "avg_frame_rate": "30/1",
+      "nominal_frame_rate": "30/1",
+      "source_frames": 133,
+      "audio": true,
+      "source": "sources/KakaoTalk_Video_2026-10-09-10-40-11.mp4",
+      "frames": [
+        {
+          "source_frame": 0,
+          "time": 0.0,
+          "image": "frames/AWS-104011/frame_001.jpg"
+        },
+        {
+          "source_frame": 15,
+          "time": 0.5,
+          "image": "frames/AWS-104011/frame_002.jpg"
+        },
+        {
+          "source_frame": 30,
+          "time": 1.0,
+          "image": "frames/AWS-104011/frame_003.jpg"
+        },
+        {
+          "source_frame": 45,
+          "time": 1.5,
+          "image": "frames/AWS-104011/frame_004.jpg"
+        },
+        {
+          "source_frame": 60,
+          "time": 2.0,
+          "image": "frames/AWS-104011/frame_005.jpg"
+        },
+        {
+          "source_frame": 75,
+          "time": 2.5,
+          "image": "frames/AWS-104011/frame_006.jpg"
+        },
+        {
+          "source_frame": 90,
+          "time": 3.0,
+          "image": "frames/AWS-104011/frame_007.jpg"
+        },
+        {
+          "source_frame": 105,
+          "time": 3.5,
+          "image": "frames/AWS-104011/frame_008.jpg"
+        },
+        {
+          "source_frame": 120,
+          "time": 4.0,
+          "image": "frames/AWS-104011/frame_009.jpg"
+        },
+        {
+          "source_frame": 132,
+          "time": 4.4,
+          "image": "frames/AWS-104011/frame_010.jpg"
+        }
+      ],
+      "sheets": [
+        "contact-sheets/AWS-104011-01.jpg"
+      ],
+      "overview": "overviews/AWS-104011.jpg"
+    }
+  ]
+}

@@ -1,0 +1,311 @@
+{
+  "id": "door-approach",
+  "video": "AWS-103924",
+  "title": "문 주변 이동에서 정지로 전환",
+  "start": 0.5,
+  "end": 2.5,
+  "sampling": "이 구간 원본 전체 프레임",
+  "notes": "카메라도 이동하고 전신 일부가 가려져 있어 보행 속도·관절 위치 측정용으로 쓰지 않음",
+  "frames": [
+    {
+      "source_frame": 15,
+      "time": 0.5,
+      "image": "sequences/door-approach/frame_001.jpg"
+    },
+    {
+      "source_frame": 16,
+      "time": 0.533333,
+      "image": "sequences/door-approach/frame_002.jpg"
+    },
+    {
+      "source_frame": 17,
+      "time": 0.566667,
+      "image": "sequences/door-approach/frame_003.jpg"
+    },
+    {
+      "source_frame": 18,
+      "time": 0.6,
+      "image": "sequences/door-approach/frame_004.jpg"
+    },
+    {
+      "source_frame": 19,
+      "time": 0.633333,
+      "image": "sequences/door-approach/frame_005.jpg"
+    },
+    {
+      "source_frame": 20,
+      "time": 0.666667,
+      "image": "sequences/door-approach/frame_006.jpg"
+    },
+    {
+      "source_frame": 21,
+      "time": 0.7,
+      "image": "sequences/door-approach/frame_007.jpg"
+    },
+    {
+      "source_frame": 22,
+      "time": 0.733333,
+      "image": "sequences/door-approach/frame_008.jpg"
+    },
+    {
+      "source_frame": 23,
+      "time": 0.766667,
+      "image": "sequences/door-approach/frame_009.jpg"
+    },
+    {
+      "source_frame": 24,
+      "time": 0.8,
+      "image": "sequences/door-approach/frame_010.jpg"
+    },
+    {
+      "source_frame": 25,
+      "time": 0.833333,
+      "image": "sequences/door-approach/frame_011.jpg"
+    },
+    {
+      "source_frame": 26,
+      "time": 0.866667,
+      "image": "sequences/door-approach/frame_012.jpg"
+    },
+    {
+      "source_frame": 27,
+      "time": 0.9,
+      "image": "sequences/door-approach/frame_013.jpg"
+    },
+    {
+      "source_frame": 28,
+      "time": 0.933333,
+      "image": "sequences/door-approach/frame_014.jpg"
+    },
+    {
+      "source_frame": 29,
+      "time": 0.966667,
+      "image": "sequences/door-approach/frame_015.jpg"
+    },
+    {
+      "source_frame": 30,
+      "time": 1.0,
+      "image": "sequences/door-approach/frame_016.jpg"
+    },
+    {
+      "source_frame": 31,
+      "time": 1.033333,
+      "image": "sequences/door-approach/frame_017.jpg"
+    },
+    {
+      "source_frame": 32,
+      "time": 1.066667,
+      "image": "sequences/door-approach/frame_018.jpg"
+    },
+    {
+      "source_frame": 33,
+      "time": 1.1,
+      "image": "sequences/door-approach/frame_019.jpg"
+    },
+    {
+      "source_frame": 34,
+      "time": 1.133333,
+      "image": "sequences/door-approach/frame_020.jpg"
+    },
+    {
+      "source_frame": 35,
+      "time": 1.166667,
+      "image": "sequences/door-approach/frame_021.jpg"
+    },
+    {
+      "source_frame": 36,
+      "time": 1.2,
+      "image": "sequences/door-approach/frame_022.jpg"
+    },
+    {
+      "source_frame": 37,
+      "time": 1.233333,
+      "image": "sequences/door-approach/frame_023.jpg"
+    },
+    {
+      "source_frame": 38,
+      "time": 1.266667,
+      "image": "sequences/door-approach/frame_024.jpg"
+    },
+    {
+      "source_frame": 39,
+      "time": 1.3,
+      "image": "sequences/door-approach/frame_025.jpg"
+    },
+    {
+      "source_frame": 40,
+      "time": 1.333333,
+      "image": "sequences/door-approach/frame_026.jpg"
+    },
+    {
+      "source_frame": 41,
+      "time": 1.366667,
+      "image": "sequences/door-approach/frame_027.jpg"
+    },
+    {
+      "source_frame": 42,
+      "time": 1.4,
+      "image": "sequences/door-approach/frame_028.jpg"
+    },
+    {
+      "source_frame": 43,
+      "time": 1.433333,
+      "image": "sequences/door-approach/frame_029.jpg"
+    },
+    {
+      "source_frame": 44,
+      "time": 1.466667,
+      "image": "sequences/door-approach/frame_030.jpg"
+    },
+    {
+      "source_frame": 45,
+      "time": 1.5,
+      "image": "sequences/door-approach/frame_031.jpg"
+    },
+    {
+      "source_frame": 46,
+      "time": 1.533333,
+      "image": "sequences/door-approach/frame_032.jpg"
+    },
+    {
+      "source_frame": 47,
+      "time": 1.566667,
+      "image": "sequences/door-approach/frame_033.jpg"
+    },
+    {
+      "source_frame": 48,
+      "time": 1.6,
+      "image": "sequences/door-approach/frame_034.jpg"
+    },
+    {
+      "source_frame": 49,
+      "time": 1.633333,
+      "image": "sequences/door-approach/frame_035.jpg"
+    },
+    {
+      "source_frame": 50,
+      "time": 1.666667,
+      "image": "sequences/door-approach/frame_036.jpg"
+    },
+    {
+      "source_frame": 51,
+      "time": 1.7,
+      "image": "sequences/door-approach/frame_037.jpg"
+    },
+    {
+      "source_frame": 52,
+      "time": 1.733333,
+      "image": "sequences/door-approach/frame_038.jpg"
+    },
+    {
+      "source_frame": 53,
+      "time": 1.766667,
+      "image": "sequences/door-approach/frame_039.jpg"
+    },
+    {
+      "source_frame": 54,
+      "time": 1.8,
+      "image": "sequences/door-approach/frame_040.jpg"
+    },
+    {
+      "source_frame": 55,
+      "time": 1.833333,
+      "image": "sequences/door-approach/frame_041.jpg"
+    },
+    {
+      "source_frame": 56,
+      "time": 1.866667,
+      "image": "sequences/door-approach/frame_042.jpg"
+    },
+    {
+      "source_frame": 57,
+      "time": 1.9,
+      "image": "sequences/door-approach/frame_043.jpg"
+    },
+    {
+      "source_frame": 58,
+      "time": 1.933333,
+      "image": "sequences/door-approach/frame_044.jpg"
+    },
+    {
+      "source_frame": 59,
+      "time": 1.966667,
+      "image": "sequences/door-approach/frame_045.jpg"
+    },
+    {
+      "source_frame": 60,
+      "time": 2.0,
+      "image": "sequences/door-approach/frame_046.jpg"
+    },
+    {
+      "source_frame": 61,
+      "time": 2.033333,
+      "image": "sequences/door-approach/frame_047.jpg"
+    },
+    {
+      "source_frame": 62,
+      "time": 2.066667,
+      "image": "sequences/door-approach/frame_048.jpg"
+    },
+    {
+      "source_frame": 63,
+      "time": 2.1,
+      "image": "sequences/door-approach/frame_049.jpg"
+    },
+    {
+      "source_frame": 64,
+      "time": 2.133333,
+      "image": "sequences/door-approach/frame_050.jpg"
+    },
+    {
+      "source_frame": 65,
+      "time": 2.166667,
+      "image": "sequences/door-approach/frame_051.jpg"
+    },
+    {
+      "source_frame": 66,
+      "time": 2.2,
+      "image": "sequences/door-approach/frame_052.jpg"
+    },
+    {
+      "source_frame": 67,
+      "time": 2.233333,
+      "image": "sequences/door-approach/frame_053.jpg"
+    },
+    {
+      "source_frame": 68,
+      "time": 2.266667,
+      "image": "sequences/door-approach/frame_054.jpg"
+    },
+    {
+      "source_frame": 69,
+      "time": 2.3,
+      "image": "sequences/door-approach/frame_055.jpg"
+    },
+    {
+      "source_frame": 70,
+      "time": 2.333333,
+      "image": "sequences/door-approach/frame_056.jpg"
+    },
+    {
+      "source_frame": 71,
+      "time": 2.366667,
+      "image": "sequences/door-approach/frame_057.jpg"
+    },
+    {
+      "source_frame": 72,
+      "time": 2.4,
+      "image": "sequences/door-approach/frame_058.jpg"
+    },
+    {
+      "source_frame": 73,
+      "time": 2.433333,
+      "image": "sequences/door-approach/frame_059.jpg"
+    },
+    {
+      "source_frame": 74,
+      "time": 2.466667,
+      "image": "sequences/door-approach/frame_060.jpg"
+    }
+  ]
+}

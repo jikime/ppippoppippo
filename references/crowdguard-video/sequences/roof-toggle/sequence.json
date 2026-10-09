@@ -1,0 +1,130 @@
+{
+  "video": "V02",
+  "name": "roof-toggle",
+  "start": 31.0,
+  "end": 34.0,
+  "requested_fps": "8",
+  "frames": [
+    {
+      "time": 31.0,
+      "source_frame": 744,
+      "image": "sequences/roof-toggle/frame_00001.jpg"
+    },
+    {
+      "time": 31.125,
+      "source_frame": 747,
+      "image": "sequences/roof-toggle/frame_00002.jpg"
+    },
+    {
+      "time": 31.25,
+      "source_frame": 750,
+      "image": "sequences/roof-toggle/frame_00003.jpg"
+    },
+    {
+      "time": 31.375,
+      "source_frame": 753,
+      "image": "sequences/roof-toggle/frame_00004.jpg"
+    },
+    {
+      "time": 31.5,
+      "source_frame": 756,
+      "image": "sequences/roof-toggle/frame_00005.jpg"
+    },
+    {
+      "time": 31.625,
+      "source_frame": 759,
+      "image": "sequences/roof-toggle/frame_00006.jpg"
+    },
+    {
+      "time": 31.75,
+      "source_frame": 762,
+      "image": "sequences/roof-toggle/frame_00007.jpg"
+    },
+    {
+      "time": 31.875,
+      "source_frame": 765,
+      "image": "sequences/roof-toggle/frame_00008.jpg"
+    },
+    {
+      "time": 32.0,
+      "source_frame": 768,
+      "image": "sequences/roof-toggle/frame_00009.jpg"
+    },
+    {
+      "time": 32.125,
+      "source_frame": 771,
+      "image": "sequences/roof-toggle/frame_00010.jpg"
+    },
+    {
+      "time": 32.25,
+      "source_frame": 774,
+      "image": "sequences/roof-toggle/frame_00011.jpg"
+    },
+    {
+      "time": 32.375,
+      "source_frame": 777,
+      "image": "sequences/roof-toggle/frame_00012.jpg"
+    },
+    {
+      "time": 32.5,
+      "source_frame": 780,
+      "image": "sequences/roof-toggle/frame_00013.jpg"
+    },
+    {
+      "time": 32.625,
+      "source_frame": 783,
+      "image": "sequences/roof-toggle/frame_00014.jpg"
+    },
+    {
+      "time": 32.75,
+      "source_frame": 786,
+      "image": "sequences/roof-toggle/frame_00015.jpg"
+    },
+    {
+      "time": 32.875,
+      "source_frame": 789,
+      "image": "sequences/roof-toggle/frame_00016.jpg"
+    },
+    {
+      "time": 33.0,
+      "source_frame": 792,
+      "image": "sequences/roof-toggle/frame_00017.jpg"
+    },
+    {
+      "time": 33.125,
+      "source_frame": 795,
+      "image": "sequences/roof-toggle/frame_00018.jpg"
+    },
+    {
+      "time": 33.25,
+      "source_frame": 798,
+      "image": "sequences/roof-toggle/frame_00019.jpg"
+    },
+    {
+      "time": 33.375,
+      "source_frame": 801,
+      "image": "sequences/roof-toggle/frame_00020.jpg"
+    },
+    {
+      "time": 33.5,
+      "source_frame": 804,
+      "image": "sequences/roof-toggle/frame_00021.jpg"
+    },
+    {
+      "time": 33.625,
+      "source_frame": 807,
+      "image": "sequences/roof-toggle/frame_00022.jpg"
+    },
+    {
+      "time": 33.75,
+      "source_frame": 810,
+      "image": "sequences/roof-toggle/frame_00023.jpg"
+    },
+    {
+      "time": 33.875,
+      "source_frame": 813,
+      "image": "sequences/roof-toggle/frame_00024.jpg"
+    }
+  ],
+  "contact_sheet": "contact-sheets/roof-toggle.jpg"
+}

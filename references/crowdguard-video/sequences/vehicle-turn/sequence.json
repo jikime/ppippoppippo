@@ -1,0 +1,250 @@
+{
+  "video": "V02",
+  "name": "vehicle-turn",
+  "start": 40.0,
+  "end": 42.0,
+  "requested_fps": "source",
+  "frames": [
+    {
+      "time": 40.0,
+      "source_frame": 960,
+      "image": "sequences/vehicle-turn/frame_00001.jpg"
+    },
+    {
+      "time": 40.041667,
+      "source_frame": 961,
+      "image": "sequences/vehicle-turn/frame_00002.jpg"
+    },
+    {
+      "time": 40.083333,
+      "source_frame": 962,
+      "image": "sequences/vehicle-turn/frame_00003.jpg"
+    },
+    {
+      "time": 40.125,
+      "source_frame": 963,
+      "image": "sequences/vehicle-turn/frame_00004.jpg"
+    },
+    {
+      "time": 40.166667,
+      "source_frame": 964,
+      "image": "sequences/vehicle-turn/frame_00005.jpg"
+    },
+    {
+      "time": 40.208333,
+      "source_frame": 965,
+      "image": "sequences/vehicle-turn/frame_00006.jpg"
+    },
+    {
+      "time": 40.25,
+      "source_frame": 966,
+      "image": "sequences/vehicle-turn/frame_00007.jpg"
+    },
+    {
+      "time": 40.291667,
+      "source_frame": 967,
+      "image": "sequences/vehicle-turn/frame_00008.jpg"
+    },
+    {
+      "time": 40.333333,
+      "source_frame": 968,
+      "image": "sequences/vehicle-turn/frame_00009.jpg"
+    },
+    {
+      "time": 40.375,
+      "source_frame": 969,
+      "image": "sequences/vehicle-turn/frame_00010.jpg"
+    },
+    {
+      "time": 40.416667,
+      "source_frame": 970,
+      "image": "sequences/vehicle-turn/frame_00011.jpg"
+    },
+    {
+      "time": 40.458333,
+      "source_frame": 971,
+      "image": "sequences/vehicle-turn/frame_00012.jpg"
+    },
+    {
+      "time": 40.5,
+      "source_frame": 972,
+      "image": "sequences/vehicle-turn/frame_00013.jpg"
+    },
+    {
+      "time": 40.541667,
+      "source_frame": 973,
+      "image": "sequences/vehicle-turn/frame_00014.jpg"
+    },
+    {
+      "time": 40.583333,
+      "source_frame": 974,
+      "image": "sequences/vehicle-turn/frame_00015.jpg"
+    },
+    {
+      "time": 40.625,
+      "source_frame": 975,
+      "image": "sequences/vehicle-turn/frame_00016.jpg"
+    },
+    {
+      "time": 40.666667,
+      "source_frame": 976,
+      "image": "sequences/vehicle-turn/frame_00017.jpg"
+    },
+    {
+      "time": 40.708333,
+      "source_frame": 977,
+      "image": "sequences/vehicle-turn/frame_00018.jpg"
+    },
+    {
+      "time": 40.75,
+      "source_frame": 978,
+      "image": "sequences/vehicle-turn/frame_00019.jpg"
+    },
+    {
+      "time": 40.791667,
+      "source_frame": 979,
+      "image": "sequences/vehicle-turn/frame_00020.jpg"
+    },
+    {
+      "time": 40.833333,
+      "source_frame": 980,
+      "image": "sequences/vehicle-turn/frame_00021.jpg"
+    },
+    {
+      "time": 40.875,
+      "source_frame": 981,
+      "image": "sequences/vehicle-turn/frame_00022.jpg"
+    },
+    {
+      "time": 40.916667,
+      "source_frame": 982,
+      "image": "sequences/vehicle-turn/frame_00023.jpg"
+    },
+    {
+      "time": 40.958333,
+      "source_frame": 983,
+      "image": "sequences/vehicle-turn/frame_00024.jpg"
+    },
+    {
+      "time": 41.0,
+      "source_frame": 984,
+      "image": "sequences/vehicle-turn/frame_00025.jpg"
+    },
+    {
+      "time": 41.041667,
+      "source_frame": 985,
+      "image": "sequences/vehicle-turn/frame_00026.jpg"
+    },
+    {
+      "time": 41.083333,
+      "source_frame": 986,
+      "image": "sequences/vehicle-turn/frame_00027.jpg"
+    },
+    {
+      "time": 41.125,
+      "source_frame": 987,
+      "image": "sequences/vehicle-turn/frame_00028.jpg"
+    },
+    {
+      "time": 41.166667,
+      "source_frame": 988,
+      "image": "sequences/vehicle-turn/frame_00029.jpg"
+    },
+    {
+      "time": 41.208333,
+      "source_frame": 989,
+      "image": "sequences/vehicle-turn/frame_00030.jpg"
+    },
+    {
+      "time": 41.25,
+      "source_frame": 990,
+      "image": "sequences/vehicle-turn/frame_00031.jpg"
+    },
+    {
+      "time": 41.291667,
+      "source_frame": 991,
+      "image": "sequences/vehicle-turn/frame_00032.jpg"
+    },
+    {
+      "time": 41.333333,
+      "source_frame": 992,
+      "image": "sequences/vehicle-turn/frame_00033.jpg"
+    },
+    {
+      "time": 41.375,
+      "source_frame": 993,
+      "image": "sequences/vehicle-turn/frame_00034.jpg"
+    },
+    {
+      "time": 41.416667,
+      "source_frame": 994,
+      "image": "sequences/vehicle-turn/frame_00035.jpg"
+    },
+    {
+      "time": 41.458333,
+      "source_frame": 995,
+      "image": "sequences/vehicle-turn/frame_00036.jpg"
+    },
+    {
+      "time": 41.5,
+      "source_frame": 996,
+      "image": "sequences/vehicle-turn/frame_00037.jpg"
+    },
+    {
+      "time": 41.541667,
+      "source_frame": 997,
+      "image": "sequences/vehicle-turn/frame_00038.jpg"
+    },
+    {
+      "time": 41.583333,
+      "source_frame": 998,
+      "image": "sequences/vehicle-turn/frame_00039.jpg"
+    },
+    {
+      "time": 41.625,
+      "source_frame": 999,
+      "image": "sequences/vehicle-turn/frame_00040.jpg"
+    },
+    {
+      "time": 41.666667,
+      "source_frame": 1000,
+      "image": "sequences/vehicle-turn/frame_00041.jpg"
+    },
+    {
+      "time": 41.708333,
+      "source_frame": 1001,
+      "image": "sequences/vehicle-turn/frame_00042.jpg"
+    },
+    {
+      "time": 41.75,
+      "source_frame": 1002,
+      "image": "sequences/vehicle-turn/frame_00043.jpg"
+    },
+    {
+      "time": 41.791667,
+      "source_frame": 1003,
+      "image": "sequences/vehicle-turn/frame_00044.jpg"
+    },
+    {
+      "time": 41.833333,
+      "source_frame": 1004,
+      "image": "sequences/vehicle-turn/frame_00045.jpg"
+    },
+    {
+      "time": 41.875,
+      "source_frame": 1005,
+      "image": "sequences/vehicle-turn/frame_00046.jpg"
+    },
+    {
+      "time": 41.916667,
+      "source_frame": 1006,
+      "image": "sequences/vehicle-turn/frame_00047.jpg"
+    },
+    {
+      "time": 41.958333,
+      "source_frame": 1007,
+      "image": "sequences/vehicle-turn/frame_00048.jpg"
+    }
+  ],
+  "contact_sheet": "contact-sheets/vehicle-turn.jpg"
+}

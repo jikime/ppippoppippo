@@ -1,0 +1,173 @@
+[
+  {
+    "id": "F01",
+    "video": "AWS-103828",
+    "time": 0.0,
+    "title": "스크린·연단·밝은 문·유도등",
+    "requested_time": 0,
+    "source_frame": 0,
+    "image": "keyframes/F01.png"
+  },
+  {
+    "id": "F02",
+    "video": "AWS-103846",
+    "time": 7.0,
+    "title": "스크린 벽과 반복 좌석의 전경",
+    "requested_time": 7,
+    "source_frame": 210,
+    "image": "keyframes/F02.png"
+  },
+  {
+    "id": "F03",
+    "video": "AWS-103846",
+    "time": 10.0,
+    "title": "벽 쪽 통로와 공기청정기",
+    "requested_time": 10,
+    "source_frame": 300,
+    "image": "keyframes/F03.png"
+  },
+  {
+    "id": "F04",
+    "video": "AWS-103846",
+    "time": 13.5,
+    "title": "반투명 유리의 띠·반사·비침",
+    "requested_time": 13.5,
+    "source_frame": 405,
+    "image": "keyframes/F04.png"
+  },
+  {
+    "id": "F05",
+    "video": "AWS-103854",
+    "time": 0.0,
+    "title": "벽 장치·거치대·문 주변 상세",
+    "requested_time": 0,
+    "source_frame": 0,
+    "image": "keyframes/F05.png"
+  },
+  {
+    "id": "F06",
+    "video": "AWS-103900",
+    "time": 2.5,
+    "title": "프로젝터·좌석 열·빈 테이블",
+    "requested_time": 2.5,
+    "source_frame": 75,
+    "image": "keyframes/F06.png"
+  },
+  {
+    "id": "F07",
+    "video": "AWS-103908",
+    "time": 0.5,
+    "title": "큰 벽 패널과 천장 레일",
+    "requested_time": 0.5,
+    "source_frame": 15,
+    "image": "keyframes/F07.png"
+  },
+  {
+    "id": "F08",
+    "video": "AWS-103918",
+    "time": 0.0,
+    "title": "유리 앞 여분 의자와 통로",
+    "requested_time": 0,
+    "source_frame": 0,
+    "image": "keyframes/F08.png"
+  },
+  {
+    "id": "F09",
+    "video": "AWS-103924",
+    "time": 2.0,
+    "title": "문 근처 이동 뒤 정지한 모습",
+    "requested_time": 2,
+    "source_frame": 60,
+    "image": "keyframes/F09.png"
+  },
+  {
+    "id": "F10",
+    "video": "AWS-103931",
+    "time": 1.5,
+    "title": "끝 벽 화이트보드·시계·좌석",
+    "requested_time": 1.5,
+    "source_frame": 45,
+    "image": "keyframes/F10.png"
+  },
+  {
+    "id": "F11",
+    "video": "AWS-103931",
+    "time": 4.5,
+    "title": "스크린 옆 밝은 문과 연단",
+    "requested_time": 4.5,
+    "source_frame": 135,
+    "image": "keyframes/F11.png"
+  },
+  {
+    "id": "F12",
+    "video": "AWS-103938",
+    "time": 1.0,
+    "title": "흰 연단·높은 스툴·테이블",
+    "requested_time": 1,
+    "source_frame": 29,
+    "image": "keyframes/F12.png"
+  },
+  {
+    "id": "F13",
+    "video": "AWS-103938",
+    "time": 4.166667,
+    "title": "스크린 쪽에서 본 긴 전경",
+    "requested_time": 4.166667,
+    "source_frame": 124,
+    "image": "keyframes/F13.png"
+  },
+  {
+    "id": "F14",
+    "video": "AWS-103949",
+    "time": 1.5,
+    "title": "반대 방향 전경과 비점유 좌석",
+    "requested_time": 1.5,
+    "source_frame": 45,
+    "image": "keyframes/F14.png"
+  },
+  {
+    "id": "F15",
+    "video": "AWS-103956",
+    "time": 4.0,
+    "title": "반복 스크린·문과 착석 방향",
+    "requested_time": 4,
+    "source_frame": 120,
+    "image": "keyframes/F15.png"
+  },
+  {
+    "id": "F16",
+    "video": "AWS-104003",
+    "time": 0.0,
+    "title": "검은 문·태블릿 받침대·여분 의자",
+    "requested_time": 0,
+    "source_frame": 0,
+    "image": "keyframes/F16.png"
+  },
+  {
+    "id": "F17",
+    "video": "AWS-104003",
+    "time": 3.5,
+    "title": "유리 벽 쪽 통로와 작업 좌석",
+    "requested_time": 3.5,
+    "source_frame": 105,
+    "image": "keyframes/F17.png"
+  },
+  {
+    "id": "F18",
+    "video": "AWS-104011",
+    "time": 0.0,
+    "title": "원통형 공기청정기와 의자 뒤 공간",
+    "requested_time": 0,
+    "source_frame": 0,
+    "image": "keyframes/F18.png"
+  },
+  {
+    "id": "F19",
+    "video": "AWS-104011",
+    "time": 4.4,
+    "title": "착석·서기·테이블 접근 상태",
+    "requested_time": 4.4,
+    "source_frame": 132,
+    "image": "keyframes/F19.png"
+  }
+]

@@ -1,0 +1,130 @@
+{
+  "video": "V04",
+  "name": "night-transition",
+  "start": 24.0,
+  "end": 27.0,
+  "requested_fps": "8",
+  "frames": [
+    {
+      "time": 24.0,
+      "source_frame": 576,
+      "image": "sequences/night-transition/frame_00001.jpg"
+    },
+    {
+      "time": 24.125,
+      "source_frame": 579,
+      "image": "sequences/night-transition/frame_00002.jpg"
+    },
+    {
+      "time": 24.25,
+      "source_frame": 582,
+      "image": "sequences/night-transition/frame_00003.jpg"
+    },
+    {
+      "time": 24.375,
+      "source_frame": 585,
+      "image": "sequences/night-transition/frame_00004.jpg"
+    },
+    {
+      "time": 24.5,
+      "source_frame": 588,
+      "image": "sequences/night-transition/frame_00005.jpg"
+    },
+    {
+      "time": 24.625,
+      "source_frame": 591,
+      "image": "sequences/night-transition/frame_00006.jpg"
+    },
+    {
+      "time": 24.75,
+      "source_frame": 594,
+      "image": "sequences/night-transition/frame_00007.jpg"
+    },
+    {
+      "time": 24.875,
+      "source_frame": 597,
+      "image": "sequences/night-transition/frame_00008.jpg"
+    },
+    {
+      "time": 25.0,
+      "source_frame": 600,
+      "image": "sequences/night-transition/frame_00009.jpg"
+    },
+    {
+      "time": 25.125,
+      "source_frame": 603,
+      "image": "sequences/night-transition/frame_00010.jpg"
+    },
+    {
+      "time": 25.25,
+      "source_frame": 606,
+      "image": "sequences/night-transition/frame_00011.jpg"
+    },
+    {
+      "time": 25.375,
+      "source_frame": 609,
+      "image": "sequences/night-transition/frame_00012.jpg"
+    },
+    {
+      "time": 25.5,
+      "source_frame": 612,
+      "image": "sequences/night-transition/frame_00013.jpg"
+    },
+    {
+      "time": 25.625,
+      "source_frame": 615,
+      "image": "sequences/night-transition/frame_00014.jpg"
+    },
+    {
+      "time": 25.75,
+      "source_frame": 618,
+      "image": "sequences/night-transition/frame_00015.jpg"
+    },
+    {
+      "time": 25.875,
+      "source_frame": 621,
+      "image": "sequences/night-transition/frame_00016.jpg"
+    },
+    {
+      "time": 26.0,
+      "source_frame": 624,
+      "image": "sequences/night-transition/frame_00017.jpg"
+    },
+    {
+      "time": 26.125,
+      "source_frame": 627,
+      "image": "sequences/night-transition/frame_00018.jpg"
+    },
+    {
+      "time": 26.25,
+      "source_frame": 630,
+      "image": "sequences/night-transition/frame_00019.jpg"
+    },
+    {
+      "time": 26.375,
+      "source_frame": 633,
+      "image": "sequences/night-transition/frame_00020.jpg"
+    },
+    {
+      "time": 26.5,
+      "source_frame": 636,
+      "image": "sequences/night-transition/frame_00021.jpg"
+    },
+    {
+      "time": 26.625,
+      "source_frame": 639,
+      "image": "sequences/night-transition/frame_00022.jpg"
+    },
+    {
+      "time": 26.75,
+      "source_frame": 642,
+      "image": "sequences/night-transition/frame_00023.jpg"
+    },
+    {
+      "time": 26.875,
+      "source_frame": 645,
+      "image": "sequences/night-transition/frame_00024.jpg"
+    }
+  ],
+  "contact_sheet": "contact-sheets/night-transition.jpg"
+}

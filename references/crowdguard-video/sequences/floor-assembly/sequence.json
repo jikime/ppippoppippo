@@ -1,0 +1,160 @@
+{
+  "video": "V03",
+  "name": "floor-assembly",
+  "start": 4.0,
+  "end": 5.0,
+  "requested_fps": "source",
+  "frames": [
+    {
+      "time": 4.0,
+      "source_frame": 120,
+      "image": "sequences/floor-assembly/frame_00001.jpg"
+    },
+    {
+      "time": 4.033333,
+      "source_frame": 121,
+      "image": "sequences/floor-assembly/frame_00002.jpg"
+    },
+    {
+      "time": 4.066667,
+      "source_frame": 122,
+      "image": "sequences/floor-assembly/frame_00003.jpg"
+    },
+    {
+      "time": 4.1,
+      "source_frame": 123,
+      "image": "sequences/floor-assembly/frame_00004.jpg"
+    },
+    {
+      "time": 4.133333,
+      "source_frame": 124,
+      "image": "sequences/floor-assembly/frame_00005.jpg"
+    },
+    {
+      "time": 4.166667,
+      "source_frame": 125,
+      "image": "sequences/floor-assembly/frame_00006.jpg"
+    },
+    {
+      "time": 4.2,
+      "source_frame": 126,
+      "image": "sequences/floor-assembly/frame_00007.jpg"
+    },
+    {
+      "time": 4.233333,
+      "source_frame": 127,
+      "image": "sequences/floor-assembly/frame_00008.jpg"
+    },
+    {
+      "time": 4.266667,
+      "source_frame": 128,
+      "image": "sequences/floor-assembly/frame_00009.jpg"
+    },
+    {
+      "time": 4.3,
+      "source_frame": 129,
+      "image": "sequences/floor-assembly/frame_00010.jpg"
+    },
+    {
+      "time": 4.333333,
+      "source_frame": 130,
+      "image": "sequences/floor-assembly/frame_00011.jpg"
+    },
+    {
+      "time": 4.366667,
+      "source_frame": 131,
+      "image": "sequences/floor-assembly/frame_00012.jpg"
+    },
+    {
+      "time": 4.4,
+      "source_frame": 132,
+      "image": "sequences/floor-assembly/frame_00013.jpg"
+    },
+    {
+      "time": 4.433333,
+      "source_frame": 133,
+      "image": "sequences/floor-assembly/frame_00014.jpg"
+    },
+    {
+      "time": 4.466667,
+      "source_frame": 134,
+      "image": "sequences/floor-assembly/frame_00015.jpg"
+    },
+    {
+      "time": 4.5,
+      "source_frame": 135,
+      "image": "sequences/floor-assembly/frame_00016.jpg"
+    },
+    {
+      "time": 4.533333,
+      "source_frame": 136,
+      "image": "sequences/floor-assembly/frame_00017.jpg"
+    },
+    {
+      "time": 4.566667,
+      "source_frame": 137,
+      "image": "sequences/floor-assembly/frame_00018.jpg"
+    },
+    {
+      "time": 4.6,
+      "source_frame": 138,
+      "image": "sequences/floor-assembly/frame_00019.jpg"
+    },
+    {
+      "time": 4.633333,
+      "source_frame": 139,
+      "image": "sequences/floor-assembly/frame_00020.jpg"
+    },
+    {
+      "time": 4.666667,
+      "source_frame": 140,
+      "image": "sequences/floor-assembly/frame_00021.jpg"
+    },
+    {
+      "time": 4.7,
+      "source_frame": 141,
+      "image": "sequences/floor-assembly/frame_00022.jpg"
+    },
+    {
+      "time": 4.733333,
+      "source_frame": 142,
+      "image": "sequences/floor-assembly/frame_00023.jpg"
+    },
+    {
+      "time": 4.766667,
+      "source_frame": 143,
+      "image": "sequences/floor-assembly/frame_00024.jpg"
+    },
+    {
+      "time": 4.8,
+      "source_frame": 144,
+      "image": "sequences/floor-assembly/frame_00025.jpg"
+    },
+    {
+      "time": 4.833333,
+      "source_frame": 145,
+      "image": "sequences/floor-assembly/frame_00026.jpg"
+    },
+    {
+      "time": 4.866667,
+      "source_frame": 146,
+      "image": "sequences/floor-assembly/frame_00027.jpg"
+    },
+    {
+      "time": 4.9,
+      "source_frame": 147,
+      "image": "sequences/floor-assembly/frame_00028.jpg"
+    },
+    {
+      "time": 4.933333,
+      "source_frame": 148,
+      "image": "sequences/floor-assembly/frame_00029.jpg"
+    },
+    {
+      "time": 4.966667,
+      "source_frame": 149,
+      "image": "sequences/floor-assembly/frame_00030.jpg"
+    }
+  ],
+  "contact_sheet": "contact-sheets/floor-assembly.jpg"
+}

@@ -1,0 +1,130 @@
+{
+  "video": "V02",
+  "name": "camera-orbit",
+  "start": 2.0,
+  "end": 5.0,
+  "requested_fps": "8",
+  "frames": [
+    {
+      "time": 2.0,
+      "source_frame": 48,
+      "image": "sequences/camera-orbit/frame_00001.jpg"
+    },
+    {
+      "time": 2.125,
+      "source_frame": 51,
+      "image": "sequences/camera-orbit/frame_00002.jpg"
+    },
+    {
+      "time": 2.25,
+      "source_frame": 54,
+      "image": "sequences/camera-orbit/frame_00003.jpg"
+    },
+    {
+      "time": 2.375,
+      "source_frame": 57,
+      "image": "sequences/camera-orbit/frame_00004.jpg"
+    },
+    {
+      "time": 2.5,
+      "source_frame": 60,
+      "image": "sequences/camera-orbit/frame_00005.jpg"
+    },
+    {
+      "time": 2.625,
+      "source_frame": 63,
+      "image": "sequences/camera-orbit/frame_00006.jpg"
+    },
+    {
+      "time": 2.75,
+      "source_frame": 66,
+      "image": "sequences/camera-orbit/frame_00007.jpg"
+    },
+    {
+      "time": 2.875,
+      "source_frame": 69,
+      "image": "sequences/camera-orbit/frame_00008.jpg"
+    },
+    {
+      "time": 3.0,
+      "source_frame": 72,
+      "image": "sequences/camera-orbit/frame_00009.jpg"
+    },
+    {
+      "time": 3.125,
+      "source_frame": 75,
+      "image": "sequences/camera-orbit/frame_00010.jpg"
+    },
+    {
+      "time": 3.25,
+      "source_frame": 78,
+      "image": "sequences/camera-orbit/frame_00011.jpg"
+    },
+    {
+      "time": 3.375,
+      "source_frame": 81,
+      "image": "sequences/camera-orbit/frame_00012.jpg"
+    },
+    {
+      "time": 3.5,
+      "source_frame": 84,
+      "image": "sequences/camera-orbit/frame_00013.jpg"
+    },
+    {
+      "time": 3.625,
+      "source_frame": 87,
+      "image": "sequences/camera-orbit/frame_00014.jpg"
+    },
+    {
+      "time": 3.75,
+      "source_frame": 90,
+      "image": "sequences/camera-orbit/frame_00015.jpg"
+    },
+    {
+      "time": 3.875,
+      "source_frame": 93,
+      "image": "sequences/camera-orbit/frame_00016.jpg"
+    },
+    {
+      "time": 4.0,
+      "source_frame": 96,
+      "image": "sequences/camera-orbit/frame_00017.jpg"
+    },
+    {
+      "time": 4.125,
+      "source_frame": 99,
+      "image": "sequences/camera-orbit/frame_00018.jpg"
+    },
+    {
+      "time": 4.25,
+      "source_frame": 102,
+      "image": "sequences/camera-orbit/frame_00019.jpg"
+    },
+    {
+      "time": 4.375,
+      "source_frame": 105,
+      "image": "sequences/camera-orbit/frame_00020.jpg"
+    },
+    {
+      "time": 4.5,
+      "source_frame": 108,
+      "image": "sequences/camera-orbit/frame_00021.jpg"
+    },
+    {
+      "time": 4.625,
+      "source_frame": 111,
+      "image": "sequences/camera-orbit/frame_00022.jpg"
+    },
+    {
+      "time": 4.75,
+      "source_frame": 114,
+      "image": "sequences/camera-orbit/frame_00023.jpg"
+    },
+    {
+      "time": 4.875,
+      "source_frame": 117,
+      "image": "sequences/camera-orbit/frame_00024.jpg"
+    }
+  ],
+  "contact_sheet": "contact-sheets/camera-orbit.jpg"
+}

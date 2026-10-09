@@ -1,0 +1,57 @@
+{
+  "source": "/Users/jikime/Downloads/KakaoTalk_Video_2026-10-09-10-38-28.mp4",
+  "purpose": "AWS 행사장 구조 분석용 캡처; 구현 파일 아님",
+  "frame_count": 88,
+  "frames": [
+    {
+      "source_frame": 0,
+      "time": 0.0,
+      "image": "frame_01.jpg"
+    },
+    {
+      "source_frame": 10,
+      "time": 0.366667,
+      "image": "frame_02.jpg"
+    },
+    {
+      "source_frame": 20,
+      "time": 0.7,
+      "image": "frame_03.jpg"
+    },
+    {
+      "source_frame": 30,
+      "time": 1.033333,
+      "image": "frame_04.jpg"
+    },
+    {
+      "source_frame": 40,
+      "time": 1.366667,
+      "image": "frame_05.jpg"
+    },
+    {
+      "source_frame": 50,
+      "time": 1.7,
+      "image": "frame_06.jpg"
+    },
+    {
+      "source_frame": 60,
+      "time": 2.033333,
+      "image": "frame_07.jpg"
+    },
+    {
+      "source_frame": 70,
+      "time": 2.366667,
+      "image": "frame_08.jpg"
+    },
+    {
+      "source_frame": 80,
+      "time": 2.7,
+      "image": "frame_09.jpg"
+    },
+    {
+      "source_frame": 87,
+      "time": 2.933333,
+      "image": "frame_10.jpg"
+    }
+  ]
+}

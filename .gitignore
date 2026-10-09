@@ -1,0 +1,17 @@
+node_modules/
+dist/
+*.tsbuildinfo
+.DS_Store
+artifacts/
+.env
+.env.*
+!.env.example
+__pycache__/
+*.pyc
+
+# Original venue recordings and captures remain local reference material.
+references/**/*.mp4
+references/**/*.jpg
+references/**/*.jpeg
+references/**/*.png
+references/**/*.pdf

@@ -1,0 +1,1249 @@
+{
+  "version": 1,
+  "purpose": "CrowdGuard 3D 애니메이션과 에셋 구현 참고",
+  "sample_interval_seconds": 1,
+  "timestamp_basis": "원본 CFR 영상의 0부터 시작하는 프레임 번호 / FPS",
+  "videos": [
+    {
+      "id": "V01",
+      "original_name": "KakaoTalk_Video_2026-10-09-09-39-49.mp4",
+      "original_path": "/Users/jikime/Downloads/KakaoTalk_Video_2026-10-09-09-39-49.mp4",
+      "source": "sources/KakaoTalk_Video_2026-10-09-09-39-49.mp4",
+      "sha256": "2e938af3c09038137e916ade20bf6723c80e4b269dbc219be08d528f6bc6c636",
+      "bytes": 2874108,
+      "duration": 118.833333,
+      "width": 1280,
+      "height": 720,
+      "fps_fraction": "24/1",
+      "frame_count": 2852,
+      "codec": "h264",
+      "has_audio": true,
+      "frames": [
+        {
+          "time": 0.0,
+          "source_frame": 0,
+          "image": "frames/V01/frame_00001.jpg"
+        },
+        {
+          "time": 1.0,
+          "source_frame": 24,
+          "image": "frames/V01/frame_00002.jpg"
+        },
+        {
+          "time": 2.0,
+          "source_frame": 48,
+          "image": "frames/V01/frame_00003.jpg"
+        },
+        {
+          "time": 3.0,
+          "source_frame": 72,
+          "image": "frames/V01/frame_00004.jpg"
+        },
+        {
+          "time": 4.0,
+          "source_frame": 96,
+          "image": "frames/V01/frame_00005.jpg"
+        },
+        {
+          "time": 5.0,
+          "source_frame": 120,
+          "image": "frames/V01/frame_00006.jpg"
+        },
+        {
+          "time": 6.0,
+          "source_frame": 144,
+          "image": "frames/V01/frame_00007.jpg"
+        },
+        {
+          "time": 7.0,
+          "source_frame": 168,
+          "image": "frames/V01/frame_00008.jpg"
+        },
+        {
+          "time": 8.0,
+          "source_frame": 192,
+          "image": "frames/V01/frame_00009.jpg"
+        },
+        {
+          "time": 9.0,
+          "source_frame": 216,
+          "image": "frames/V01/frame_00010.jpg"
+        },
+        {
+          "time": 10.0,
+          "source_frame": 240,
+          "image": "frames/V01/frame_00011.jpg"
+        },
+        {
+          "time": 11.0,
+          "source_frame": 264,
+          "image": "frames/V01/frame_00012.jpg"
+        },
+        {
+          "time": 12.0,
+          "source_frame": 288,
+          "image": "frames/V01/frame_00013.jpg"
+        },
+        {
+          "time": 13.0,
+          "source_frame": 312,
+          "image": "frames/V01/frame_00014.jpg"
+        },
+        {
+          "time": 14.0,
+          "source_frame": 336,
+          "image": "frames/V01/frame_00015.jpg"
+        },
+        {
+          "time": 15.0,
+          "source_frame": 360,
+          "image": "frames/V01/frame_00016.jpg"
+        },
+        {
+          "time": 16.0,
+          "source_frame": 384,
+          "image": "frames/V01/frame_00017.jpg"
+        },
+        {
+          "time": 17.0,
+          "source_frame": 408,
+          "image": "frames/V01/frame_00018.jpg"
+        },
+        {
+          "time": 18.0,
+          "source_frame": 432,
+          "image": "frames/V01/frame_00019.jpg"
+        },
+        {
+          "time": 19.0,
+          "source_frame": 456,
+          "image": "frames/V01/frame_00020.jpg"
+        },
+        {
+          "time": 20.0,
+          "source_frame": 480,
+          "image": "frames/V01/frame_00021.jpg"
+        },
+        {
+          "time": 21.0,
+          "source_frame": 504,
+          "image": "frames/V01/frame_00022.jpg"
+        },
+        {
+          "time": 22.0,
+          "source_frame": 528,
+          "image": "frames/V01/frame_00023.jpg"
+        },
+        {
+          "time": 23.0,
+          "source_frame": 552,
+          "image": "frames/V01/frame_00024.jpg"
+        },
+        {
+          "time": 24.0,
+          "source_frame": 576,
+          "image": "frames/V01/frame_00025.jpg"
+        },
+        {
+          "time": 25.0,
+          "source_frame": 600,
+          "image": "frames/V01/frame_00026.jpg"
+        },
+        {
+          "time": 26.0,
+          "source_frame": 624,
+          "image": "frames/V01/frame_00027.jpg"
+        },
+        {
+          "time": 27.0,
+          "source_frame": 648,
+          "image": "frames/V01/frame_00028.jpg"
+        },
+        {
+          "time": 28.0,
+          "source_frame": 672,
+          "image": "frames/V01/frame_00029.jpg"
+        },
+        {
+          "time": 29.0,
+          "source_frame": 696,
+          "image": "frames/V01/frame_00030.jpg"
+        },
+        {
+          "time": 30.0,
+          "source_frame": 720,
+          "image": "frames/V01/frame_00031.jpg"
+        },
+        {
+          "time": 31.0,
+          "source_frame": 744,
+          "image": "frames/V01/frame_00032.jpg"
+        },
+        {
+          "time": 32.0,
+          "source_frame": 768,
+          "image": "frames/V01/frame_00033.jpg"
+        },
+        {
+          "time": 33.0,
+          "source_frame": 792,
+          "image": "frames/V01/frame_00034.jpg"
+        },
+        {
+          "time": 34.0,
+          "source_frame": 816,
+          "image": "frames/V01/frame_00035.jpg"
+        },
+        {
+          "time": 35.0,
+          "source_frame": 840,
+          "image": "frames/V01/frame_00036.jpg"
+        },
+        {
+          "time": 36.0,
+          "source_frame": 864,
+          "image": "frames/V01/frame_00037.jpg"
+        },
+        {
+          "time": 37.0,
+          "source_frame": 888,
+          "image": "frames/V01/frame_00038.jpg"
+        },
+        {
+          "time": 38.0,
+          "source_frame": 912,
+          "image": "frames/V01/frame_00039.jpg"
+        },
+        {
+          "time": 39.0,
+          "source_frame": 936,
+          "image": "frames/V01/frame_00040.jpg"
+        },
+        {
+          "time": 40.0,
+          "source_frame": 960,
+          "image": "frames/V01/frame_00041.jpg"
+        },
+        {
+          "time": 41.0,
+          "source_frame": 984,
+          "image": "frames/V01/frame_00042.jpg"
+        },
+        {
+          "time": 42.0,
+          "source_frame": 1008,
+          "image": "frames/V01/frame_00043.jpg"
+        },
+        {
+          "time": 43.0,
+          "source_frame": 1032,
+          "image": "frames/V01/frame_00044.jpg"
+        },
+        {
+          "time": 44.0,
+          "source_frame": 1056,
+          "image": "frames/V01/frame_00045.jpg"
+        },
+        {
+          "time": 45.0,
+          "source_frame": 1080,
+          "image": "frames/V01/frame_00046.jpg"
+        },
+        {
+          "time": 46.0,
+          "source_frame": 1104,
+          "image": "frames/V01/frame_00047.jpg"
+        },
+        {
+          "time": 47.0,
+          "source_frame": 1128,
+          "image": "frames/V01/frame_00048.jpg"
+        },
+        {
+          "time": 48.0,
+          "source_frame": 1152,
+          "image": "frames/V01/frame_00049.jpg"
+        },
+        {
+          "time": 49.0,
+          "source_frame": 1176,
+          "image": "frames/V01/frame_00050.jpg"
+        },
+        {
+          "time": 50.0,
+          "source_frame": 1200,
+          "image": "frames/V01/frame_00051.jpg"
+        },
+        {
+          "time": 51.0,
+          "source_frame": 1224,
+          "image": "frames/V01/frame_00052.jpg"
+        },
+        {
+          "time": 52.0,
+          "source_frame": 1248,
+          "image": "frames/V01/frame_00053.jpg"
+        },
+        {
+          "time": 53.0,
+          "source_frame": 1272,
+          "image": "frames/V01/frame_00054.jpg"
+        },
+        {
+          "time": 54.0,
+          "source_frame": 1296,
+          "image": "frames/V01/frame_00055.jpg"
+        },
+        {
+          "time": 55.0,
+          "source_frame": 1320,
+          "image": "frames/V01/frame_00056.jpg"
+        },
+        {
+          "time": 56.0,
+          "source_frame": 1344,
+          "image": "frames/V01/frame_00057.jpg"
+        },
+        {
+          "time": 57.0,
+          "source_frame": 1368,
+          "image": "frames/V01/frame_00058.jpg"
+        },
+        {
+          "time": 58.0,
+          "source_frame": 1392,
+          "image": "frames/V01/frame_00059.jpg"
+        },
+        {
+          "time": 59.0,
+          "source_frame": 1416,
+          "image": "frames/V01/frame_00060.jpg"
+        },
+        {
+          "time": 60.0,
+          "source_frame": 1440,
+          "image": "frames/V01/frame_00061.jpg"
+        },
+        {
+          "time": 61.0,
+          "source_frame": 1464,
+          "image": "frames/V01/frame_00062.jpg"
+        },
+        {
+          "time": 62.0,
+          "source_frame": 1488,
+          "image": "frames/V01/frame_00063.jpg"
+        },
+        {
+          "time": 63.0,
+          "source_frame": 1512,
+          "image": "frames/V01/frame_00064.jpg"
+        },
+        {
+          "time": 64.0,
+          "source_frame": 1536,
+          "image": "frames/V01/frame_00065.jpg"
+        },
+        {
+          "time": 65.0,
+          "source_frame": 1560,
+          "image": "frames/V01/frame_00066.jpg"
+        },
+        {
+          "time": 66.0,
+          "source_frame": 1584,
+          "image": "frames/V01/frame_00067.jpg"
+        },
+        {
+          "time": 67.0,
+          "source_frame": 1608,
+          "image": "frames/V01/frame_00068.jpg"
+        },
+        {
+          "time": 68.0,
+          "source_frame": 1632,
+          "image": "frames/V01/frame_00069.jpg"
+        },
+        {
+          "time": 69.0,
+          "source_frame": 1656,
+          "image": "frames/V01/frame_00070.jpg"
+        },
+        {
+          "time": 70.0,
+          "source_frame": 1680,
+          "image": "frames/V01/frame_00071.jpg"
+        },
+        {
+          "time": 71.0,
+          "source_frame": 1704,
+          "image": "frames/V01/frame_00072.jpg"
+        },
+        {
+          "time": 72.0,
+          "source_frame": 1728,
+          "image": "frames/V01/frame_00073.jpg"
+        },
+        {
+          "time": 73.0,
+          "source_frame": 1752,
+          "image": "frames/V01/frame_00074.jpg"
+        },
+        {
+          "time": 74.0,
+          "source_frame": 1776,
+          "image": "frames/V01/frame_00075.jpg"
+        },
+        {
+          "time": 75.0,
+          "source_frame": 1800,
+          "image": "frames/V01/frame_00076.jpg"
+        },
+        {
+          "time": 76.0,
+          "source_frame": 1824,
+          "image": "frames/V01/frame_00077.jpg"
+        },
+        {
+          "time": 77.0,
+          "source_frame": 1848,
+          "image": "frames/V01/frame_00078.jpg"
+        },
+        {
+          "time": 78.0,
+          "source_frame": 1872,
+          "image": "frames/V01/frame_00079.jpg"
+        },
+        {
+          "time": 79.0,
+          "source_frame": 1896,
+          "image": "frames/V01/frame_00080.jpg"
+        },
+        {
+          "time": 80.0,
+          "source_frame": 1920,
+          "image": "frames/V01/frame_00081.jpg"
+        },
+        {
+          "time": 81.0,
+          "source_frame": 1944,
+          "image": "frames/V01/frame_00082.jpg"
+        },
+        {
+          "time": 82.0,
+          "source_frame": 1968,
+          "image": "frames/V01/frame_00083.jpg"
+        },
+        {
+          "time": 83.0,
+          "source_frame": 1992,
+          "image": "frames/V01/frame_00084.jpg"
+        },
+        {
+          "time": 84.0,
+          "source_frame": 2016,
+          "image": "frames/V01/frame_00085.jpg"
+        },
+        {
+          "time": 85.0,
+          "source_frame": 2040,
+          "image": "frames/V01/frame_00086.jpg"
+        },
+        {
+          "time": 86.0,
+          "source_frame": 2064,
+          "image": "frames/V01/frame_00087.jpg"
+        },
+        {
+          "time": 87.0,
+          "source_frame": 2088,
+          "image": "frames/V01/frame_00088.jpg"
+        },
+        {
+          "time": 88.0,
+          "source_frame": 2112,
+          "image": "frames/V01/frame_00089.jpg"
+        },
+        {
+          "time": 89.0,
+          "source_frame": 2136,
+          "image": "frames/V01/frame_00090.jpg"
+        },
+        {
+          "time": 90.0,
+          "source_frame": 2160,
+          "image": "frames/V01/frame_00091.jpg"
+        },
+        {
+          "time": 91.0,
+          "source_frame": 2184,
+          "image": "frames/V01/frame_00092.jpg"
+        },
+        {
+          "time": 92.0,
+          "source_frame": 2208,
+          "image": "frames/V01/frame_00093.jpg"
+        },
+        {
+          "time": 93.0,
+          "source_frame": 2232,
+          "image": "frames/V01/frame_00094.jpg"
+        },
+        {
+          "time": 94.0,
+          "source_frame": 2256,
+          "image": "frames/V01/frame_00095.jpg"
+        },
+        {
+          "time": 95.0,
+          "source_frame": 2280,
+          "image": "frames/V01/frame_00096.jpg"
+        },
+        {
+          "time": 96.0,
+          "source_frame": 2304,
+          "image": "frames/V01/frame_00097.jpg"
+        },
+        {
+          "time": 97.0,
+          "source_frame": 2328,
+          "image": "frames/V01/frame_00098.jpg"
+        },
+        {
+          "time": 98.0,
+          "source_frame": 2352,
+          "image": "frames/V01/frame_00099.jpg"
+        },
+        {
+          "time": 99.0,
+          "source_frame": 2376,
+          "image": "frames/V01/frame_00100.jpg"
+        },
+        {
+          "time": 100.0,
+          "source_frame": 2400,
+          "image": "frames/V01/frame_00101.jpg"
+        },
+        {
+          "time": 101.0,
+          "source_frame": 2424,
+          "image": "frames/V01/frame_00102.jpg"
+        },
+        {
+          "time": 102.0,
+          "source_frame": 2448,
+          "image": "frames/V01/frame_00103.jpg"
+        },
+        {
+          "time": 103.0,
+          "source_frame": 2472,
+          "image": "frames/V01/frame_00104.jpg"
+        },
+        {
+          "time": 104.0,
+          "source_frame": 2496,
+          "image": "frames/V01/frame_00105.jpg"
+        },
+        {
+          "time": 105.0,
+          "source_frame": 2520,
+          "image": "frames/V01/frame_00106.jpg"
+        },
+        {
+          "time": 106.0,
+          "source_frame": 2544,
+          "image": "frames/V01/frame_00107.jpg"
+        },
+        {
+          "time": 107.0,
+          "source_frame": 2568,
+          "image": "frames/V01/frame_00108.jpg"
+        },
+        {
+          "time": 108.0,
+          "source_frame": 2592,
+          "image": "frames/V01/frame_00109.jpg"
+        },
+        {
+          "time": 109.0,
+          "source_frame": 2616,
+          "image": "frames/V01/frame_00110.jpg"
+        },
+        {
+          "time": 110.0,
+          "source_frame": 2640,
+          "image": "frames/V01/frame_00111.jpg"
+        },
+        {
+          "time": 111.0,
+          "source_frame": 2664,
+          "image": "frames/V01/frame_00112.jpg"
+        },
+        {
+          "time": 112.0,
+          "source_frame": 2688,
+          "image": "frames/V01/frame_00113.jpg"
+        },
+        {
+          "time": 113.0,
+          "source_frame": 2712,
+          "image": "frames/V01/frame_00114.jpg"
+        },
+        {
+          "time": 114.0,
+          "source_frame": 2736,
+          "image": "frames/V01/frame_00115.jpg"
+        },
+        {
+          "time": 115.0,
+          "source_frame": 2760,
+          "image": "frames/V01/frame_00116.jpg"
+        },
+        {
+          "time": 116.0,
+          "source_frame": 2784,
+          "image": "frames/V01/frame_00117.jpg"
+        },
+        {
+          "time": 117.0,
+          "source_frame": 2808,
+          "image": "frames/V01/frame_00118.jpg"
+        },
+        {
+          "time": 118.0,
+          "source_frame": 2832,
+          "image": "frames/V01/frame_00119.jpg"
+        }
+      ],
+      "contact_sheets": [
+        "contact-sheets/V01-01.jpg",
+        "contact-sheets/V01-02.jpg"
+      ],
+      "preview": "sources/KakaoTalk_Video_2026-10-09-09-39-49.mp4"
+    },
+    {
+      "id": "V02",
+      "original_name": "KakaoTalk_Video_2026-10-09-09-40-01.mp4",
+      "original_path": "/Users/jikime/Downloads/KakaoTalk_Video_2026-10-09-09-40-01.mp4",
+      "source": "sources/KakaoTalk_Video_2026-10-09-09-40-01.mp4",
+      "sha256": "1f521b0945f95c373f9e488b93b8b130334a5b9637dccf872526aab4ae3725c1",
+      "bytes": 3435755,
+      "duration": 51.791667,
+      "width": 1300,
+      "height": 720,
+      "fps_fraction": "24/1",
+      "frame_count": 1243,
+      "codec": "h264",
+      "has_audio": false,
+      "frames": [
+        {
+          "time": 0.0,
+          "source_frame": 0,
+          "image": "frames/V02/frame_00001.jpg"
+        },
+        {
+          "time": 1.0,
+          "source_frame": 24,
+          "image": "frames/V02/frame_00002.jpg"
+        },
+        {
+          "time": 2.0,
+          "source_frame": 48,
+          "image": "frames/V02/frame_00003.jpg"
+        },
+        {
+          "time": 3.0,
+          "source_frame": 72,
+          "image": "frames/V02/frame_00004.jpg"
+        },
+        {
+          "time": 4.0,
+          "source_frame": 96,
+          "image": "frames/V02/frame_00005.jpg"
+        },
+        {
+          "time": 5.0,
+          "source_frame": 120,
+          "image": "frames/V02/frame_00006.jpg"
+        },
+        {
+          "time": 6.0,
+          "source_frame": 144,
+          "image": "frames/V02/frame_00007.jpg"
+        },
+        {
+          "time": 7.0,
+          "source_frame": 168,
+          "image": "frames/V02/frame_00008.jpg"
+        },
+        {
+          "time": 8.0,
+          "source_frame": 192,
+          "image": "frames/V02/frame_00009.jpg"
+        },
+        {
+          "time": 9.0,
+          "source_frame": 216,
+          "image": "frames/V02/frame_00010.jpg"
+        },
+        {
+          "time": 10.0,
+          "source_frame": 240,
+          "image": "frames/V02/frame_00011.jpg"
+        },
+        {
+          "time": 11.0,
+          "source_frame": 264,
+          "image": "frames/V02/frame_00012.jpg"
+        },
+        {
+          "time": 12.0,
+          "source_frame": 288,
+          "image": "frames/V02/frame_00013.jpg"
+        },
+        {
+          "time": 13.0,
+          "source_frame": 312,
+          "image": "frames/V02/frame_00014.jpg"
+        },
+        {
+          "time": 14.0,
+          "source_frame": 336,
+          "image": "frames/V02/frame_00015.jpg"
+        },
+        {
+          "time": 15.0,
+          "source_frame": 360,
+          "image": "frames/V02/frame_00016.jpg"
+        },
+        {
+          "time": 16.0,
+          "source_frame": 384,
+          "image": "frames/V02/frame_00017.jpg"
+        },
+        {
+          "time": 17.0,
+          "source_frame": 408,
+          "image": "frames/V02/frame_00018.jpg"
+        },
+        {
+          "time": 18.0,
+          "source_frame": 432,
+          "image": "frames/V02/frame_00019.jpg"
+        },
+        {
+          "time": 19.0,
+          "source_frame": 456,
+          "image": "frames/V02/frame_00020.jpg"
+        },
+        {
+          "time": 20.0,
+          "source_frame": 480,
+          "image": "frames/V02/frame_00021.jpg"
+        },
+        {
+          "time": 21.0,
+          "source_frame": 504,
+          "image": "frames/V02/frame_00022.jpg"
+        },
+        {
+          "time": 22.0,
+          "source_frame": 528,
+          "image": "frames/V02/frame_00023.jpg"
+        },
+        {
+          "time": 23.0,
+          "source_frame": 552,
+          "image": "frames/V02/frame_00024.jpg"
+        },
+        {
+          "time": 24.0,
+          "source_frame": 576,
+          "image": "frames/V02/frame_00025.jpg"
+        },
+        {
+          "time": 25.0,
+          "source_frame": 600,
+          "image": "frames/V02/frame_00026.jpg"
+        },
+        {
+          "time": 26.0,
+          "source_frame": 624,
+          "image": "frames/V02/frame_00027.jpg"
+        },
+        {
+          "time": 27.0,
+          "source_frame": 648,
+          "image": "frames/V02/frame_00028.jpg"
+        },
+        {
+          "time": 28.0,
+          "source_frame": 672,
+          "image": "frames/V02/frame_00029.jpg"
+        },
+        {
+          "time": 29.0,
+          "source_frame": 696,
+          "image": "frames/V02/frame_00030.jpg"
+        },
+        {
+          "time": 30.0,
+          "source_frame": 720,
+          "image": "frames/V02/frame_00031.jpg"
+        },
+        {
+          "time": 31.0,
+          "source_frame": 744,
+          "image": "frames/V02/frame_00032.jpg"
+        },
+        {
+          "time": 32.0,
+          "source_frame": 768,
+          "image": "frames/V02/frame_00033.jpg"
+        },
+        {
+          "time": 33.0,
+          "source_frame": 792,
+          "image": "frames/V02/frame_00034.jpg"
+        },
+        {
+          "time": 34.0,
+          "source_frame": 816,
+          "image": "frames/V02/frame_00035.jpg"
+        },
+        {
+          "time": 35.0,
+          "source_frame": 840,
+          "image": "frames/V02/frame_00036.jpg"
+        },
+        {
+          "time": 36.0,
+          "source_frame": 864,
+          "image": "frames/V02/frame_00037.jpg"
+        },
+        {
+          "time": 37.0,
+          "source_frame": 888,
+          "image": "frames/V02/frame_00038.jpg"
+        },
+        {
+          "time": 38.0,
+          "source_frame": 912,
+          "image": "frames/V02/frame_00039.jpg"
+        },
+        {
+          "time": 39.0,
+          "source_frame": 936,
+          "image": "frames/V02/frame_00040.jpg"
+        },
+        {
+          "time": 40.0,
+          "source_frame": 960,
+          "image": "frames/V02/frame_00041.jpg"
+        },
+        {
+          "time": 41.0,
+          "source_frame": 984,
+          "image": "frames/V02/frame_00042.jpg"
+        },
+        {
+          "time": 42.0,
+          "source_frame": 1008,
+          "image": "frames/V02/frame_00043.jpg"
+        },
+        {
+          "time": 43.0,
+          "source_frame": 1032,
+          "image": "frames/V02/frame_00044.jpg"
+        },
+        {
+          "time": 44.0,
+          "source_frame": 1056,
+          "image": "frames/V02/frame_00045.jpg"
+        },
+        {
+          "time": 45.0,
+          "source_frame": 1080,
+          "image": "frames/V02/frame_00046.jpg"
+        },
+        {
+          "time": 46.0,
+          "source_frame": 1104,
+          "image": "frames/V02/frame_00047.jpg"
+        },
+        {
+          "time": 47.0,
+          "source_frame": 1128,
+          "image": "frames/V02/frame_00048.jpg"
+        },
+        {
+          "time": 48.0,
+          "source_frame": 1152,
+          "image": "frames/V02/frame_00049.jpg"
+        },
+        {
+          "time": 49.0,
+          "source_frame": 1176,
+          "image": "frames/V02/frame_00050.jpg"
+        },
+        {
+          "time": 50.0,
+          "source_frame": 1200,
+          "image": "frames/V02/frame_00051.jpg"
+        },
+        {
+          "time": 51.0,
+          "source_frame": 1224,
+          "image": "frames/V02/frame_00052.jpg"
+        }
+      ],
+      "contact_sheets": [
+        "contact-sheets/V02-01.jpg",
+        "contact-sheets/V02-02.jpg"
+      ],
+      "preview": "sources/KakaoTalk_Video_2026-10-09-09-40-01.mp4"
+    },
+    {
+      "id": "V03",
+      "original_name": "KakaoTalk_Video_2026-10-09-09-40-11.mp4",
+      "original_path": "/Users/jikime/Downloads/KakaoTalk_Video_2026-10-09-09-40-11.mp4",
+      "source": "sources/KakaoTalk_Video_2026-10-09-09-40-11.mp4",
+      "sha256": "d8b9fe48230dad555a685366b52b3e68e236f6fc6a5cddebef89013453b2afea",
+      "bytes": 9901888,
+      "duration": 29.1,
+      "width": 1920,
+      "height": 1028,
+      "fps_fraction": "30/1",
+      "frame_count": 873,
+      "codec": "hevc",
+      "has_audio": true,
+      "frames": [
+        {
+          "time": 0.0,
+          "source_frame": 0,
+          "image": "frames/V03/frame_00001.jpg"
+        },
+        {
+          "time": 1.0,
+          "source_frame": 30,
+          "image": "frames/V03/frame_00002.jpg"
+        },
+        {
+          "time": 2.0,
+          "source_frame": 60,
+          "image": "frames/V03/frame_00003.jpg"
+        },
+        {
+          "time": 3.0,
+          "source_frame": 90,
+          "image": "frames/V03/frame_00004.jpg"
+        },
+        {
+          "time": 4.0,
+          "source_frame": 120,
+          "image": "frames/V03/frame_00005.jpg"
+        },
+        {
+          "time": 5.0,
+          "source_frame": 150,
+          "image": "frames/V03/frame_00006.jpg"
+        },
+        {
+          "time": 6.0,
+          "source_frame": 180,
+          "image": "frames/V03/frame_00007.jpg"
+        },
+        {
+          "time": 7.0,
+          "source_frame": 210,
+          "image": "frames/V03/frame_00008.jpg"
+        },
+        {
+          "time": 8.0,
+          "source_frame": 240,
+          "image": "frames/V03/frame_00009.jpg"
+        },
+        {
+          "time": 9.0,
+          "source_frame": 270,
+          "image": "frames/V03/frame_00010.jpg"
+        },
+        {
+          "time": 10.0,
+          "source_frame": 300,
+          "image": "frames/V03/frame_00011.jpg"
+        },
+        {
+          "time": 11.0,
+          "source_frame": 330,
+          "image": "frames/V03/frame_00012.jpg"
+        },
+        {
+          "time": 12.0,
+          "source_frame": 360,
+          "image": "frames/V03/frame_00013.jpg"
+        },
+        {
+          "time": 13.0,
+          "source_frame": 390,
+          "image": "frames/V03/frame_00014.jpg"
+        },
+        {
+          "time": 14.0,
+          "source_frame": 420,
+          "image": "frames/V03/frame_00015.jpg"
+        },
+        {
+          "time": 15.0,
+          "source_frame": 450,
+          "image": "frames/V03/frame_00016.jpg"
+        },
+        {
+          "time": 16.0,
+          "source_frame": 480,
+          "image": "frames/V03/frame_00017.jpg"
+        },
+        {
+          "time": 17.0,
+          "source_frame": 510,
+          "image": "frames/V03/frame_00018.jpg"
+        },
+        {
+          "time": 18.0,
+          "source_frame": 540,
+          "image": "frames/V03/frame_00019.jpg"
+        },
+        {
+          "time": 19.0,
+          "source_frame": 570,
+          "image": "frames/V03/frame_00020.jpg"
+        },
+        {
+          "time": 20.0,
+          "source_frame": 600,
+          "image": "frames/V03/frame_00021.jpg"
+        },
+        {
+          "time": 21.0,
+          "source_frame": 630,
+          "image": "frames/V03/frame_00022.jpg"
+        },
+        {
+          "time": 22.0,
+          "source_frame": 660,
+          "image": "frames/V03/frame_00023.jpg"
+        },
+        {
+          "time": 23.0,
+          "source_frame": 690,
+          "image": "frames/V03/frame_00024.jpg"
+        },
+        {
+          "time": 24.0,
+          "source_frame": 720,
+          "image": "frames/V03/frame_00025.jpg"
+        },
+        {
+          "time": 25.0,
+          "source_frame": 750,
+          "image": "frames/V03/frame_00026.jpg"
+        },
+        {
+          "time": 26.0,
+          "source_frame": 780,
+          "image": "frames/V03/frame_00027.jpg"
+        },
+        {
+          "time": 27.0,
+          "source_frame": 810,
+          "image": "frames/V03/frame_00028.jpg"
+        },
+        {
+          "time": 28.0,
+          "source_frame": 840,
+          "image": "frames/V03/frame_00029.jpg"
+        },
+        {
+          "time": 29.0,
+          "source_frame": 870,
+          "image": "frames/V03/frame_00030.jpg"
+        }
+      ],
+      "contact_sheets": [
+        "contact-sheets/V03-01.jpg"
+      ],
+      "preview": "previews/V03.mp4"
+    },
+    {
+      "id": "V04",
+      "original_name": "KakaoTalk_Video_2026-10-09-09-40-18.mp4",
+      "original_path": "/Users/jikime/Downloads/KakaoTalk_Video_2026-10-09-09-40-18.mp4",
+      "source": "sources/KakaoTalk_Video_2026-10-09-09-40-18.mp4",
+      "sha256": "ce66d2a0840ac1471e459c341b05f53286b5268c7e33bf69d5e4c0e1fc0b3352",
+      "bytes": 4003056,
+      "duration": 29.708333,
+      "width": 1280,
+      "height": 720,
+      "fps_fraction": "24/1",
+      "frame_count": 713,
+      "codec": "h264",
+      "has_audio": true,
+      "frames": [
+        {
+          "time": 0.0,
+          "source_frame": 0,
+          "image": "frames/V04/frame_00001.jpg"
+        },
+        {
+          "time": 1.0,
+          "source_frame": 24,
+          "image": "frames/V04/frame_00002.jpg"
+        },
+        {
+          "time": 2.0,
+          "source_frame": 48,
+          "image": "frames/V04/frame_00003.jpg"
+        },
+        {
+          "time": 3.0,
+          "source_frame": 72,
+          "image": "frames/V04/frame_00004.jpg"
+        },
+        {
+          "time": 4.0,
+          "source_frame": 96,
+          "image": "frames/V04/frame_00005.jpg"
+        },
+        {
+          "time": 5.0,
+          "source_frame": 120,
+          "image": "frames/V04/frame_00006.jpg"
+        },
+        {
+          "time": 6.0,
+          "source_frame": 144,
+          "image": "frames/V04/frame_00007.jpg"
+        },
+        {
+          "time": 7.0,
+          "source_frame": 168,
+          "image": "frames/V04/frame_00008.jpg"
+        },
+        {
+          "time": 8.0,
+          "source_frame": 192,
+          "image": "frames/V04/frame_00009.jpg"
+        },
+        {
+          "time": 9.0,
+          "source_frame": 216,
+          "image": "frames/V04/frame_00010.jpg"
+        },
+        {
+          "time": 10.0,
+          "source_frame": 240,
+          "image": "frames/V04/frame_00011.jpg"
+        },
+        {
+          "time": 11.0,
+          "source_frame": 264,
+          "image": "frames/V04/frame_00012.jpg"
+        },
+        {
+          "time": 12.0,
+          "source_frame": 288,
+          "image": "frames/V04/frame_00013.jpg"
+        },
+        {
+          "time": 13.0,
+          "source_frame": 312,
+          "image": "frames/V04/frame_00014.jpg"
+        },
+        {
+          "time": 14.0,
+          "source_frame": 336,
+          "image": "frames/V04/frame_00015.jpg"
+        },
+        {
+          "time": 15.0,
+          "source_frame": 360,
+          "image": "frames/V04/frame_00016.jpg"
+        },
+        {
+          "time": 16.0,
+          "source_frame": 384,
+          "image": "frames/V04/frame_00017.jpg"
+        },
+        {
+          "time": 17.0,
+          "source_frame": 408,
+          "image": "frames/V04/frame_00018.jpg"
+        },
+        {
+          "time": 18.0,
+          "source_frame": 432,
+          "image": "frames/V04/frame_00019.jpg"
+        },
+        {
+          "time": 19.0,
+          "source_frame": 456,
+          "image": "frames/V04/frame_00020.jpg"
+        },
+        {
+          "time": 20.0,
+          "source_frame": 480,
+          "image": "frames/V04/frame_00021.jpg"
+        },
+        {
+          "time": 21.0,
+          "source_frame": 504,
+          "image": "frames/V04/frame_00022.jpg"
+        },
+        {
+          "time": 22.0,
+          "source_frame": 528,
+          "image": "frames/V04/frame_00023.jpg"
+        },
+        {
+          "time": 23.0,
+          "source_frame": 552,
+          "image": "frames/V04/frame_00024.jpg"
+        },
+        {
+          "time": 24.0,
+          "source_frame": 576,
+          "image": "frames/V04/frame_00025.jpg"
+        },
+        {
+          "time": 25.0,
+          "source_frame": 600,
+          "image": "frames/V04/frame_00026.jpg"
+        },
+        {
+          "time": 26.0,
+          "source_frame": 624,
+          "image": "frames/V04/frame_00027.jpg"
+        },
+        {
+          "time": 27.0,
+          "source_frame": 648,
+          "image": "frames/V04/frame_00028.jpg"
+        },
+        {
+          "time": 28.0,
+          "source_frame": 672,
+          "image": "frames/V04/frame_00029.jpg"
+        },
+        {
+          "time": 29.0,
+          "source_frame": 696,
+          "image": "frames/V04/frame_00030.jpg"
+        }
+      ],
+      "contact_sheets": [
+        "contact-sheets/V04-01.jpg"
+      ],
+      "preview": "sources/KakaoTalk_Video_2026-10-09-09-40-18.mp4"
+    }
+  ]
+}
