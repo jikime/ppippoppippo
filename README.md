@@ -2,7 +2,11 @@
 
 AWS 행사장 참고 사진·영상을 바탕으로 운영 관제와 다중 세계 실험을 연결한 3D 웹입니다. 일반 관제에서는 사람·이동 경로·출입문·대기열·대시보드·가상 CCTV가 하나의 군중 시뮬레이션을 공유합니다. 세계 실험실에서는 같은 조건의 현행·개선 매뉴얼을 비교하고 근거를 검토합니다.
 
-팀원 안내: [API 문서](docs/API.md) · [실행 및 사용방법](docs/USAGE.md). 현재 운영 판단 API와 아직 구현 전인 맥미니 실시간 영상 API를 구분해 설명합니다.
+**공개 데모:** [JEONJO · AWS Venue Operations](https://dwif7iiddu9dy.cloudfront.net/)
+
+팀원 안내: [실행 및 사용방법](docs/USAGE.md) · [운영 판단 API](docs/decisions.md) · [영상 API 연동 초안](docs/API.md) · [AWS 배포](infra/README.md) · [Tuya 화면](device/README.md) · [ESP32 LED·음성](device/esp32/README.md) · [기술 구성 및 OpenAI·Codex 활용 보고서](docs/report.md).
+
+현재 저장소에는 웹 관제, 다중 세계 실험, OpenAI 판단·근거 검토, 로컬 USB 경고 장치와 AWS 배포 구성이 있습니다. 실시간 영상 탐지 API는 설계 초안이며, CAM1·CAM2는 현장 녹화 영상입니다.
 
 ## 실행
 
@@ -21,23 +25,83 @@ npm run preview -- --port 4173
 npm test
 ```
 
+OpenAI 기능을 사용할 때는 [.env.example](.env.example)을 참고해 `.env.local`에 `OPENAI_API_KEY`를 설정하고 서버를 다시 시작합니다. `VITE_` 접두어를 붙이지 않습니다. USB 장치를 연결할 때만 Python 3와 `device/requirements.txt`의 pyserial이 추가로 필요합니다.
+
+## 실행 환경과 AWS 배포
+
+| 실행 환경 | 3D·세계 실험·녹화 CCTV | OpenAI 판단·근거 검토 | 디바이스 알림 |
+| --- | --- | --- | --- |
+| 로컬 Vite 개발·미리보기 서버 | 브라우저에서 실행 | `.env.local` 또는 서버 환경 변수의 키 사용 | 같은 맥의 localhost와 USB 브리지로 실물 장치 연결 |
+| 이 저장소의 AWS 배포 구성 | CloudFront + 비공개 S3에서 제공 | API Gateway HTTP API + Node.js 22 Lambda | `VITE_DEVICE_MODE=preview`, 화면 미리보기만 제공 |
+| `dist/`만 정적 호스팅 | 브라우저에서 실행 | 별도 API 서버 필요 | 미리보기 모드로 빌드하거나 별도 장치 연동 필요 |
+
+AWS 화면과 API는 같은 CloudFront 주소를 사용합니다. `/api/decisions/*`는 [Lambda 어댑터](infra/lambda/handler.ts)가 로컬 서버와 동일한 판단 로직을 호출합니다. `OPENAI_API_KEY`는 Secrets Manager에서 배포 시 Lambda 환경 변수로 주입합니다. S3 원본은 비공개로 두고, API 원본은 CloudFront가 추가하는 인증 헤더로 접근을 제한합니다. 방문자 로그인이나 IP 제한은 설정하지 않았습니다.
+
+리전별 리소스는 시드니 `ap-southeast-2`, AWS CLI 프로필은 `ppippoppippo`를 사용합니다. 배포 템플릿과 스크립트는 `infra/`에 있습니다. 프로젝트 루트에서 다음 명령으로 배포 파일을 준비하고 로컬에서 미리 볼 수 있습니다.
+
+```sh
+npm ci --prefix infra
+npm --prefix infra run prepare:aws
+npm --prefix infra run preview
+```
+
+`prepare:aws`는 타입 검사·앱 및 인프라 테스트·AWS용 빌드·Lambda ZIP 생성을 수행합니다. 산출물은 `infra/.build/`에 저장하고 기존 `dist/`는 유지합니다. `preview` 주소는 `http://127.0.0.1:4179`이며 OpenAI 호출을 활성화하지 않습니다.
+
+실제 AWS 배포 명령은 `npm --prefix infra run deploy`입니다. 설정 파일 `infra/config.local.json`, OpenAI 비밀 ARN, 준비·검사·배포·복구 순서는 [AWS 배포 안내](infra/README.md)를 따릅니다. 기존 로컬 설정을 예제 파일로 덮어쓰지 않습니다. AWS 웹은 맥에 연결된 USB 장치를 제어하지 않으며, 각 방문자의 시뮬레이션 상태도 서로 공유하지 않습니다.
+
 ## 행사 시간표와 OpenAI Decisions
 
 **행사 일정**에서 09:00 체크인부터 21:00 정리까지 제공받은 시간표를 선택할 수 있습니다. 17:00 마감은 별도 이벤트로 기록합니다. **하루 전체 재생**은 행사 1분을 시뮬레이션 1초로 압축합니다. 특정 시각을 선택하면 장면을 새로 시작하고 행사 시각은 고정한 채 인물의 행동을 관찰합니다.
 
 점심은 자율배식·식사·개발, 1차 심사는 발표·평가·저녁 식사·네트워킹을 병행합니다. 마지막 30분은 시연용으로 시상(20:30), 단체사진(20:40), 퇴장·정리(20:50)로 나눴습니다. 배식 위치, 세 개의 발표 트랙, 결선팀은 가상 구성입니다.
 
-[OpenAI Decisions API](https://developers.openai.com/api/docs/guides/decisions)의 `POST /v1/decisions`를 사용합니다. 모델은 해당 API가 지원하는 `gpt-6-luna`이며, 현재 공개 베타입니다. `.env.local`에 `OPENAI_API_KEY`를 설정한 뒤 개발/미리보기 서버를 실행합니다. 키는 서버에서만 읽으며 브라우저 번들에 포함하지 않습니다. 설정과 요청 형식은 [운영 판단 API 문서](docs/decisions.md)에 정리했습니다.
+[OpenAI Decisions API](https://developers.openai.com/api/docs/guides/decisions)의 `POST /v1/decisions`를 사용하며, 현재 코드의 요청 모델은 `gpt-6-luna`입니다. 키는 서버에서만 읽으며 브라우저 번들에 포함하지 않습니다. 로컬과 AWS의 키 설정 방식은 위 실행 환경 표를 참고하세요. 요청 형식은 [운영 판단 API 문서](docs/decisions.md)에 정리했습니다.
 
 **현재 상황 판단**은 일정·집계 인원·출입구 상태·입력한 운영 메모를 서버를 통해 전송합니다. 응답의 모델 버전, 조치별 확률, 확신도, 사용량, 응답 시간을 확인할 수 있습니다. 이 API의 구조화된 선택 결과를 사용하며, 별도의 설명 문장을 모델이 생성한 것처럼 표시하지 않습니다. **자동 대응**을 켜면 행사 단계 전환 시 요청하고 확신도 65% 이상인 허용 조치를 시뮬레이션에 적용합니다. 이 기준은 시연용 설정이며 현장 안전 판단의 검증 기준이 아닙니다. 패널을 닫아도 활성화한 자동 대응은 이어집니다. 상황이 바뀐 응답과 모델 거절, 인증 오류, 연결 실패는 조치로 적용하지 않습니다.
 
-앱의 `/api/decisions/status`, `/api/decisions/evaluate`는 Vite의 개발·미리보기 Node 서버에 구현했습니다. `dist/`만 정적 호스팅하면 판단 API는 별도로 배포해야 합니다. 3D 시뮬레이션은 키 없이도 동작합니다.
+현재 구현된 API 경로는 다음과 같습니다. 판단 API 3개는 로컬 Vite 서버와 AWS Lambda가 공유하고, 장치 API 3개는 localhost에서만 제공합니다. 3D 시뮬레이션과 세계 실험 자체는 키 없이도 동작합니다.
+
+| 경로 | 기능 | 제공 환경 |
+| --- | --- | --- |
+| `GET /api/decisions/status` | 키 설정 여부·요청 모델 조회. 실제 OpenAI 인증 확인은 아님 | 로컬·AWS |
+| `POST /api/decisions/evaluate` | 행사 상태에 따른 운영 조치 선택 | 로컬·AWS |
+| `POST /api/decisions/review` | 실험 근거에서 우선 검토할 매뉴얼 항목 선택 | 로컬·AWS |
+| `POST /api/device/publish` | 관제 창의 경고 상태 게시 | 로컬 USB 연동 |
+| `GET /api/device/state` | USB 브리지가 읽는 경고·연결 상태 | 로컬 USB 연동 |
+| `POST /api/device/ack` | 보드 적용 응답·ESP32 음성 상태 보고 | 로컬 USB 연동 |
 
 ## USB 디바이스 경고
 
 **ESP32-S3 LED·음성 보드**는 같은 경고를 7개 RGB LED의 상황별 점멸과 한국어 안내로 전달합니다. `npm run device:beacon`을 별도로 실행하면 Tuya 화면과 동시에 동작합니다. 내장 음성, 음량·음소거 버튼, 보드 사양·빌드 방법은 [LED·음성 보드 안내](device/esp32/README.md)에 정리했습니다.
 
 **디바이스 알림** 메뉴에서 Tuya T5AI 보드의 경고 화면을 미리 보고 화재·낙상 등 시험 경고를 보낼 수 있습니다. 출입구 통제·이동 정체·경로 막힘은 시뮬레이션 상태에서 자동으로 전달합니다. 알림 펌웨어를 설치한 보드를 USB로 연결하고 `npm run device:bridge`를 실행합니다. 한국어 경고 화면, 원본 펌웨어 백업·복원, 카메라 활용안은 [디바이스 안내](device/README.md)에 정리했습니다.
+
+### 로컬 연결과 상태 확인
+
+두 보드에 JEONJO 펌웨어를 설치한 뒤, 처음 사용하는 Python 환경에는 의존성을 준비합니다.
+
+```sh
+python3 -m venv device/.tools/venv
+device/.tools/venv/bin/pip install -r device/requirements.txt
+```
+
+아래 세 명령은 각각 별도 터미널에서 실행합니다. 이미 기본 `python3`에 pyserial이 설치되어 있다면 두 브리지 명령을 각각 `npm run device:bridge`, `npm run device:beacon`으로 바꿀 수 있습니다.
+
+```sh
+npm run dev
+device/.tools/venv/bin/python device/bridge.py
+device/.tools/venv/bin/python device/bridge.py --device beacon
+```
+
+같은 맥의 `http://localhost:5173`에서 **디바이스 알림**을 엽니다. Tuya는 480×320 가로 LCD에 한국어 문구와 픽토그램을 표시하고, ESP32-S3는 7개 LED와 스피커를 사용합니다. 두 장치의 연결 표시는 각각 현재 경고에 대한 보드의 적용 응답(`ACK`)을 기준으로 합니다. ESP32는 스피커 준비·재생·음소거·음량·재생 완료 횟수도 보고합니다. 한 관제 창만 경고를 송신하며, 각 USB 포트는 하나의 브리지가 사용합니다.
+
+관제 수신이 8초 끊기면 마지막 경고와 연결 끊김 상태를 유지합니다. 보드의 확인·음소거 조작은 관제 경고를 해제하지 않습니다. 현재 자동 입력은 출입구 통제·정체·경로 막힘이며, 화재·낙상·응급 도움·위험 물체는 시험 입력입니다. 세계 실험실의 **탐지·대응**은 훈련용 모의 작업으로, 이 USB 송신 경로와 별개입니다.
+
+### 한국어 음성 자산
+
+`npm run device:voices`는 `device/generate-voices.mjs`의 고정 안내 문구 18개를 OpenAI Speech API로 생성합니다. 코드에 설정된 모델은 `gpt-4o-mini-tts-2025-12-15`, 목소리는 `marin`이며, 결과는 24kHz·16bit PCM입니다. 같은 문구·모델·목소리의 캐시가 있으면 재사용합니다.
+
+음원은 ESP32 펌웨어에 포함되므로 안내를 재생할 때 OpenAI를 호출하지 않습니다. 새 경고 수신에는 로컬 관제와 USB 브리지가 필요합니다. 생성 캐시와 결합 음원은 Git에서 제외하며, 처음 빌드할 때는 음성 생성 후 `npm run device:esp32:build`를 실행합니다. PlatformIO 설치, 보드 버튼, 업로드·복원 절차는 [ESP32 안내](device/esp32/README.md)를 참고하세요.
 
 ## 다중 세계 실험과 매뉴얼 검증
 
@@ -73,7 +137,7 @@ npm test
 
 ### 인물 상세 관제
 
-일반 3D 화면에서 사람을 클릭하면 인물 상세 상황판이 열립니다. 합성 이름, 팀, 직무, 참여 목적, 현재 행동·지속 시간, 실제 이동 속도·거리, 출구 대기 순서, 최근 속도와 행동 이력을 확인합니다. **관찰 등록**과 최대 400자의 메모는 이 브라우저에 보관합니다. 이름·ID·팀·직무로 검색하고 역할·관찰 대상·대기 인원으로 필터링할 수 있습니다. 실험 페르소나 가정과 일반 군중 화면의 측정 속도는 따로 표시합니다.
+일반 3D 화면에서 사람을 클릭하면 인물 상세 상황판이 열립니다. 합성 이름, 팀, 직무, 참여 목적, 현재 행동·지속 시간, 실제 이동 속도·거리, 출구 대기 순서, 최근 속도와 행동 이력을 확인합니다. **관찰 등록**과 최대 400자의 메모는 같은 사이트의 브라우저 `localStorage`에 보관합니다. 이름·ID·팀·직무로 검색하고 역할·관찰 대상·대기 인원으로 필터링할 수 있습니다. 실험 페르소나 가정과 일반 군중 화면의 측정 속도는 따로 표시합니다.
 
 캐릭터 역할은 참가자 **파랑**, 운영요원 **주황**, 응급구조사 **초록**, 심사위원 **노랑**, 발표자 **보라**로 구분합니다. `src/simulation/role-palette.json`을 GLB 의상·3D 표식·범례·인물 목록·역할별 그래프가 공유합니다. 운영요원은 마름모, 응급구조사는 흰색 응급지원 표식을 머리 위에 표시하며, 선택된 인물은 흰색 바닥 링으로 표시합니다. 기존 120명 중 운영 인력 5명을 운영요원 3명과 응급구조사 2명으로 구분했습니다. 응급구조사는 현재 순찰·대기·이동 보조 역할이며 진료나 처치 모형은 포함하지 않습니다.
 
@@ -163,12 +227,18 @@ UI는 제공받은 `design-system/artifacts/sites/kolonmall/design.md`와 `examp
 | 캐릭터 | 원본 GLB 7종 · 역할 5종, 11개 뼈대, Idle / Walk / Seated / Talk / Guide / Listen / Eat / Applaud 클립, AnimationMixer 전환 |
 | 행동 | 인물별 XState 상태 머신, 좌석 소유권, 역할별 목적지·대기·복귀 |
 | 이동 | Recast / Detour WASM, TileCache 장애물, Crowd 지역 회피 |
+| 다중 세계 실험 | 최대 4개 Web Worker, 시드 기반 현행·개선 쌍 비교, 경량 사건·대기열 모형 |
 | 관제 | Zustand에 초당 약 5회 집계 전달, 동일한 상태로 지표·활동 기록·선택 정보 표시 |
+| 분석 | Recharts, SVG 밀도 지도, 실시간 추이와 실험 전후·악화 지표 |
+| AI 판단 | OpenAI Decisions, Vite·Lambda 공용 서버 로직, 조치·근거 검토 계약 검증 |
 | 카메라 | 조감도·평면·실내·인물 추적, 수동 조작 시 자동 시연 카메라 해제 |
 | 가상 CCTV | 같은 Three.js 장면을 별도 카메라와 렌더 타깃으로 약 5.6fps 출력, 두 시점 전환 |
 | 실제 CAM1·CAM2 | 현장 녹화 MP4, HTML video 재생·탐색·반복·음소거·전체 화면, 숨김 시 일시정지 |
 | 시각 효과 | PBR 재질, 그림자, ACES 톤 매핑, 선택적 Bloom, 이동 화살표, 인원 분포 |
 | 최적화 | glTF Transform / Meshopt, 가구 지오메트리 병합, 먼 착석 인물 인스턴싱, 자동 해상도 조정 |
+| 현장 장치 | Python·pyserial 브리지, Tuya C/LVGL 화면, ESP32 C++/LED/I²S 음성 |
+| 음성 생성 | OpenAI Speech로 고정 한국어 안내 생성, PCM 캐시와 펌웨어 내장 재생 |
+| AWS | CloudFormation, S3, CloudFront, API Gateway HTTP API, Lambda, Secrets Manager, CloudWatch |
 
 시뮬레이션은 20Hz 고정 간격으로 계산하고, 렌더링은 위치를 보간합니다. 이동 중인 인물과 가까운 인물은 뼈대 애니메이션을 사용하고, 조감도에서 먼 착석 인물은 같은 GLB에서 구운 포즈를 인스턴싱합니다. 60fps는 목표이며, 실제 프레임률은 장비·뷰포트·장면에 따라 달라집니다.
 
@@ -189,20 +259,41 @@ src/
   lab/                    시드 기반 쌍 비교·Worker·3D 재생·정렬·매뉴얼·탐지 감사 기록
   people/                 합성 인물 상세·행동 관찰 이력·관찰 등록
   cctv/                   가상·실제 영상 탭·재생 컨트롤·확대 모니터
+  analytics/              실시간 지표 집계·밀도 지도·Recharts 비교 그래프
+  device/                 경고 규칙·장치 상태·LCD/LED 미리보기·AWS 모드
   state.ts                UI 상태와 시뮬레이션 구독
   styles.css              반응형 화면 스타일
   simulation/
     layout.ts             공간·좌석·출입구 정의
     navigation.ts         이동 영역·동적 장애물·경로 계산
     world.ts              인물·행동·대기열·지표·이벤트
+    profiles.ts           역할·팀·목적·개인 특성·알레르기 페르소나
+    role-palette.json     캐릭터·표식·범례·그래프 공통 역할 색상
     world.test.ts         시나리오·보존·정지·복귀·퇴장 검증
     assets.test.ts        압축 GLB의 뼈대·가중치·클립 검증
   scene/
     Scene.tsx             렌더러·시점·경로·분포·가상 CCTV
     Venue.tsx             행사장·시설·출입문
     People.tsx            캐릭터 애니메이션·인스턴싱
+    RoleMarker.tsx        역할별 머리 위 표식
+    SceneHtml.tsx         3D 장면의 HTML 레이블 위치 연결
     assets.ts             가구 병합·스크린 텍스처
-server/decisions.ts       서버 전용 OpenAI API 프록시
+server/decisions.ts       Vite·Lambda 공용 OpenAI 판단·검토 API
+server/device.ts          로컬 장치 상태 중계·ACK·송신자 관리
+device/
+  bridge.py               로컬 HTTP API ↔ USB 직렬 통신
+  alerts.json             웹·장치 공통 경고 문구·우선순위·색상
+  pictograms.json         웹·LCD 공통 경고 도형
+  generate-assets.mjs     Tuya 한국어 글꼴·카탈로그·픽토그램 생성
+  generate-voices.mjs     OpenAI 한국어 음성 생성·캐시·PCM 색인
+  firmware/               Tuya T5AI LCD·터치 펌웨어
+  esp32/                  ESP32-S3 LED·음성 펌웨어·PlatformIO 설정
+infra/
+  template.yaml           웹·API·키·로그 CloudFormation 구성
+  bootstrap.yaml          배포 산출물 버킷 구성
+  lambda/handler.ts       API Gateway 요청 어댑터·원본 인증
+  scripts/                배포 준비·검사·업로드·배포 확인
+docs/                     API·사용법·Decisions·기술 활용 보고서
 scripts/generate-assets.mjs
 scripts/prepare-cctv.mjs  원본 HEVC → 브라우저 재생용 MP4·미리보기 생성
 public/models/            최적화된 원본 GLB
@@ -217,3 +308,15 @@ references/               제공받은 자료 분석·캡처 (앱 번들에 포�
 현재 버전은 3D 시뮬레이션과 현장 녹화 영상 재생을 제공합니다. 실시간 CCTV 수신과 영상 AI 분석은 연결하지 않았습니다. 120명, 18개 테이블, 출입구 3개, 공간 크기와 문별 처리량은 시연을 위한 설정이며 실제 행사장의 측정값이 아닙니다. 구역·통로·대기열의 인물을 함께 집계하며, 퇴장은 인물이 외부 경계를 실제로 통과한 후 처리합니다. 인원 분포와 대기 상태는 인증된 군중 안전성·대피 시간 예측이 아닙니다.
 
 실시간 영상 분석 연동은 별도의 후속 범위입니다. Python / FastAPI / WebSocket과 탐지·추적·좌표 보정 계층을 연결할 수 있도록 시뮬레이션과 화면을 분리했습니다.
+
+### 저장과 공유
+
+| 데이터 | 보관 위치·범위 |
+| --- | --- |
+| 시뮬레이션·행동 이력·그래프 표본 | 해당 페이지의 메모리. 새로고침하면 초기화 |
+| 세계 실험 결과·매뉴얼 승인·OpenAI 근거 검토 | 해당 페이지의 메모리. 보관하려면 근거 JSON을 다운로드 |
+| 인물 관찰 등록·메모 | 사이트별 브라우저 `localStorage`. 다른 브라우저·로컬/AWS 주소 사이에는 공유되지 않음 |
+| CCTV 재생 위치·음소거 | 페이지 세션 동안 탭별 유지 |
+| 로컬 장치 경고·응답 | Vite 서버 메모리와 보드 RAM. 서버 재시작·보드 전원 차단 후 영구 복구 기능 없음 |
+
+공유 데이터베이스나 사용자 간 실시간 상태 동기화는 구현하지 않았습니다. AWS는 웹 자산과 판단 API를 제공하며, 방문자들의 실험을 하나의 중앙 관제 상태로 합치지 않습니다.
