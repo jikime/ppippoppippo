@@ -22,7 +22,7 @@ static bool hasPacket=false, stale=true, muted=false, ioReady=false;
 static uint32_t lastRx=0, lastAnnouncement=0;
 static std::atomic<bool> audioReady{false};
 static std::atomic<uint32_t> voiceCount{0};
-static int volume=55;
+static int volume=65;
 static std::atomic<uint32_t> audioGeneration{0};
 static std::atomic<bool> playing{false};
 static std::atomic<int> lastClip{-1};

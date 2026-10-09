@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import type { CSSProperties } from 'react';
-import { AlertTriangle, Check, Plug, ShieldCheck, Usb, Volume2 } from 'lucide-react';
+import { AlertTriangle, Check, Plug, Usb, Volume2 } from 'lucide-react';
 import { alertInfo, alertKey, catalog, displayFor } from './alerts';
 import type { DeviceAlert } from './alerts';
 import { useDevice } from './store';
+import { AlertPictogram } from './AlertPictogram';
 import './device.css';
 
 const tests: DeviceAlert['kind'][] = ['fire','fall','medical','weapon','congestion'];
@@ -11,6 +12,7 @@ export function DevicePanel() {
   const device = useDevice(), [zone,setZone] = useState(0);
   const display = device.state?.display ?? displayFor(device.alerts,false);
   const info = alertInfo(display.kind), connected = device.state?.bridge.connected === true;
+  const instruction = info.emphasis ? info.instruction.split(info.emphasis) : [info.instruction];
   const beaconConnected = device.state?.devices?.beacon.connected === true;
   const audio = beaconConnected ? device.state?.devices.beacon.telemetry : undefined;
   const patterns: Record<typeof display.kind,string> = {clear:'초록 숨쉬기',exit_closed:'노랑 점멸',congestion:'노랑 숨쉬기',route_blocked:'노랑 회전',all_exits_closed:'빨강 동시 점멸',fall:'빨강 두 번 점멸',medical:'빨강 맥박 점멸',fire:'빨강 경고 점멸',weapon:'빨강 교차 점멸'};
@@ -26,12 +28,12 @@ export function DevicePanel() {
     </div>
     {audio&&<p className={audio.audioReady?'device-caption':'device-error'} role="status">{!audio.audioReady?'스피커 초기화 또는 재생 오류 · LED 경고는 계속됩니다.':`음량 ${audio.volume}% · ${audio.muted?'현재 안내 음소거':audio.playing?'음성 안내 중':'음성 준비 완료'} · 재생 완료 ${audio.completed}회`}</p>}
     <p className="device-caption">가운데 버튼은 현재 안내 음소거, 길게 누르면 다시 듣기입니다. 양옆 버튼으로 음량을 조절합니다. 새 경고는 음소거를 해제하고, 관제 연결이 끊겨도 마지막 경고 색을 유지합니다.</p>
-    <div className="section-heading"><span>디스플레이 미리보기</span><small>320 × 480</small></div>
+    <div className="section-heading"><span>디스플레이 미리보기</span><small>480 × 320 · 가로</small></div>
     <div className={`device-display ${info.severity}`} style={palette} aria-label="디바이스 경고 미리보기">
-      <div className="device-screen-brand"><ShieldCheck size={16}/>{catalog.labels.brand}<span>{display.source==='test'?'시험 경고':'시뮬레이션'}</span></div>
+      <div className="device-screen-brand"><div><strong>{catalog.labels.brand}</strong><span>{display.source==='test'?'시험 경고':'시뮬레이션'}</span></div><AlertPictogram kind={display.kind} fresh={display.fresh}/></div>
       <div className={`device-freshness ${display.fresh?'':'stale'}`}>{display.fresh?'관제 수신 중':'연결 대기 · 마지막 안내'}</div>
-      <div className="device-screen-content">{display.kind==='clear'?<ShieldCheck size={45}/>:<AlertTriangle size={45}/>}<small>{display.kind==='clear'?'관제 안내':info.severity==='critical'?'위험 경고':'주의 안내'}</small><h3>{info.title}</h3><span className="device-zone">{catalog.zones[display.zone]}</span><p>{info.instruction}</p></div>
-      <div className="device-screen-footer">전체 경고 <b>{display.count}건</b></div>
+      <div className="device-screen-content"><small>{display.kind==='clear'?'관제 안내':info.severity==='critical'?'위험 경고':'주의 안내'}</small><h3>{info.title}</h3><span className="device-zone">{catalog.zones[display.zone]}</span><p>{instruction[0]}{info.emphasis&&<strong>{info.emphasis}</strong>}{instruction[1]}</p></div>
+      <div className="device-screen-footer">전체 경고 {display.count}건</div><span className="device-screen-ack">{catalog.labels.ack}</span>
     </div>
     {device.error&&<p className="device-error" role="status">{device.error}</p>}
     <p className="device-caption">출입구 통제는 즉시, 이동 정체는 지속 시간을 확인한 뒤 전달합니다. 화면은 가장 우선순위가 높은 경고를 보여줍니다.</p>

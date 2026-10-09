@@ -3,6 +3,8 @@ import importlib.util
 import json
 from pathlib import Path
 import unittest
+from unittest.mock import Mock, patch
+from urllib.error import HTTPError
 
 ROOT = Path(__file__).resolve().parents[1]
 spec = importlib.util.spec_from_file_location('bridge', ROOT / 'bridge.py')
@@ -53,6 +55,18 @@ class BridgeTest(unittest.TestCase):
         self.assertIsNone(bridge.beacon_status(b'echo '+line,self.state))
         failure=b'JG_STATUS 1,123,4,7,1,0,55,0,0,0,-1,7,0\r\n'
         self.assertFalse(bridge.beacon_status(failure,self.state)['audioReady'])
+
+    def test_http_ack_race_does_not_reopen_and_reset_speaking_board(self):
+        port=Mock(port='esp32')
+        requests=[self.state,HTTPError('http://localhost',400,'revision changed',{},None),self.state,{},KeyboardInterrupt()]
+        with patch.object(bridge.sys,'argv',['bridge','--device','beacon','--port','esp32']), \
+             patch.object(bridge,'request',side_effect=requests), \
+             patch.object(bridge,'open_port',return_value=port) as opened, \
+             patch.object(bridge,'exchange',return_value=True), \
+             patch.object(bridge.time,'sleep'), patch('builtins.print'):
+            self.assertEqual(bridge.main(),0)
+        opened.assert_called_once_with('esp32')
+        port.close.assert_called_once() # Final shutdown only, not the HTTP race.
 
 
 if __name__ == '__main__': unittest.main()

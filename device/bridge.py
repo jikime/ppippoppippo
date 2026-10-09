@@ -127,13 +127,19 @@ def main():
                 if args.dry_run:
                     print(command.decode().strip())
                     return 0
-                if port is None:
-                    port = open_port(args.port or find_port(args.device))
-                    if args.device == 'beacon':
-                        # Native USB can reset the ESP32 when opening. Wait only once per connection.
-                        time.sleep(2)
                 telemetry = {} if args.device=='beacon' else None
-                ok = exchange(port, state, telemetry=telemetry)
+                try:
+                    if port is None:
+                        port = open_port(args.port or find_port(args.device))
+                        if args.device == 'beacon':
+                            # Native USB can reset the ESP32 when opening. Wait only once per connection.
+                            time.sleep(2)
+                    ok = exchange(port, state, telemetry=telemetry)
+                except Exception:
+                    if port is not None:
+                        port.close()
+                        port = None
+                    raise
                 ack = {'device':args.device, 'epoch': state['epoch'], 'revision': state['revision'], 'port': port.port, 'ok': ok}
                 if telemetry:
                     ack['telemetry'] = telemetry
@@ -143,9 +149,8 @@ def main():
             except Exception as exc:
                 # Log status only, never raw device logs or credentials.
                 status = f'연결 확인 필요 ({type(exc).__name__}). 관제 서버와 USB 연결을 확인해 주세요.'
-                if port is not None:
-                    port.close()
-                    port = None
+                # A changing server revision / HTTP outage must not reboot a speaking ESP32.
+                # Only a serial transport failure above closes the native USB handle.
             if status != last_status:
                 print(status, flush=True)
                 last_status = status
