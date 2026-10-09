@@ -5,7 +5,7 @@
 - 이 규칙은 일반적인 개인 모델 라우팅 선호보다 우선한다.
 - 모델 실행 여부를 보고할 때 실제 도구 호출과 실행 기록으로 확인한 범위만 말한다.
 - 사용자가 제품의 화재·총기 감지에 YOLO, 낙상 감지에 MediaPipe 사용을 명시적으로 허용했다. 이 비전 모델 학습·추론은 개발 하네스의 OpenAI 전용 제한과 구분한다. Claude/Grok 개발 위임은 계속 금지한다.
-- 사용자의 최신 요청에 따라 제품의 행사 운영 판단은 OpenAI Decisions API(`/v1/decisions`, `gpt-6-luna`)를 사용한다. 서버에서만 `OPENAI_API_KEY`를 읽는다. 앞서 설치한 TypeSafe 스킬은 보존하지만 제품에서 Jev API를 호출하지 않는다.
+- 제품의 행사 운영 판단은 OpenAI Decisions API(`/v1/decisions`, `gpt-6-luna`)를 사용한다. 서버에서만 `OPENAI_API_KEY`를 읽는다. 요청·응답 형식과 적용 조건은 [운영 판단 API 문서](docs/decisions.md)를 따른다.
 
 # 프로젝트 작업 지침
 
