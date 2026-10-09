@@ -2,12 +2,17 @@ import { createActor, createMachine } from 'xstate';
 import { Crowd } from 'recast-navigation';
 import type { CrowdAgent } from 'recast-navigation';
 import { Navigation } from './navigation';
-import { EXITS, PATROL, SEATS, TABLES, distance, vector } from './layout';
+import { EXITS, PATROL, SEATS, TABLES, distance, staffStart, vector } from './layout';
 import type { ExitId, Vec } from './layout';
 import { ACTION_LABELS, agendaIntent, permittedAction, phaseAt, segmentAt } from './agenda';
 import type { AgendaState, DecisionAction, Intent } from './agenda';
+import { persona } from './profiles';
+import type { Persona } from './profiles';
+import { characterVariant } from './appearance';
+import { PersonMonitor } from '../people/monitor';
 
-export type Role='participant'|'operator'|'judge'|'host';
+export type Role='participant'|'operator'|'paramedic'|'judge'|'host';
+export const isSupportRole=(role:Role)=>role==='operator'||role==='paramedic';
 export type State='working'|'walking'|'waiting'|'guiding'|'visiting'|'outside'|'presenting'|'idle'|'blocked'|'notArrived'|'preparing'|'listening'|'serving'|'eating'|'networking'|'submitting'|'judging'|'checking'|'applauding'|'photograph'|'cleaning';
 export type Scenario='normal'|'break'|'incident';
 const behavior=createMachine({
@@ -17,6 +22,7 @@ const behavior=createMachine({
 });
 const events:Record<State,string>={working:'WORK',walking:'WALK',waiting:'WAIT',guiding:'GUIDE',visiting:'VISIT',outside:'EXIT',presenting:'PRESENT',idle:'IDLE',blocked:'BLOCK',notArrived:'ARRIVE',preparing:'PREPARE',listening:'LISTEN',serving:'SERVE',eating:'EAT',networking:'NETWORK',submitting:'SUBMIT',judging:'JUDGE',checking:'CHECK',applauding:'APPLAUD',photograph:'PHOTO',cleaning:'CLEAN'};
 export interface Person {
+  profile:Persona;
   id:string; role:Role; variant:string; position:Vec; previous:Vec; heading:number;
   state:State; actor:ReturnType<typeof createActor<typeof behavior>>;
   speed:number; agent?:CrowdAgent; goal?:Vec; goalName:string;
@@ -37,6 +43,7 @@ export interface Snapshot {
 }
 
 export class World {
+  monitor=new PersonMonitor();
   navigation=new Navigation(); people:Person[]=[];exits:ExitState[]=EXITS.map(e=>({id:e.id,open:true,queue:[],departed:0,nextRelease:0}));
   ready=false;error:string|null=null;time=0;running=true;speed=1;scenario:Scenario='normal';guidance=false;
   agenda:AgendaState|null=null;controlVersion=0;
@@ -44,7 +51,7 @@ export class World {
   accumulator=0;alpha=0;private lastPublish=-1;private lastHistory=-1;private lastRouteUpdate=-1;private counter=0;private started?:Promise<void>;
   private listeners=new Set<()=>void>();
   subscribe=(fn:()=>void)=>{this.listeners.add(fn);return()=>this.listeners.delete(fn);};
-  publish(){this.listeners.forEach(fn=>fn());}
+  publish(){this.monitor.capture(this.people,this.time,this.revision);this.listeners.forEach(fn=>fn());}
   async initialize(){return this.started??=(async()=>{try{await this.navigation.initialize();this.ready=true;this.reset();}catch(e){this.error=e instanceof Error?e.message:String(e);this.publish();}})();}
   log(title:string,detail:string,level:Log['level']='info'){
     this.logs.unshift({id:++this.counter,time:this.time,title,detail,level});this.logs=this.logs.slice(0,80);
@@ -58,25 +65,25 @@ export class World {
     this.agenda=null;this.controlVersion++;this.people=[];this.time=0;this.accumulator=0;this.alpha=0;this.scenario=scenario;this.guidance=false;this.running=true;this.story=false;this.storyStep=0;
     this.exits=EXITS.map(e=>({id:e.id,open:true,queue:[],departed:0,nextRelease:0}));
     this.logs=[];this.history=[];this.lastHistory=-1;this.lastPublish=-1;this.lastRouteUpdate=-1;
-    const variants=['participant-teal','participant-navy','participant-cream'];
     // A stable seat permutation preserves unique seat ownership and visible empty seats.
     for(let i=0;i<108;i++){
       const seat=i<96?SEATS[(i*37)%108]:undefined;
       const pos=seat?vector(seat.x,seat.z):{...PATROL[(i-96)%6],x:PATROL[(i-96)%6].x+(i%2?.4:-.4)};
-      const p=this.add(`P${String(i+1).padStart(3,'0')}`,'participant',variants[i%3],pos,i);
+      const p=this.add(pos,i);
       p.seat=seat;p.heading=seat?.heading??0;p.nextAction=seat?18+(i%48)*1.7:3+(i%13)*.65;
       this.setState(p,seat?'working':'idle');p.goalName=seat?`${seat.table} · 지정 좌석`:'행사장 둘러보기';
       if(seat){this.ensureAgent(p).maxSpeed=0;p.sitting=true;}
     }
-    for(let i=0;i<5;i++){const p=this.add(`OP${i+1}`,'operator','operator',PATROL[i],108+i);p.nextAction=1+i*.8;p.goalName='행사장 순찰';}
-    for(let i=0;i<6;i++){const p=this.add(`J${i+1}`,'judge','judge',vector(-10+i*4,-5.5),113+i);p.nextAction=.5+i*.5;p.goalName='팀 방문 준비';}
-    const host=this.add('HOST','host','host',vector(-12.7,-5.7),119);host.heading=.35;host.goalName='프로젝트 발표';this.setState(host,'presenting');
+    for(let i=0;i<5;i++){const p=this.add(staffStart(108+i),108+i);p.nextAction=1+i*.8;p.goalName=p.role==='paramedic'?'응급지원 순찰':'행사장 순찰';}
+    for(let i=0;i<6;i++){const p=this.add(staffStart(113+i),113+i);p.nextAction=.5+i*.5;p.goalName='팀 방문 준비';}
+    const host=this.add(staffStart(119),119);host.heading=.35;host.goalName='프로젝트 발표';this.setState(host,'presenting');
     this.revision++;this.log('행사장 관제 시작','120명의 익명 인물 · 18개 팀 테이블 · 3개 출입구','success');
     if(scenario!=='normal'){this.startBreak(false);if(scenario==='incident')this.toggleExit('B',false);}
     this.publish();
   }
-  private add(id:string,role:Role,variant:string,position:Vec,ordinal:number){
-    const p:Person={id,role,variant,position:{...position},previous:{...position},heading:0,state:'idle',actor:createActor(behavior).start(),speed:0,goalName:'대기',nextAction:0,ordinal,stage:'roam',path:[],stepDistance:0,sitting:false,planRound:0,motionCheckpoint:{...position},lastProgressTime:this.time,recoveryUntil:0};
+  private add(position:Vec,ordinal:number){
+    const profile=persona(ordinal);
+    const p:Person={profile,id:profile.id,role:profile.role,variant:characterVariant(profile.role,ordinal),position:{...position},previous:{...position},heading:0,state:'idle',actor:createActor(behavior).start(),speed:0,goalName:'대기',nextAction:0,ordinal,stage:'roam',path:[],stepDistance:0,sitting:false,planRound:0,motionCheckpoint:{...position},lastProgressTime:this.time,recoveryUntil:0};
     this.people.push(p);return p;
   }
   private ensureAgent(p:Person){
@@ -138,9 +145,9 @@ export class World {
   dispatch(){
     if(!this.ready||this.guidance)return;this.guidance=true;this.controlVersion++;
     const locations=[vector(-13.5,5),vector(1.8,5.3),vector(13.5,5),vector(-6,-5.8),vector(6,-5.8)];
-    this.people.filter(p=>p.role==='operator').forEach((p,i)=>{this.move(p,locations[i],'현장 안내 위치','guide');});
+    this.people.filter(p=>isSupportRole(p.role)).forEach((p,i)=>{this.move(p,locations[i],p.role==='paramedic'?'응급지원 · 이동 보조 위치':'현장 안내 위치','guide');});
     for(const p of this.people)if(p.role==='participant'&&p.state!=='outside'&&p.stage==='exit'&&p.state!=='waiting')this.sendToExit(p);
-    this.log('운영요원 5명 현장 배치','출입구별 대기 인원과 처리량을 반영해 동선을 분산합니다.','success');this.publish();
+    this.log('현장 인력 5명 배치','운영요원 3명과 응급구조사 2명이 안내·이동 보조 위치로 이동합니다.','success');this.publish();
   }
   startStory(){this.reset();this.story=true;this.speed=1;this.log('라이브 시나리오 시작','일상 → 휴식 → 출입구 통제 → 현장 대응');this.publish();}
   setRunning(value:boolean){this.running=value;this.publish();}
@@ -196,8 +203,8 @@ export class World {
           const occupied=TABLES.filter(t=>this.people.some(other=>other.seat?.table===t.id&&other.state==='working'));
           if(this.scenario==='normal'&&occupied.length){const t=occupied[(p.ordinal+Math.floor(this.time/12))%occupied.length];this.move(p,vector(t.x,t.z-1.43),`${t.id} 팀 심사`,'visit');}
           else {this.stop(p);this.setState(p,'idle');p.nextAction=this.time+5;p.goalName='심사 휴식 · 대기';}
-        }else if(p.role==='operator'&&!this.guidance){
-          this.move(p,PATROL[(p.ordinal+Math.floor(this.time/9))%PATROL.length],'행사장 순찰','roam');
+        }else if(isSupportRole(p.role)&&!this.guidance){
+          this.move(p,PATROL[(p.ordinal+Math.floor(this.time/9))%PATROL.length],p.role==='paramedic'?'응급지원 순찰':'행사장 순찰','roam');
         }else if(p.role==='participant'&&this.scenario==='normal'){
           if(p.seat)this.move(p,vector(p.seat.x,p.seat.z),`${p.seat.table} · 지정 좌석 복귀`,'seat');
           else this.move(p,PATROL[(p.ordinal+Math.floor(this.time/8))%PATROL.length],'휴게 공간 방문','roam');
@@ -309,7 +316,7 @@ export class World {
       if(p.stage!=='exit'&&p.stage!=='release'&&this.time>=p.nextAction)this.sendToExit(p);
       return;
     }
-    if(p.role==='operator'&&this.guidance)return;
+    if(isSupportRole(p.role)&&this.guidance)return;
     if(p.state==='walking'||this.time<p.nextAction)return;
     const intent=p.state==='blocked'&&p.intent?p.intent:agendaIntent(p,a,p.planRound);p.intent=intent;
     if(distance(p.position,intent.target)<.29){this.ensureAgent(p);this.finishIntent(p);}

@@ -1,0 +1,60 @@
+# Project-specific guardrails, not a general compliance certification.
+let buckets = Resources.*[ Type == 'AWS::S3::Bucket' ]
+rule private_versioned_buckets when %buckets !empty {
+  %buckets {
+    DeletionPolicy == 'Retain'
+    UpdateReplacePolicy == 'Retain'
+    Properties {
+      PublicAccessBlockConfiguration {
+        BlockPublicAcls == true
+        BlockPublicPolicy == true
+        IgnorePublicAcls == true
+        RestrictPublicBuckets == true
+      }
+      VersioningConfiguration.Status == 'Enabled'
+      BucketEncryption.ServerSideEncryptionConfiguration[*].ServerSideEncryptionByDefault.SSEAlgorithm == 'AES256'
+    }
+  }
+}
+let routes = Resources.*[ Type == 'AWS::ApiGatewayV2::Route' ]
+rule authenticated_api_routes when %routes !empty {
+  %routes.Properties {
+    AuthorizationType == 'CUSTOM'
+    AuthorizerId exists
+  }
+}
+let functions = Resources.*[ Type == 'AWS::Lambda::Function' ]
+rule bounded_lambda_runtime when %functions !empty {
+  %functions.Properties {
+    Runtime == 'nodejs22.x'
+    Timeout <= 25
+    Environment.Variables.ORIGIN_SECRET exists
+    VpcConfig !exists
+  }
+}
+let distributions = Resources.*[ Type == 'AWS::CloudFront::Distribution' ]
+rule route_all_viewer_behaviors when %distributions !empty {
+  %distributions.Properties.DistributionConfig {
+    DefaultCacheBehavior.ViewerProtocolPolicy == 'redirect-to-https'
+    DefaultCacheBehavior.FunctionAssociations[*].EventType == 'viewer-request'
+    CacheBehaviors[*].ViewerProtocolPolicy == 'https-only'
+    CacheBehaviors[*].FunctionAssociations[*].EventType == 'viewer-request'
+    CustomErrorResponses[*] {
+      ErrorCachingMinTTL == 0
+      ResponsePagePath !exists
+      ResponseCode !exists
+    }
+  }
+}
+let permissions = Resources.*[ Type == 'AWS::Lambda::Permission' ]
+rule scoped_lambda_invocation when %permissions !empty {
+  %permissions.Properties {
+    Principal == 'apigateway.amazonaws.com'
+    SourceAccount exists
+    SourceArn exists
+  }
+}
+let log_groups = Resources.*[ Type == 'AWS::Logs::LogGroup' ]
+rule bounded_log_retention when %log_groups !empty {
+  %log_groups.Properties.RetentionInDays == 14
+}

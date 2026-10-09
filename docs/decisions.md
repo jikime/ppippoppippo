@@ -61,3 +61,13 @@ OPENAI_API_KEY=발급받은_API_키
 | `src/AgendaPanel.tsx` | 운영 메모·판단 결과·자동 대응 |
 | `src/simulation/agenda.ts` | 행사 단계별 허용 조치 |
 | `src/simulation/world.ts` | 실제 인물 행동에 조치 반영 |
+
+## 실험 근거 검토
+
+`POST /api/decisions/review`는 다중 세계 실험에서 계산한 `completed`, `seed`, 최대 7개의 `findings`를 받습니다. 개인 프로필·촬영 영상·키는 포함하지 않습니다. 필드 범위와 항목 이름, 중복 항목을 검증하고 `review_priority`라는 `choice` 질문을 보냅니다.
+
+선택지는 `balancedExits`, `avoidHazard`, `multimodalAlert`, `assistedEvacuation`, `securityProtocol`, `allergyCheck`, `investigate`입니다. 모델은 완료된 합성 실험의 전후 지표·발견 빈도·악화 여부를 읽고 먼저 검토할 절차를 선택합니다. 점수와 지표를 모델이 생성하거나 덮어쓰지 않습니다. `confidence`는 모델의 선택 확신도이며 실제 위험 확률이 아닙니다.
+
+운영 판단과 같은 키·요청 간격·동시 실행 제한·15초 제한 시간을 사용합니다. 응답의 질문 이름, 선택지, 확신도, 확률 분포를 검증합니다. 거절·연결 오류는 오류로 반환하고 대체 판단을 꾸미지 않습니다. 실험실을 벗어나거나 실행 근거가 바뀌면 진행 중 검토를 취소합니다.
+
+`src/lab/review.ts`에 요청·응답 계약이 있고 `src/lab/LabPanel.tsx`에서 명시적으로 호출합니다. 이 검토 결과는 훈련 매뉴얼을 자동 승인하거나 알림·설비를 실행하지 않습니다. 기존 행사 단계 자동 판단은 실험실 화면에서 정지합니다.

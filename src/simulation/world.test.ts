@@ -11,6 +11,9 @@ describe('shared venue simulation',()=>{
   test('initial population, roles, and seat ownership agree',()=>{
     world.reset();const s=world.snapshot();expect(s.total).toBe(120);expect(s.inside).toBe(120);expect(s.working).toBe(96);
     expect(new Set(world.people.map(p=>p.id)).size).toBe(120);
+    expect(Object.fromEntries(['participant','operator','paramedic','judge','host'].map(role=>[role,world.people.filter(p=>p.role===role).length]))).toEqual({participant:108,operator:3,paramedic:2,judge:6,host:1});
+    expect(world.people.every(p=>p.id===p.profile.id&&p.role===p.profile.role)).toBe(true);
+    expect(world.people.filter(p=>p.role==='paramedic').map(p=>p.variant)).toEqual(['paramedic','paramedic']);
     const seats=world.people.flatMap(p=>p.seat?[p.seat.id]:[]);expect(new Set(seats).size).toBe(96);
   });
   test('normal activity includes moving judges and operators while seated people keep their seats',()=>{
@@ -47,6 +50,12 @@ describe('shared venue simulation',()=>{
   test('reset restores the full venue including doors and queues',()=>{
     world.reset();const s=world.snapshot();expect(s.time).toBe(0);expect(s.inside).toBe(120);expect(s.outside).toBe(0);expect(s.waiting).toBe(0);expect(s.exits.every(e=>e.open)).toBe(true);expect(s.guidance).toBe(false);
   });
+  test('person monitoring records final goals, freezes while paused and resets between worlds',()=>{
+    world.reset('break');run(5);world.publish();const p=world.people[0],m=world.monitor.get(p.id)!;
+    expect(m.goal).toBe(p.goalName);expect(m.events[0].detail).toBe(p.goalName);
+    const history=structuredClone(m);world.setRunning(false);world.advance(.1);world.publish();expect(world.monitor.get(p.id)).toEqual(history);
+    world.reset();expect(world.monitor.get(p.id)?.speeds).toHaveLength(1);expect(world.monitor.get(p.id)?.events[0].time).toBe(0);
+  });
   test('all 108 participants eventually exit without stranded queues',()=>{
     world.reset('break');run(180);expect(world.snapshot().outside).toBe(108);expect(world.snapshot().waiting).toBe(0);expect(world.snapshot().inside).toBe(12);
   },30000);
@@ -57,6 +66,7 @@ describe('shared venue simulation',()=>{
   },30000);
   test('guided incident completes even with the center exit closed',()=>{
     world.reset('incident');world.dispatch();run(180);expect(world.snapshot().outside).toBe(108);expect(world.snapshot().guides).toBe(5);
+    expect(world.people.filter(p=>p.role==='paramedic').every(p=>p.state==='guiding'&&p.goalName.includes('응급지원'))).toBe(true);
   },30000);
   test('reopening one exit after a complete closure can clear the whole venue',()=>{
     world.reset('break');for(const id of ['A','B','C'] as const)world.toggleExit(id,false);run(20);world.toggleExit('C',true);run(200);expect(world.snapshot().outside).toBe(108);

@@ -1,3 +1,5 @@
+import palette from './role-palette.json' with { type: 'json' };
+
 export type Vec = { x: number; y: number; z: number };
 export type ExitId = 'A' | 'B' | 'C';
 export const ROOM = { width: 29, depth: 14, height: 3.45 };
@@ -11,6 +13,9 @@ export const EXITS: {id:ExitId; name:string; x:number; z:number; capacity:number
 export const PATROL:Vec[]=[{x:-12,y:0,z:-5.8},{x:0,y:0,z:-5.8},{x:12,y:0,z:-5.8},{x:12,y:0,z:5.6},{x:0,y:0,z:5.6},{x:-12,y:0,z:5.6}];
 export const distance=(a:Vec,b:Vec)=>Math.hypot(a.x-b.x,a.z-b.z);
 export const vector=(x:number,z:number):Vec=>({x,y:0,z});
-export const roleNames={participant:'참가자',operator:'운영요원',judge:'심사위원',host:'발표자'};
+// Staff occupy distinct posts in both live scenes and generated worlds.
+export const staffStart=(ordinal:number):Vec=>ordinal<113?{...PATROL[ordinal-108]}:ordinal<119?vector(-10+(ordinal-113)*4,-5.5):vector(-12.7,-5.7);
+export const roleNames={participant:'참가자',operator:'운영요원',paramedic:'응급구조사',judge:'심사위원',host:'발표자'};
+export const roleEntries=Object.entries(roleNames) as [keyof typeof roleNames,string][];
 export const stateNames={working:'팀 프로젝트 작업',walking:'목적지로 이동',waiting:'출입구 대기',guiding:'동선 안내',visiting:'팀 방문 · 심사',outside:'퇴장 완료',presenting:'발표 진행',idle:'주변 확인',blocked:'이동 경로 대기',notArrived:'입장 예정',preparing:'장비 준비',listening:'발표 청취',serving:'자율배식',eating:'식사 중',networking:'네트워킹',submitting:'제출 · 발표 확인',judging:'발표 심사 · 집계',checking:'운영 점검',applauding:'시상 · 박수',photograph:'단체사진',cleaning:'행사장 정리'};
-export const roleColors={participant:'#60869c',operator:'#15a97d',judge:'#c09b65',host:'#a195c8'};
+export const roleColors=palette;

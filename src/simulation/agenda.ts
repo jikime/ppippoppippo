@@ -18,7 +18,7 @@ export const AGENDA = [
 export type PhaseId=typeof AGENDA[number]['id'];
 export type Strategy='default'|'stagger_meals'|'focus_session'|'submission_help';
 export type DecisionAction='observe'|'dispatch_guides'|'stagger_meals'|'focus_session'|'submission_help'|'guide_departure';
-export const ACTION_LABELS:Record<DecisionAction,string>={observe:'현재 운영 유지',dispatch_guides:'운영요원 현장 배치',stagger_meals:'식사 인원 순차 이동',focus_session:'발표 청취 안내',submission_help:'제출·발표 점검 지원',guide_departure:'퇴장 동선 안내'};
+export const ACTION_LABELS:Record<DecisionAction,string>={observe:'현재 운영 유지',dispatch_guides:'현장 인력 배치',stagger_meals:'식사 인원 순차 이동',focus_session:'발표 청취 안내',submission_help:'제출·발표 점검 지원',guide_departure:'퇴장 동선 안내'};
 export const phaseAt=(minute:number)=>AGENDA.find(p=>minute>=p.start&&minute<p.end)??(minute<540?AGENDA[0]:AGENDA[AGENDA.length-1]);
 export const eventTime=(minute:number)=>`${String(Math.floor(minute/60)).padStart(2,'0')}:${String(Math.floor(minute%60)).padStart(2,'0')}`;
 export const segmentAt=(minute:number)=>minute<1230?'main':minute<1240?'awards':minute<1250?'photo':'departure';
@@ -62,12 +62,15 @@ export function agendaIntent(p:Person,agenda:AgendaState,round:number):Intent {
     if(phase==='build_am'||phase==='build_pm'){const t=TABLES[(i+round*5)%TABLES.length];return{target:vector(t.x,t.z-1.43),state:'visiting',label:`${t.id} 팀 방문 · 피드백`,heading:0,dwell:7};}
     return {...lounge(),state:phase==='lunch'?'eating':phase==='results'?'judging':'listening',label:phase==='results'?'점수 집계':phase==='lunch'?'심사위원 식사':'행사 진행 관찰'};
   }
+  // Both staff roles use the established support routes. Their duties and
+  // labels differ, without changing the venue's tested traffic pattern.
+  const medical=p.role==='paramedic';
   if(phase==='review'||agenda.strategy==='submission_help'){
-    const t=TABLES[((i-108)*3+round)%TABLES.length];return{target:vector(t.x,t.z-1.43),state:'checking',label:`${t.id} 제출물 · 발표 상태 점검`,dwell:5};
+    const t=TABLES[((i-108)*3+round)%TABLES.length];return{target:vector(t.x,t.z-1.43),state:medical?'idle':'checking',label:medical?`${t.id} 응급지원 순찰`:`${t.id} 제출물 · 발표 상태 점검`,dwell:5};
   }
   if(phase==='closing'&&agenda.segment==='departure'){
-    const t=TABLES[((i-108)*3+round)%TABLES.length];return {target:vector(t.x,t.z-1.43),state:'cleaning',label:`${t.id} 장비 · 좌석 정리`,dwell:6};
+    const t=TABLES[((i-108)*3+round)%TABLES.length];return {target:vector(t.x,t.z-1.43),state:medical?'idle':'cleaning',label:medical?`${t.id} 응급지원 · 잔류 인원 확인`:`${t.id} 장비 · 좌석 정리`,dwell:6};
   }
-  if(phase==='checkin')return {target:vector([-13.5,1.8,13.5,-6,6][i-108],[5,5.3,5,-5.8,-5.8][i-108]),state:'checking',label:'체크인 · 좌석 안내',dwell:12};
-  return {target:PATROL[(i+round)%PATROL.length],state:'guiding',label:phase==='lunch'||phase==='tracks'?'배식 · 통로 안내':'행사장 운영 지원',dwell:5};
+  if(phase==='checkin')return {target:vector([-13.5,1.8,13.5,-6,6][i-108],[5,5.3,5,-5.8,-5.8][i-108]),state:medical?'idle':'checking',label:medical?'응급지원 대기 · 현장 확인':'체크인 · 좌석 안내',dwell:12};
+  return {target:PATROL[(i+round)%PATROL.length],state:'guiding',label:medical?'응급지원 순찰 · 이동 보조':phase==='lunch'||phase==='tracks'?'배식 · 통로 안내':'행사장 운영 지원',dwell:5};
 }

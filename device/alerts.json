@@ -1,0 +1,17 @@
+{
+  "kinds": [
+    {"id":"clear","title":"수신된 경고 없음","instruction":"현장 상황을 계속 확인해 주세요.","emphasis":"","severity":"normal","priority":0},
+    {"id":"exit_closed","title":"출입구 통제","instruction":"통제된 출입구를 피해\n운영요원의 안내를 따라 주세요.","emphasis":"통제된 출입구를 피해","severity":"warning","priority":20},
+    {"id":"congestion","title":"이동 정체 주의","instruction":"앞사람과 간격을 유지하고\n운영요원의 안내를 따라 주세요.","emphasis":"앞사람과 간격을 유지","severity":"warning","priority":30},
+    {"id":"route_blocked","title":"이동 경로 확인","instruction":"이동을 서두르지 말고\n운영요원의 안내를 기다려 주세요.","emphasis":"운영요원의 안내를 기다려 주세요.","severity":"warning","priority":40},
+    {"id":"all_exits_closed","title":"모든 출입구 통제","instruction":"운영요원은 출입구 상태를\n즉시 확인해 주세요.","emphasis":"즉시 확인해 주세요.","severity":"critical","priority":70},
+    {"id":"fall","title":"낙상 의심 알림","instruction":"주변 공간을 확보하고\n운영요원에게 알려 주세요.","emphasis":"주변 공간을 확보","severity":"critical","priority":60},
+    {"id":"medical","title":"응급 도움 요청","instruction":"운영요원은 현장을 확인하고\n응급 지원을 요청해 주세요.","emphasis":"응급 지원을 요청해 주세요.","severity":"critical","priority":65},
+    {"id":"fire","title":"화재 의심 경고","instruction":"현장을 확인하고\n대피 안내에 따라 주세요.","emphasis":"대피 안내에 따라 주세요.","severity":"critical","priority":90},
+    {"id":"weapon","title":"위험 물체 의심","instruction":"접근하지 말고\n현장 보안요원에게 알려 주세요.","emphasis":"접근하지 말고","severity":"critical","priority":80}
+  ],
+  "zones": ["행사장 전체","A 출입구 · 서측","B 출입구 · 중앙","C 출입구 · 동측"],
+  "sources": ["시뮬레이션","시험 경고"],
+  "colors": {"background":"#000000","text":"#FFFFFF","critical":"#FF0000","warning":"#FFFF00","normal":"#00FF00","waiting":"#00CFFF"},
+  "labels": {"brand":"JEONJO","waiting":"관제 연결 대기","stale":"연결 끊김 · 마지막 안내","live":"관제 수신 중","ack":"안내 확인","acked":"확인됨 · 상황 해제 대기","warning":"주의 안내","critical":"위험 경고","normal":"관제 안내","count":"전체 경고","unit":"건"}
+}

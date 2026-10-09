@@ -8,6 +8,16 @@ artifacts/
 !.env.example
 __pycache__/
 *.pyc
+device/backups/
+device/.tools/
+device/firmware/.build/
+device/firmware/.output/
+device/firmware/.cache/
+device/firmware/build.log
+device/esp32/.pio/
+device/esp32/generated/
+device/esp32/build.log
+device/voice-cache/
 
 # Original venue recordings and captures remain local reference material.
 references/**/*.mp4

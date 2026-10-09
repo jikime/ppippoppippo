@@ -1,0 +1,34 @@
+.cctv-source-tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:3px;padding:3px;background:#edf1f4;margin-bottom:10px;border-radius:4px}
+.cctv-heading-actions{display:flex;align-items:center;gap:14px}
+.floating-feed.cctv-expanded{position:fixed;z-index:75;left:50%;top:50%;right:auto;bottom:auto;transform:translate(-50%,-50%);width:min(960px,calc(100vw - 48px));max-height:calc(100dvh - 48px);overflow:auto;padding:20px;background:#f9fbfc;border:1px solid #9aaebc;box-shadow:0 20px 90px #091d3a55}
+.cctv-expanded .cctv-source-tabs>button{font-size:12px;padding:10px}.cctv-expanded .section-heading{font-size:14px}.cctv-expanded .camera-view{aspect-ratio:16/9;max-height:calc(100dvh - 220px)}.cctv-expanded .camera-view canvas{object-fit:contain}.cctv-expanded .cctv-transport button{width:32px;height:32px}.cctv-expanded .cctv-transport time{font-size:12px}.cctv-expanded .camera-top{font-size:11px}.cctv-expanded .cctv-recording-caption{font-size:11px}.cctv-expanded .cctv-recording-caption>span:last-child{font-size:10px}
+.cctv-source-tabs>button{font-size:9px;padding:7px 3px;color:#5b6d7d;border-radius:3px;white-space:nowrap}
+.cctv-source-tabs>button[aria-selected=true]{background:var(--navy);color:#dceccb}
+.cctv-source-tabs>button[aria-selected=true]:hover{background:#233c55;color:white}
+.cctv-player[hidden]{display:none}.recorded-view{background:#101a24;aspect-ratio:16/9}
+.recorded-view video{width:100%;height:100%;display:block;object-fit:contain}
+.recorded-view .camera-top{z-index:1;top:8px;font-size:8px}
+.recorded-view .camera-top>span{padding:4px 5px;background:#132338ce;border-radius:2px}
+.recorded-view .camera-top i{background:#efa55e}.recorded-badge{color:#f8dfbb}
+.cctv-transport{background:#14263d;color:#d7e4ef;padding:5px 7px 7px}
+.cctv-transport>div{display:flex;align-items:center;gap:3px}
+.cctv-transport button{display:grid;place-items:center;width:25px;height:25px;border-radius:3px;padding:4px;color:#d7e4ef}
+.cctv-transport button:not(:disabled):hover{background:#2b455f;color:white}
+.cctv-transport time{font-size:9px;font-variant-numeric:tabular-nums;letter-spacing:.2px;margin-left:4px;white-space:nowrap}.cctv-transport time>span{color:#849cb2}
+.cctv-transport .cctv-volume{margin-left:auto}
+.cctv-transport input{display:block;width:100%;height:3px;margin:5px 0 1px;accent-color:#a2db58;cursor:pointer}
+.cctv-recording-caption{display:flex;justify-content:space-between;align-items:center;margin-top:8px;font-size:9px;color:#657b8e}
+.cctv-recording-caption>span:last-child{font-size:8px;color:#82939f}
+.cctv-video-message{position:absolute;inset:0;background:#0f1f33c9;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px;color:#d9e6ee;font-size:10px;padding:28px 12px;text-align:center;line-height:1.6}
+.cctv-video-message button{border:1px solid #597590;padding:5px 12px;background:#273f55;border-radius:3px;font-size:9px}
+.cctv-video-message button:hover{background:#3a546a!important;color:white}
+.cctv-loading-dot{width:7px;height:7px;background:#a2db58;border-radius:50%;animation:live-pulse 1.5s infinite}
+.cctv-start{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:#14263deb;color:white;padding:10px 13px;border:1px solid #60788c;border-radius:4px;display:flex;align-items:center;gap:6px;font-size:10px;white-space:nowrap}
+.cctv-start:hover{background:#2e4961!important;color:white}
+.cctv-player:fullscreen{background:#09111b;display:flex;flex-direction:column;justify-content:center;padding:16px;gap:0}
+.cctv-player:fullscreen .recorded-view{flex:1;min-height:0;aspect-ratio:auto}.cctv-player:fullscreen .camera-top{font-size:13px;left:18px;right:18px;top:16px}
+.cctv-player:fullscreen .cctv-transport{padding:10px 16px 15px}.cctv-player:fullscreen .cctv-transport button{height:34px;width:34px}.cctv-player:fullscreen .cctv-transport time{font-size:13px}.cctv-player:fullscreen .cctv-recording-caption{font-size:11px;color:#a8bece}.cctv-player:fullscreen .cctv-recording-caption>span:last-child{font-size:10px}
+@media(min-width:761px){.app:not(.lab-mode):not(.people-focus):not(.analytics-mode) .operations-panel{bottom:calc(var(--cctv-height,255px) + var(--gutter) + 16px)}}
+@media(max-width:1000px){.cctv-source-tabs>button{font-size:8px;padding:7px 2px}}
+@media(max-height:760px) and (min-width:761px){.cctv-monitor .recorded-view{aspect-ratio:16/9}.cctv-source-tabs{margin-bottom:7px}}
+.cctv-fullscreen-error{margin:7px 0 0;color:#b35835;font-size:10px;line-height:1.5}

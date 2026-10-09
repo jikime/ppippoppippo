@@ -1,6 +1,6 @@
 import { Suspense, useEffect, useMemo, useRef } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { OrbitControls, Line } from '@react-three/drei';
+import { OrbitControls, Line, Grid } from '@react-three/drei';
 import type { OrbitControls as Controls } from 'three-stdlib';
 import { Bloom, EffectComposer, ToneMapping } from '@react-three/postprocessing';
 import { ToneMappingMode } from 'postprocessing';
@@ -11,17 +11,20 @@ import { People } from './People';
 import { useUI } from '../state';
 import { world } from '../simulation/world';
 import { EXITS } from '../simulation/layout';
+import { useLab } from '../lab/store';
+import { ReplayScene } from '../lab/ReplayScene';
 
 function Environment(){
   const {gl,scene}=useThree();
   useEffect(()=>{const pmrem=new THREE.PMREMGenerator(gl);const room=new RoomEnvironment();const target=pmrem.fromScene(room,.04);scene.environment=target.texture;scene.environmentIntensity=.35;room.dispose();pmrem.dispose();return()=>{scene.environment=null;target.dispose();};},[gl,scene]);
   return null;
 }
-function Simulation(){const state=useThree();useEffect(()=>{if(import.meta.env.DEV)(window as unknown as {venueScene:typeof state}).venueScene=state;},[state]);useFrame((_,dt)=>world.advance(dt),-3);return null;}
+function Simulation(){const state=useThree();useEffect(()=>{if(import.meta.env.DEV)(window as unknown as {venueScene:typeof state}).venueScene=state;},[state]);useFrame((_,dt)=>{if(useUI.getState().panel!=='lab')world.advance(dt);},-3);return null;}
 function CameraRig(){
   const controls=useRef<Controls>(null);const {camera,size}=useThree();
   const cinema=useUI(s=>s.cinema),panelVisible=useUI(s=>s.panelVisible);
-  const desktopHud=size.width>760&&!cinema;
+  const analytics=useUI(s=>s.panel==='analytics');
+  const desktopHud=size.width>760&&!cinema&&!analytics;
   const fit=Math.max(1,1.6/(size.width/size.height))*(desktopHud?1.27:1);
   const mode=useUI(s=>s.camera),revision=useUI(s=>s.cameraRevision),selected=useUI(s=>s.selected);
   const manualFollowExit=useRef(false);
@@ -104,41 +107,46 @@ function VirtualCamera(){
   const enabled=useUI(s=>s.cctv),night=useUI(s=>s.night),walls=useUI(s=>s.walls);const resources=useMemo(()=>{
     const camera=new THREE.PerspectiveCamera(68,16/9,.15,90);camera.position.set(13.3,3.5,6.5);camera.lookAt(-4,.8,-2);
     const target=new THREE.WebGLRenderTarget(384,216,{depthBuffer:true});target.texture.colorSpace=THREE.SRGBColorSpace;
-    return{camera,target,buffer:new Uint8Array(384*216*4),last:-1,key:''};
+    return{camera,target,buffer:new Uint8Array(384*216*4),last:-1,key:'',canvas:null as HTMLCanvasElement|null};
   },[]);
   useEffect(()=>()=>resources.target.dispose(),[resources]);
   useFrame(({gl,scene})=>{
     if(!enabled)return;
     const canvas=document.getElementById('virtual-cctv') as HTMLCanvasElement|null;
-    if(!canvas)return;
-    const key=`${canvas.dataset.camera}-${night}-${walls}-${world.revision}`;
-    if(world.time-resources.last<.18&&world.time>=resources.last&&key===resources.key)return;
-    resources.last=world.time;resources.key=key;
+    if(!canvas||!canvas.clientWidth)return;
+    const width=canvas.width,height=canvas.height;
+    const key=`${canvas.dataset.camera}-${night}-${walls}-${world.revision}-${width}-${height}`;
+    if(world.time-resources.last<.18&&world.time>=resources.last&&key===resources.key&&resources.canvas===canvas)return;
+    resources.last=world.time;resources.key=key;resources.canvas=canvas;
+    if(resources.target.width!==width||resources.target.height!==height){resources.target.setSize(width,height);resources.buffer=new Uint8Array(width*height*4);}
     if(canvas.dataset.camera==='2'){resources.camera.position.set(-13.3,3.5,-5.5);resources.camera.lookAt(4,.7,3);}else{resources.camera.position.set(13.3,3.5,6.5);resources.camera.lookAt(-4,.8,-2);}
     const old=gl.getRenderTarget(),oldShadows=gl.shadowMap.autoUpdate,oldTone=gl.toneMapping,oldBackground=scene.background;
-    gl.shadowMap.autoUpdate=false;gl.toneMapping=THREE.ACESFilmicToneMapping;scene.background=new THREE.Color(night?'#647065':'#d7dfd1');
-    gl.setRenderTarget(resources.target);gl.render(scene,resources.camera);gl.readRenderTargetPixels(resources.target,0,0,384,216,resources.buffer);
+    gl.shadowMap.autoUpdate=false;gl.toneMapping=THREE.ACESFilmicToneMapping;scene.background=new THREE.Color('#000000');
+    gl.setRenderTarget(resources.target);gl.render(scene,resources.camera);gl.readRenderTargetPixels(resources.target,0,0,width,height,resources.buffer);
     gl.setRenderTarget(old);gl.shadowMap.autoUpdate=oldShadows;gl.toneMapping=oldTone;scene.background=oldBackground;
-    const ctx=canvas.getContext('2d');ctx?.putImageData(new ImageData(new Uint8ClampedArray(resources.buffer),384,216),0,0);
+    const ctx=canvas.getContext('2d');ctx?.putImageData(new ImageData(new Uint8ClampedArray(resources.buffer),width,height),0,0);
   },-.5);
   return null;
 }
 function Contents(){
   const night=useUI(s=>s.night),quality=useUI(s=>s.quality);
+  const lab=useUI(s=>s.panel==='lab'),replay=useLab(s=>s.replay);
   return <>
+    <color attach="background" args={['#000000']}/>
     <Simulation/><Environment/><CameraRig/><AdaptiveResolution/>
     <ambientLight intensity={night?.18:.25}/><hemisphereLight args={['#e5f4ef','#8f9b82',night?.35:.65]}/>
     <directionalLight position={[-10,22,12]} intensity={night?1.1:2.1} color={night?'#b5cdd8':'#fff7df'} castShadow shadow-mapSize={quality==='high'?[2048,2048]:[1024,1024]} shadow-camera-left={-23} shadow-camera-right={23} shadow-camera-top={20} shadow-camera-bottom={-20} shadow-normalBias={.025} shadow-bias={-.0001} shadow-radius={3}/>
     {night&&<><pointLight position={[0,4,-2]} intensity={25} color="#fff0c6" distance={22}/><pointLight position={[-9,4,-2]} intensity={18} color="#d0ecd9" distance={18}/><pointLight position={[9,4,-2]} intensity={18} color="#d0ecd9" distance={18}/></>}
+    <Grid name="background-grid" position={[0,-.67,0]} args={[2,2]} infiniteGrid cellSize={1} sectionSize={5} cellColor="#333333" sectionColor="#555555" cellThickness={.55} sectionThickness={.9} fadeDistance={120} fadeStrength={1.7} fadeFrom={0} raycast={()=>null} material-depthWrite={false}/>
     <mesh rotation-x={-Math.PI/2} position-y={-.65} receiveShadow><planeGeometry args={[200,200]}/><shadowMaterial transparent opacity={.13}/></mesh>
-    <Venue/><Suspense fallback={null}><People/></Suspense>
-    <Routes/><Heatmap/><VirtualCamera/>
+    <Venue/><Suspense fallback={null}>{lab&&replay?<ReplayScene/>:<People/>}</Suspense>
+    {!lab&&<><Routes/><Heatmap/><VirtualCamera/></>}
     {quality==='high'&&<EffectComposer multisampling={2}><Bloom luminanceThreshold={3.2} intensity={.15} mipmapBlur/><ToneMapping mode={ToneMappingMode.ACES_FILMIC}/></EffectComposer>}
   </>;
 }
 export function Scene(){
   const night=useUI(s=>s.night),dpr=useUI(s=>s.renderDpr);const select=useUI(s=>s.select);
   return <div className={`scene-container ${night?'night':''}`} aria-label="AWS 행사장 인터랙티브 3D 모델">
-    <Canvas shadows dpr={dpr} camera={{position:[26,28,34],fov:34,near:.1,far:260}} gl={{antialias:true,alpha:true,powerPreference:'high-performance'}} onPointerMissed={()=>select(null)}><Contents/></Canvas>
+    <Canvas shadows dpr={dpr} camera={{position:[26,28,34],fov:34,near:.1,far:260}} gl={{antialias:true,alpha:true,powerPreference:'high-performance'}} onPointerMissed={()=>{select(null);useLab.setState({selected:null});}}><Contents/></Canvas>
   </div>;
 }

@@ -1,0 +1,6 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": { "types": ["node", "vite/client"] },
+  "include": ["lambda/**/*.ts", "preview.config.ts"],
+  "exclude": ["node_modules", ".build"]
+}

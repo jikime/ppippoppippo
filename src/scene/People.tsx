@@ -1,18 +1,21 @@
 import { useMemo, useRef, useEffect } from 'react';
 import { useFrame } from '@react-three/fiber';
-import { Html, useGLTF } from '@react-three/drei';
+import { useGLTF } from '@react-three/drei';
+import { SceneHtml as Html } from './SceneHtml';
 import * as THREE from 'three';
 import { clone } from 'three/addons/utils/SkeletonUtils.js';
 import type { Person } from '../simulation/world';
 import { world } from '../simulation/world';
 import { useUI } from '../state';
 import { roleNames } from '../simulation/layout';
+import { AVATAR_VARIANTS, PARTICIPANT_VARIANTS, characterUrl } from '../simulation/appearance';
+import { RoleDot } from '../people/RoleDot';
+import { RoleMarker } from './RoleMarker';
 
 const bakedSeat=(p:Person)=>p.sitting&&['working','listening','preparing','submitting'].includes(p.state);
-const variants=['participant-teal','participant-navy','participant-cream','operator','judge','host'];
-variants.forEach(v=>useGLTF.preload(`/models/${v}.glb`));
+AVATAR_VARIANTS.forEach(v=>useGLTF.preload(characterUrl(v)));
 function Avatar({person:p}:{person:Person}){
-  const gltf=useGLTF(`/models/${p.variant}.glb`);
+  const gltf=useGLTF(characterUrl(p.variant));
   const selected=useUI(s=>s.selected===p.id);const select=useUI(s=>s.select);
   const root=useRef<THREE.Group>(null);
   const rig=useMemo(()=>{const obj=clone(gltf.scene);obj.traverse(o=>{if(o instanceof THREE.Mesh){o.castShadow=true;o.receiveShadow=true;o.frustumCulled=false;}});return obj;},[gltf.scene]);
@@ -22,7 +25,7 @@ function Avatar({person:p}:{person:Person}){
   useEffect(()=>()=>{mixer.stopAllAction();mixer.uncacheRoot(rig);},[mixer,rig]);
   useFrame((_,dt)=>{
     if(!root.current)return;
-    const distantSeated=bakedSeat(p)&&_.camera.position.distanceTo(new THREE.Vector3(p.position.x,1,p.position.z))>22;
+    const distantSeated=!selected&&bakedSeat(p)&&_.camera.position.distanceTo(new THREE.Vector3(p.position.x,1,p.position.z))>22;
     root.current.visible=p.state!=='outside'&&p.state!=='notArrived'&&!distantSeated;
     const alpha=world.running?world.alpha:1;
     root.current.position.set(THREE.MathUtils.lerp(p.previous.x,p.position.x,alpha),.018,THREE.MathUtils.lerp(p.previous.z,p.position.z,alpha));
@@ -35,15 +38,15 @@ function Avatar({person:p}:{person:Person}){
   },-1);
   return <group ref={root} onClick={e=>{e.stopPropagation();select(p.id);}} onPointerOver={e=>{e.stopPropagation();document.body.style.cursor='pointer';}} onPointerOut={()=>{document.body.style.cursor='auto';}}>
     <primitive object={rig}/>
-    {(selected||p.role==='operator')&&<mesh rotation-x={-Math.PI/2} position-y={.015}><ringGeometry args={[selected?.36:.25,selected?.41:.285,32]}/><meshBasicMaterial color={selected?'#e6a347':'#40b590'} transparent opacity={.85} depthWrite={false}/></mesh>}
-    {selected&&<Html position={[0,2.08,0]} center zIndexRange={[25,10]}><div className="person-label"><span className={`role-dot ${p.role}`}/><b>{p.id}</b><span>{roleNames[p.role]}</span></div></Html>}
+    <RoleMarker role={p.role} selected={selected}/>
+    {selected&&<Html position={[0,2.45,0]} center zIndexRange={[25,10]}><div className="person-label"><RoleDot role={p.role}/><b>{p.id}</b><span>{roleNames[p.role]}</span></div></Html>}
   </group>;
 }
 
 // At overview distance, seated figures share a baked pose in three GPU draws.
 // Moving or nearby people always use their full skeleton and animation mixer.
 function SeatedInstances({variant}:{variant:string}){
-  const gltf=useGLTF(`/models/${variant}.glb`);const instance=useRef<THREE.InstancedMesh>(null);
+  const gltf=useGLTF(characterUrl(variant));const instance=useRef<THREE.InstancedMesh>(null);
   const people=world.people.filter(p=>p.variant===variant);const dummy=useMemo(()=>new THREE.Object3D(),[]);
   const {geometry,material}=useMemo(()=>{
     const rig=clone(gltf.scene);const mixer=new THREE.AnimationMixer(rig);const action=mixer.clipAction(gltf.animations.find(c=>c.name==='Seated')!);action.play();mixer.setTime(.3);rig.updateMatrixWorld(true);
@@ -57,11 +60,11 @@ function SeatedInstances({variant}:{variant:string}){
   useFrame(({camera})=>{
     if(!instance.current)return;
     for(let i=0;i<people.length;i++){
-      const p=people[i],show=bakedSeat(p)&&Math.hypot(camera.position.x-p.position.x,camera.position.y-1,camera.position.z-p.position.z)>22;
+      const p=people[i],show=useUI.getState().selected!==p.id&&bakedSeat(p)&&Math.hypot(camera.position.x-p.position.x,camera.position.y-1,camera.position.z-p.position.z)>22;
       dummy.position.set(p.position.x,.018,p.position.z);dummy.rotation.set(0,p.heading,0);dummy.scale.setScalar(show?1:0);dummy.updateMatrix();instance.current.setMatrixAt(i,dummy.matrix);
     }
     instance.current.instanceMatrix.needsUpdate=true;instance.current.boundingSphere=new THREE.Sphere(new THREE.Vector3(),30);
   },-1);
   return <instancedMesh ref={instance} args={[geometry,material,people.length]} castShadow receiveShadow frustumCulled={false} onClick={e=>{e.stopPropagation();if(e.instanceId!==undefined)useUI.getState().select(people[e.instanceId].id);}} onPointerOver={e=>{e.stopPropagation();document.body.style.cursor='pointer';}} onPointerOut={()=>{document.body.style.cursor='auto';}}/>;
 }
-export function People(){const revision=useUI(s=>s.data.revision);return <group key={revision}>{world.people.map(p=><Avatar key={p.id} person={p}/>)}{variants.slice(0,3).map(variant=><SeatedInstances key={variant} variant={variant}/>)}</group>;}
+export function People(){const revision=useUI(s=>s.data.revision);return <group key={revision}>{world.people.map(p=><Avatar key={p.id} person={p}/>)}{PARTICIPANT_VARIANTS.map(variant=><SeatedInstances key={variant} variant={variant}/>)}</group>;}

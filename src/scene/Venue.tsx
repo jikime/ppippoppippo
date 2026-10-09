@@ -1,12 +1,14 @@
 import { useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
-import { Html, RoundedBox } from '@react-three/drei';
+import { RoundedBox } from '@react-three/drei';
+import { SceneHtml as Html } from './SceneHtml';
 import * as THREE from 'three';
 import { EXITS } from '../simulation/layout';
 import { useUI } from '../state';
 import { world } from '../simulation/world';
 import { AGENDA } from '../simulation/agenda';
 import { codeTexture, makeFurniture, signTexture } from './assets';
+import { useLab } from '../lab/store';
 
 function Box({position,size,color,roughness=.8}: {position:[number,number,number];size:[number,number,number];color:string;roughness?:number}){
   return <mesh position={position} castShadow receiveShadow><boxGeometry args={size}/><meshStandardMaterial color={color} roughness={roughness}/></mesh>;
@@ -29,7 +31,8 @@ function Screen({x,index}:{x:number;index:number}){
   </group>;
 }
 function Door({index}:{index:number}){
-  const def=EXITS[index];const open=useUI(s=>s.data.exits[index]?.open??true);
+  const def=EXITS[index];const liveOpen=useUI(s=>s.data.exits[index]?.open??true),lab=useUI(s=>s.panel==='lab'),closed=useLab(s=>s.replay?.world.conditions.closedExit);
+  const open=lab&&closed!==undefined?closed!==index:liveOpen;
   const hinge=useRef<THREE.Group>(null);
   useFrame((_,dt)=>{if(hinge.current)hinge.current.rotation.y=THREE.MathUtils.damp(hinge.current.rotation.y,open?-Math.PI*.46:0,5,dt);});
   return <group position={[def.x,0,7]}>
@@ -43,7 +46,7 @@ function Door({index}:{index:number}){
     </group>
     <mesh position={[0,3.08,0]}><boxGeometry args={[.55,.19,.12]}/><meshStandardMaterial color={open?'#65c496':'#df9162'} emissive={open?'#38a677':'#b94b25'} emissiveIntensity={4}/></mesh>
     {!open&&<mesh position={[0,.026,-.65]} rotation-x={-Math.PI/2}><ringGeometry args={[1.03,1.13,48]}/><meshBasicMaterial color="#d79650" transparent opacity={.8} depthWrite={false}/></mesh>}
-    <Html position={[0,.04,1.45]} center zIndexRange={[15,0]}><button className={`door-label ${open?'':'closed'}`} onClick={()=>world.toggleExit(def.id)} title={`${def.id} 출입구 ${open?'통제':'개방'}`}><span className="status-dot"/>{def.id} <span>{open?'OPEN':'CLOSED'}</span></button></Html>
+    <Html position={[0,.04,1.45]} center zIndexRange={[15,0]}><button className={`door-label ${open?'':'closed'}`} disabled={lab} onClick={()=>world.toggleExit(def.id)} title={lab?'실험에 기록된 출입구 상태':`${def.id} 출입구 ${open?'통제':'개방'}`}><span className="status-dot"/>{def.id} <span>{open?'OPEN':'CLOSED'}</span></button></Html>
   </group>;
 }
 export function Venue(){
