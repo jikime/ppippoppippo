@@ -8,6 +8,7 @@ import { world } from '../simulation/world';
 import { useUI } from '../state';
 import { roleNames } from '../simulation/layout';
 
+const bakedSeat=(p:Person)=>p.sitting&&['working','listening','preparing','submitting'].includes(p.state);
 const variants=['participant-teal','participant-navy','participant-cream','operator','judge','host'];
 variants.forEach(v=>useGLTF.preload(`/models/${v}.glb`));
 function Avatar({person:p}:{person:Person}){
@@ -21,13 +22,13 @@ function Avatar({person:p}:{person:Person}){
   useEffect(()=>()=>{mixer.stopAllAction();mixer.uncacheRoot(rig);},[mixer,rig]);
   useFrame((_,dt)=>{
     if(!root.current)return;
-    const distantSeated=p.state==='working'&&_.camera.position.distanceTo(new THREE.Vector3(p.position.x,1,p.position.z))>22;
-    root.current.visible=p.state!=='outside'&&!distantSeated;
+    const distantSeated=bakedSeat(p)&&_.camera.position.distanceTo(new THREE.Vector3(p.position.x,1,p.position.z))>22;
+    root.current.visible=p.state!=='outside'&&p.state!=='notArrived'&&!distantSeated;
     const alpha=world.running?world.alpha:1;
     root.current.position.set(THREE.MathUtils.lerp(p.previous.x,p.position.x,alpha),.018,THREE.MathUtils.lerp(p.previous.z,p.position.z,alpha));
     let diff=((p.heading-heading.current+Math.PI)%(Math.PI*2)+Math.PI*2)%(Math.PI*2)-Math.PI;
     if(world.running)heading.current+=diff*Math.min(1,dt*10);root.current.rotation.y=heading.current;
-    const clip=p.state==='working'?'Seated':p.speed>.12?'Walk':p.state==='guiding'?'Guide':p.state==='visiting'||p.state==='presenting'?'Talk':'Idle';
+    const clip=p.speed>.12?'Walk':p.sitting?(p.state==='eating'?'Eat':p.state==='applauding'?'Applaud':p.state==='listening'?'Listen':'Seated'):p.state==='guiding'?'Guide':['visiting','presenting','networking','judging','checking','cleaning','serving'].includes(p.state)?'Talk':'Idle';
     if(active.current!==clip){const prev=actions[active.current];const next=actions[clip];next.reset();next.time=(p.ordinal*.173)%next.getClip().duration;next.play();if(prev)prev.crossFadeTo(next,.35,false);else mixer.update(0);active.current=clip;}
     if(actions.Walk)actions.Walk.timeScale=Math.max(.3,p.speed*1.15);
     if(world.running&&!distantSeated)mixer.update(Math.min(dt,.1)*world.speed);
@@ -56,7 +57,7 @@ function SeatedInstances({variant}:{variant:string}){
   useFrame(({camera})=>{
     if(!instance.current)return;
     for(let i=0;i<people.length;i++){
-      const p=people[i],show=p.state==='working'&&Math.hypot(camera.position.x-p.position.x,camera.position.y-1,camera.position.z-p.position.z)>22;
+      const p=people[i],show=bakedSeat(p)&&Math.hypot(camera.position.x-p.position.x,camera.position.y-1,camera.position.z-p.position.z)>22;
       dummy.position.set(p.position.x,.018,p.position.z);dummy.rotation.set(0,p.heading,0);dummy.scale.setScalar(show?1:0);dummy.updateMatrix();instance.current.setMatrixAt(i,dummy.matrix);
     }
     instance.current.instanceMatrix.needsUpdate=true;instance.current.boundingSphere=new THREE.Sphere(new THREE.Vector3(),30);

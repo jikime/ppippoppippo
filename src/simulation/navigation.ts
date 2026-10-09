@@ -24,6 +24,7 @@ export class Navigation {
     // Solid navigation volumes match the furniture and perimeter, including three door gaps.
     const box=(x:number,z:number,w:number,d:number,h=3.5)=>{const g=new BoxGeometry(w,h,d);g.translate(x,h/2,z);append(g);};
     TABLES.forEach(t=>box(t.x,t.z,2.86,1.18,2));
+    for(const x of [-14,14])for(const z of [-3.8,-.8,2.2])box(x,z,.62,1.5,1.1);
     box(0,-7,29,.24);box(-14.45,.1,.20,14.3);box(14.45,.1,.20,14.3);
     [[-13.725,1.45],[-6,9.8],[6,9.8],[13.725,1.45]].forEach(([x,w])=>box(x,7,w,.26));
     const result=generateTileCache(positions,indices,{cs:.10,ch:.10,tileSize:32,walkableHeight:17,walkableRadius:2,walkableClimb:1,walkableSlopeAngle:35,maxSimplificationError:1.1,maxObstacles:16,expectedLayersPerTile:2});

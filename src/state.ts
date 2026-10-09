@@ -3,7 +3,7 @@ import { world } from './simulation/world';
 import type { Snapshot } from './simulation/world';
 
 export type CameraMode='overview'|'top'|'floor'|'follow';
-type UIState={data:Snapshot;selected:string|null;camera:CameraMode;cameraRevision:number;heatmap:boolean;routes:boolean;walls:boolean;night:boolean;cctv:boolean;panel:'overview'|'people'|'events';help:boolean;cinema:boolean;mobilePanel:boolean;quality:'high'|'balanced';renderDpr:number;
+type UIState={data:Snapshot;selected:string|null;camera:CameraMode;cameraRevision:number;heatmap:boolean;routes:boolean;walls:boolean;night:boolean;cctv:boolean;panel:'overview'|'people'|'events'|'agenda';help:boolean;cinema:boolean;mobilePanel:boolean;quality:'high'|'balanced';renderDpr:number;
   select:(id:string|null)=>void;setCamera:(camera:CameraMode)=>void;toggle:(key:'heatmap'|'routes'|'walls'|'night'|'cctv'|'help'|'cinema'|'mobilePanel')=>void;
   setPanel:(panel:UIState['panel'])=>void;setQuality:(quality:UIState['quality'])=>void;
 };

@@ -83,7 +83,7 @@ function Heatmap(){
     if(!enabled||!mesh.current||world.time-last.current<.5&&world.time>=last.current)return;last.current=world.time;
     let index=0;
     for(let x=-13.5;x<=13.5;x+=1)for(let z=-6.25;z<=6.75;z+=1){
-      const nearby=world.people.filter(p=>p.state!=='outside'&&Math.hypot(p.position.x-x,p.position.z-z)<1.55).length;
+      const nearby=world.people.filter(p=>p.state!=='outside'&&p.state!=='notArrived'&&Math.hypot(p.position.x-x,p.position.z-z)<1.55).length;
       color.set(nearby>5?'#e77643':nearby>2?'#dfc25e':'#55c19b');dummy.position.set(x,.024,z);dummy.rotation.set(-Math.PI/2,0,0);dummy.scale.setScalar(nearby?1:.01);dummy.updateMatrix();mesh.current.setMatrixAt(index,dummy.matrix);mesh.current.setColorAt(index,color);index++;
     }
     mesh.current.instanceMatrix.needsUpdate=true;if(mesh.current.instanceColor)mesh.current.instanceColor.needsUpdate=true;

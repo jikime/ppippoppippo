@@ -12,5 +12,5 @@ export const PATROL:Vec[]=[{x:-12,y:0,z:-5.8},{x:0,y:0,z:-5.8},{x:12,y:0,z:-5.8}
 export const distance=(a:Vec,b:Vec)=>Math.hypot(a.x-b.x,a.z-b.z);
 export const vector=(x:number,z:number):Vec=>({x,y:0,z});
 export const roleNames={participant:'참가자',operator:'운영요원',judge:'심사위원',host:'발표자'};
-export const stateNames={working:'팀 프로젝트 작업',walking:'목적지로 이동',waiting:'출입구 대기',guiding:'동선 안내',visiting:'팀 방문 · 심사',outside:'퇴장 완료',presenting:'발표 진행',idle:'주변 확인',blocked:'이동 경로 대기'};
+export const stateNames={working:'팀 프로젝트 작업',walking:'목적지로 이동',waiting:'출입구 대기',guiding:'동선 안내',visiting:'팀 방문 · 심사',outside:'퇴장 완료',presenting:'발표 진행',idle:'주변 확인',blocked:'이동 경로 대기',notArrived:'입장 예정',preparing:'장비 준비',listening:'발표 청취',serving:'자율배식',eating:'식사 중',networking:'네트워킹',submitting:'제출 · 발표 확인',judging:'발표 심사 · 집계',checking:'운영 점검',applauding:'시상 · 박수',photograph:'단체사진',cleaning:'행사장 정리'};
 export const roleColors={participant:'#60869c',operator:'#15a97d',judge:'#c09b65',host:'#a195c8'};

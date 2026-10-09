@@ -5,6 +5,7 @@ import * as THREE from 'three';
 import { EXITS } from '../simulation/layout';
 import { useUI } from '../state';
 import { world } from '../simulation/world';
+import { AGENDA } from '../simulation/agenda';
 import { codeTexture, makeFurniture, signTexture } from './assets';
 
 function Box({position,size,color,roughness=.8}: {position:[number,number,number];size:[number,number,number];color:string;roughness?:number}){
@@ -18,8 +19,9 @@ function Plant({x,z}:{x:number;z:number}){
   </group>;
 }
 function Screen({x,index}:{x:number;index:number}){
-  const scenario=useUI(s=>s.data.scenario),guidance=useUI(s=>s.data.guidance);
-  const texture=useMemo(()=>signTexture(scenario==='normal'?(index===1?'Build what’s\nnext.':'Ideas into\nimpact.'):(guidance?'Follow the\ngreen path.':'Take a\nbreather.'),scenario==='normal'?'AWS BUILDER DAY 2026  /  HACKATHON':'CROWDGUARD  /  VENUE GUIDANCE',index===1),[index,scenario,guidance]);
+  const scenario=useUI(s=>s.data.scenario),guidance=useUI(s=>s.data.guidance),phaseId=useUI(s=>s.data.agenda?.phaseId),segment=useUI(s=>s.data.agenda?.segment);
+  const phase=AGENDA.find(p=>p.id===phaseId);
+  const texture=useMemo(()=>signTexture(phase?(segment==='photo'?'One team.\nOne memory.':phase.screen):scenario==='normal'?(index===1?'Build what’s\nnext.':'Ideas into\nimpact.'):(guidance?'Follow the\ngreen path.':'Take a\nbreather.'),scenario==='normal'?'AWS BUILDER DAY 2026  /  HACKATHON':'CROWDGUARD  /  VENUE GUIDANCE',index===1),[index,scenario,guidance,phase,segment]);
   return <group position={[x,2.15,-6.76]}>
     <Box position={[0,0,-.055]} size={[4.35,2.24,.08]} color="#303b36"/>
     <mesh position-z={.005}><planeGeometry args={[4.20,2.1]}/><meshStandardMaterial map={texture} emissive="#e4ecd6" emissiveIntensity={.16} roughness={.9}/></mesh>
@@ -67,11 +69,35 @@ export function Venue(){
       {[-5.4,-1.8,1.8,5.4].map(z=><group key={z} position={[14.42,0,z]}><Box position={[0,.7,0]} size={[.06,1.4,.07]} color="#71887d"/><mesh position={[0,.69,1.75]} rotation-y={Math.PI/2}><planeGeometry args={[3.4,1.35]}/><meshStandardMaterial color="#aed1c1" transparent opacity={.17} side={THREE.DoubleSide} roughness={.25}/></mesh></group>)}
       {[-6,6].map(x=><group key={x}><mesh position={[x,.58,7]}><boxGeometry args={[9.75,1.16,.035]}/><meshStandardMaterial color="#b3cfc5" transparent opacity={.26} roughness={.26}/></mesh>{[-4.7,0,4.7].map(dx=><Box key={dx} position={[x+dx,.64,7]} size={[.035,1.3,.05]} color="#84998d"/>)}</group>)}
     </group>}
+    <EventStations/>
     {EXITS.map((_,i)=><Door key={`${i}-${revision}`} index={i}/>)}
     {[-13.5,13.5].flatMap(x=>[-5.9,4.7].map(z=><Plant key={`${x}-${z}`} x={x} z={z}/>))}
     {[-13.6,13.6].map(x=><group key={x} position={[x,0,1.2]}><mesh position-y={.49} castShadow><cylinderGeometry args={[.26,.24,.95,16]}/><meshStandardMaterial color="#f0f1e9"/></mesh><mesh position-y={.93}><torusGeometry args={[.23,.015,5,24]}/><meshStandardMaterial color="#89dcc6" emissive="#66aa98" emissiveIntensity={.6}/></mesh></group>)}
     {[-10,0,10].map(x=><group key={x} position={[x,3.65,-5.8]}><Box position={[0,0,0]} size={[5.0,.045,.07]} color="#fbf9e9"/><Box position={[0,.08,0]} size={[5.0,.12,.045]} color="#d7dbcf"/></group>)}
     {[-9.5,0,9.5].map((x,i)=><Html key={x} position={[x,3.9,-7]} center zIndexRange={[12,0]}><div className="zone-pin"><span>0{i+1}</span>{['BUILD ZONE','COLLAB ZONE','CREATE ZONE'][i]}</div></Html>)}
     <mesh position={[0,-.30,9.51]}><planeGeometry args={[3.4,.32]}/><meshBasicMaterial map={floorText}/></mesh>
+  </group>;
+}
+
+function EventStations(){
+  const phase=useUI(s=>s.data.agenda?.phaseId),segment=useUI(s=>s.data.agenda?.segment);
+  const meal=phase==='lunch'||phase==='tracks';
+  return <group>
+    {[-14,14].flatMap(x=>[-3.8,-.8,2.2].map((z,i)=><group key={`${x}-${z}`} position={[x,0,z]}>
+      <Box position={[0,.45,0]} size={[.5,.9,1.35]} color="#c7d2bd"/>
+      <Box position={[0,.94,0]} size={[.62,.09,1.5]} color="#f7f3e8"/>
+      {meal&&[-.4,0,.4].map((offset,j)=><group key={offset} position={[0,1.01,offset]}><mesh><cylinderGeometry args={[.15,.13,.05,12]}/><meshStandardMaterial color="#f9f5e8"/></mesh><mesh position-y={.055}><sphereGeometry args={[.10,8,5]}/><meshStandardMaterial color={['#dba35b','#83a865','#cd8766'][j]}/></mesh></group>)}
+      {meal&&i===1&&<Html position={[0,1.8,0]} center zIndexRange={[9,0]}><div className="zone-pin">SELF SERVICE</div></Html>}
+    </group>))}
+    {phase==='closing'&&segment==='awards'&&<group position={[0,0,-6.4]}>
+      <Box position={[0,.6,0]} size={[.7,1.2,.5]} color="#a8bfa0"/>
+      <mesh position-y={1.28}><cylinderGeometry args={[.19,.24,.14,12]}/><meshStandardMaterial color="#c89845" metalness={.65} roughness={.3}/></mesh>
+      <mesh position-y={1.55}><cylinderGeometry args={[.24,.09,.43,12]}/><meshStandardMaterial color="#e9c068" metalness={.7} roughness={.25}/></mesh>
+    </group>}
+    {phase==='closing'&&segment==='photo'&&<group position={[0,0,5.9]}>
+      <mesh position-y={.65}><cylinderGeometry args={[.025,.04,1.3,8]}/><meshStandardMaterial color="#435f51"/></mesh>
+      <Box position={[0,1.38,0]} size={[.35,.25,.23]} color="#364e45"/>
+      <mesh position={[0,1.38,-.14]} rotation-x={Math.PI/2}><cylinderGeometry args={[.08,.08,.11,12]}/><meshStandardMaterial color="#172c26"/></mesh>
+    </group>}
   </group>;
 }
