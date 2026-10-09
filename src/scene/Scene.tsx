@@ -19,11 +19,21 @@ function Environment(){
 }
 function Simulation(){const state=useThree();useEffect(()=>{if(import.meta.env.DEV)(window as unknown as {venueScene:typeof state}).venueScene=state;},[state]);useFrame((_,dt)=>world.advance(dt),-3);return null;}
 function CameraRig(){
-  const controls=useRef<Controls>(null);const {camera,size}=useThree();const fit=Math.max(1,1.6/(size.width/size.height));
+  const controls=useRef<Controls>(null);const {camera,size}=useThree();
+  const cinema=useUI(s=>s.cinema),panelVisible=useUI(s=>s.panelVisible);
+  const desktopHud=size.width>760&&!cinema;
+  const fit=Math.max(1,1.6/(size.width/size.height))*(desktopHud?1.27:1);
   const mode=useUI(s=>s.camera),revision=useUI(s=>s.cameraRevision),selected=useUI(s=>s.selected);
   const manualFollowExit=useRef(false);
   const story=useUI(s=>s.data.story),step=useUI(s=>s.data.storyStep);const automatic=useRef(false);
   const moving=useRef(true);const goal=useRef(new THREE.Vector3(22,23,28));const target=useRef(new THREE.Vector3(0,-.3,2.2));
+  useEffect(()=>{
+    // Keep a full-viewport render target, framing the venue in the space between the HUD boards.
+    const perspective=camera as THREE.PerspectiveCamera;
+    if(desktopHud)perspective.setViewOffset(size.width,size.height,panelVisible?Math.min(160,size.width*.085):0,size.height*.075,size.width,size.height);
+    else perspective.clearViewOffset();
+    return()=>perspective.clearViewOffset();
+  },[camera,desktopHud,panelVisible,size.width,size.height]);
   useEffect(()=>{
     automatic.current=false;
     if(manualFollowExit.current){manualFollowExit.current=false;return;}
@@ -50,7 +60,7 @@ function CameraRig(){
       if(mode!=='follow'&&camera.position.distanceTo(goal.current)<.02)moving.current=false;
     }
   });
-  return <OrbitControls ref={controls} makeDefault enableDamping dampingFactor={.07} minDistance={3} maxDistance={95} maxPolarAngle={Math.PI*.49} onStart={()=>{moving.current=false;automatic.current=false;if(mode==='follow'){manualFollowExit.current=true;useUI.setState({camera:'overview'});}}}/>;
+  return <OrbitControls ref={controls} makeDefault enableDamping dampingFactor={.07} minDistance={3} maxDistance={Math.max(95,53*fit)} maxPolarAngle={Math.PI*.49} onStart={()=>{moving.current=false;automatic.current=false;if(mode==='follow'){manualFollowExit.current=true;useUI.setState({camera:'overview'});}}}/>;
 }
 function AdaptiveResolution(){
   const measure=useRef({seconds:0,frames:0,cooldown:4});
@@ -129,6 +139,6 @@ function Contents(){
 export function Scene(){
   const night=useUI(s=>s.night),dpr=useUI(s=>s.renderDpr);const select=useUI(s=>s.select);
   return <div className={`scene-container ${night?'night':''}`} aria-label="AWS 행사장 인터랙티브 3D 모델">
-    <Canvas shadows dpr={dpr} camera={{position:[26,28,34],fov:34,near:.1,far:180}} gl={{antialias:true,alpha:true,powerPreference:'high-performance'}} onPointerMissed={()=>select(null)}><Contents/></Canvas>
+    <Canvas shadows dpr={dpr} camera={{position:[26,28,34],fov:34,near:.1,far:260}} gl={{antialias:true,alpha:true,powerPreference:'high-performance'}} onPointerMissed={()=>select(null)}><Contents/></Canvas>
   </div>;
 }

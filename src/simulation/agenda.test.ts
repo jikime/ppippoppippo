@@ -43,7 +43,7 @@ describe('행사 시간표와 인물 행동',()=>{
     world.startAgenda(600,true);world.setRunning(false);const time=world.time,minute=world.agenda!.minute;
     world.advance(.1);expect(world.time).toBe(time);expect(world.agenda!.minute).toBe(minute);
   });
-  test('시간표에 맞지 않는 Jev 조치를 거절하고 식사 순차 이동을 실제로 적용한다',()=>{
+  test('시간표에 맞지 않는 OpenAI 조치를 거절하고 식사 순차 이동을 실제로 적용한다',()=>{
     world.startAgenda(600);expect(world.applyDecision('stagger_meals')).toBe(false);
     world.startAgenda(720);expect(world.applyDecision('stagger_meals')).toBe(true);
     expect(world.agenda?.strategy).toBe('stagger_meals');

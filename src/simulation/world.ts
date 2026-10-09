@@ -317,7 +317,7 @@ export class World {
   }
   applyDecision(action:DecisionAction){
     if(!permittedAction(action,this.agenda?.phaseId??null,this.agenda?.minute??0))return false;
-    if(action==='observe'){this.log('Jev · 현재 운영 유지','새로운 운영 조치를 적용하지 않습니다.');return true;}
+    if(action==='observe'){this.log('OpenAI · 현재 운영 유지','새로운 운영 조치를 적용하지 않습니다.');return true;}
     if(action==='dispatch_guides'||action==='guide_departure'){this.dispatch();return true;}
     if(!this.agenda)return false;
     this.agenda.strategy=action;this.agenda.version++;this.controlVersion++;
@@ -328,7 +328,7 @@ export class World {
       this.stop(p);this.setState(p,'idle');p.planRound=0;
       p.nextAction=this.time+(action==='stagger_meals'?Math.floor(p.ordinal/18)*6:(p.ordinal%12)*.15);
     }
-    this.log(`Jev · ${ACTION_LABELS[action]}`,'현재 행사 단계에 맞는 시뮬레이션 행동을 적용했습니다.','success');this.publish();return true;
+    this.log(`OpenAI · ${ACTION_LABELS[action]}`,'현재 행사 단계에 맞는 시뮬레이션 행동을 적용했습니다.','success');this.publish();return true;
   }
   snapshot():Snapshot{
     const count=(state:State)=>this.people.filter(p=>p.state===state).length;
